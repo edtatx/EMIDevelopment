@@ -1,0 +1,129 @@
+<apex:page id="thePage" tabStyle="Import_Financial_File__tab" controller="AcctSeed.FinancialFileImport" extensions="AcctSeed.EnvironmentUtils" docType="html-5.0" sidebar="false">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.dataTables.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/purify.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!JSENCODE(DefaultLocale)}";
+        AcctSeed.ASModule.packageQualifier = "{!JSENCODE(PackageQualifier)}";
+        AcctSeed.ASModule.cashDisbursementKeyPrefix = "{!$ObjectType.AcctSeed__Cash_Disbursement__c.KeyPrefix}";
+        AcctSeed.ASModule.cashReceiptKeyPrefix = "{!$ObjectType.AcctSeed__Cash_Receipt__c.KeyPrefix}";
+        AcctSeed.ASModule.accountingPeriodKeyPrefix = "{!$ObjectType.AcctSeed__Accounting_Period__c.KeyPrefix}";
+        AcctSeed.ASModule.gLAccountKeyPrefix = "{!$ObjectType.AcctSeed__GL_Account__c.KeyPrefix}";
+        AcctSeed.ASModule.getGLAccountRemoteMethod = '{!$RemoteAction.FinancialFileImport.getGLAccount}';
+        AcctSeed.ASModule.findAccountMatchesRemoteMethod = '{!$RemoteAction.FinancialFileImport.findAccountMatches}';
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/financial-import.js')}" loadOnReady="true"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/financial-file-import.js')}" loadOnReady="true"/>
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/jquery.dataTables.min.css')}" />
+    <style type="text/css">
+        .statusHeader {
+            width:80px;
+        }
+    </style>
+
+    <apex:sectionHeader title="Import Financial File" subtitle="Import Financial File" />
+    <apex:form id="theForm" rendered="{!lineWrapperList.size=0}" onsubmit="return AcctSeed.ASModule.checkFileSize();">
+        <apex:pageBlock id="thePageBlock1" title="Select File">
+            <apex:pageMessage summary="The Import Financial File utility supports the creation of cash receipts and cash disbursements from OFX and QFX file formats. These file formats are available for download from certain bank or credit card companies." severity="info" strength="3" />
+            <apex:pageMessages id="fileImportErrors" rendered="{!isError}" />
+            <apex:pageBlockButtons id="pageBlockButtons1">
+                <apex:commandButton id="import" value="Import" action="{!importFile}" onclick="AcctSeed.ASModule.disableImportButtons('Processing...')" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="File Input" />
+                    <apex:inputFile id="file" value="{!file.body}" filename="{!file.name}" accept=".ofx,.qfx" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <div id="resultsSection" style="display:none">
+        <apex:form id="theForm2">
+            <apex:pageBlock id="thePageBlock" title="Financial Transactions" rendered="{!lineWrapperList.size>0}">
+                <apex:pageMessages id="responseErrors" rendered="{!isError || isSaved}" />
+                <apex:pageBlockButtons id="pageBlockButtons">
+                    <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" />
+                    <apex:commandButton id="createButton" value="Create Records" action="{!createImportRecords}" status="saveStatus" reRender="theForm2" onclick="AcctSeed.ASModule.submitForm();AcctSeed.ASModule.hideTable()" oncomplete="AcctSeed.ASModule.formatTable();AcctSeed.ASModule.showTable();AcctSeed.ASModule.setLookupFieldElements();" />
+                    <apex:commandButton id="matchButton" value="Find Vendor Matches" rerender="resultsPageBlockSection" status="saveStatus" onclick="AcctSeed.ASModule.findAccountMatches();" disabled="{!vendorCount>2000}"/>
+                    <apex:commandButton id="defaultVendorButton" value="Populate Default Vendor" rerender="resultsPageBlockSection" status="saveStatus" onclick="AcctSeed.ASModule.setDefaultVendor();" action="{!validateDefaultVendorAndGLAccount}" oncomplete="AcctSeed.ASModule.enableButtons();" />
+                </apex:pageBlockButtons>
+                <apex:pageBlockSection id="resultsPageBlockSection" columns="2">
+                    <apex:outputText value="{!file.name}" label="File Name" />
+                    <apex:inputField value="{!Disbursement.AcctSeed__Bank_Account__c}" required="true" />
+                    <!--<apex:pageBlockSectionItem rendered="{!IsPreventDuplicates}">-->
+                        <!--<apex:outputLabel value="Prevent Duplicates?" />-->
+                        <!--<apex:inputCheckbox value="{!preventDuplicates}" />-->
+                    <!--</apex:pageBlockSectionItem>-->
+                    <!--<apex:pageBlockSectionItem rendered="{!!IsPreventDuplicates}">-->
+                        <!--<apex:outputText />-->
+                    <!--</apex:pageBlockSectionItem>-->
+
+                    <!-- Empty element used as placeholder -->
+                    <apex:outputText />
+
+                    <apex:pageBlockSectionItem id="vendorItem">
+                        <apex:outputLabel value="Default Vendor" />
+                        <apex:inputField id="defaultVendor" value="{!disbursement.AcctSeed__Vendor__c}" required="false"/>
+                    </apex:pageBlockSectionItem>
+                    <!-- Empty element used as placeholder -->
+                    <apex:outputText />
+
+                    <apex:pageBlockSectionItem id="vendorGLAccountItem">
+                        <apex:outputLabel value="Default Vendor Expense GL Account">
+                        </apex:outputLabel>
+                        <apex:inputField id="defaultVendorGLAccount" value="{!disbursement.AcctSeed__Debit_GL_Account__c}" required="false" />
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                <br/>
+                <br/>
+                <br/>
+                <apex:dataTable id="theTable" styleClass="display" value="{!lineWrapperList}" var="item">
+                    <apex:column headerClass="statusHeader" headerValue="Status">
+                        <apex:outputText value="{!item.insertResult.result.Message}"/>
+                    </apex:column>
+                    <apex:column id="idColumn" headerValue="Id">
+                        <apex:outputText value="{!item.extId}"/>
+                    </apex:column>
+                     <apex:column headerValue="Date">
+                        <apex:outputText value="{0, date, yyyy-M-d}" rendered="{!item.tranTypeName='Receipt'}">
+                            <apex:param value="{!item.obj['Receipt_Date__c']}"/>
+                        </apex:outputText>
+                        <apex:outputText value="{0, date, yyyy-M-d}" rendered="{!item.tranTypeName='Disbursement'}">
+                            <apex:param value="{!item.obj['Disbursement_Date__c']}"/>
+                        </apex:outputText>
+                    </apex:column>
+                     <apex:column headerValue="Accounting Period">
+                        <apex:inputField id="periodLookup" value="{!item.obj['Accounting_Period__c']}" style="width:80px" rendered="{!item.isCreateable}"/>
+                        <apex:outputField value="{!item.obj['Accounting_Period__c']}" style="width:80px" rendered="{!!item.isCreateable}"/>
+                    </apex:column>                                       
+                    <apex:column id="nameColumn" headerValue="Name" html-data-atr="{!item.name}">
+                        <apex:outputText value="{!item.name}"/>
+                    </apex:column>
+                    <apex:column headerValue="Customer/Vendor">
+                        <apex:inputField id="customerLookup" value="{!item.obj['Account__c']}" rendered="{!item.tranTypeName='Receipt' && item.isCreateable}" required="false" />
+                        <apex:inputField id="vendorLookup" value="{!item.obj['Vendor__c']}" rendered="{!item.tranTypeName='Disbursement' && item.isCreateable}" required="false" onchange="AcctSeed.ASModule.setVendorResultGLAccount(this)" />
+                        <apex:outputField id="customerLookup_output" value="{!item.obj['Account__c']}" rendered="{!item.tranTypeName='Receipt' && !item.isCreateable}" />
+                        <apex:outputField id="vendorLookup_output" value="{!item.obj['Vendor__c']}" rendered="{!item.tranTypeName='Disbursement' && !item.isCreateable}" />
+                    </apex:column>
+                    <apex:column headerValue="GL Account">
+                        <apex:inputField id="creditGLAccountLookup" value="{!item.obj['Credit_GL_Account__c']}" rendered="{!item.tranTypeName='Receipt' && item.isCreateable}" />
+                        <apex:inputField id="debitGLAccountLookup" value="{!item.obj['Debit_GL_Account__c']}" rendered="{!item.tranTypeName='Disbursement' && item.isCreateable}" />
+
+                        <apex:outputField id="creditGLAccountLookup_output" value="{!item.obj['Credit_GL_Account__c']}" rendered="{!item.tranTypeName='Receipt' && !item.isCreateable}" />
+                        <apex:outputField id="debitGLAccountLookup_output" value="{!item.obj['Debit_GL_Account__c']}" rendered="{!item.tranTypeName='Disbursement' && !item.isCreateable}" />
+                    </apex:column>
+                    <apex:column headerValue="Type">
+                        <apex:outputText value="{!item.TranTypeName}" />
+                    </apex:column>
+                    <apex:column headerValue="Amount">
+                        <apex:outputField value="{!item.obj['Amount__c']}" />
+                    </apex:column>
+                </apex:dataTable>
+            </apex:pageBlock>
+        </apex:form>
+    </div>
+</apex:page>

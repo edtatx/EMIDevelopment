@@ -1,0 +1,75 @@
+<apex:page id="thePage" standardController="AcctSeed__Time_Card__c" extensions="AcctSeed.BillingFromTimeCard,AcctSeed.EnvironmentUtils" recordSetVar="timeCardVar">
+
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/> 
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!JSENCODE(DefaultLocale)}";
+        AcctSeed.ASModule.defaultCurrency = "{!JSENCODE(DefaultCurrency)}";
+        function setFocusOnLoad() {}
+    </script> 
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true"/> 
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/currency-formatter.js')}" loadOnReady="true"/>
+
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/common.css')}" />
+
+    <apex:form id="theForm">
+        <apex:actionFunction name="backAction" action="{!cancel}" immediate="true"/>
+        <apex:sectionHeader title="{!$ObjectType.AcctSeed__Time_Card__c.labelPlural}" subtitle="Create {!$ObjectType.AcctSeed__Billing__c.labelPlural}" />
+        <apex:pageBlock id="thePageBlock" title="Create {!$ObjectType.AcctSeed__Billing__c.labelPlural}">
+            <apex:pageMessages rendered="{!isError || isSuccess}" escape="false"/>
+            <apex:pageMessage summary="<br/>In order to bill a {!$ObjectType.Time_Card__c.label} the following conditions must be met:<ul><li>{!$ObjectType.Time_Card__c.label} status must be Posted.</li>
+            <li>The Account field on the Project associated with the {!$ObjectType.Time_Card_Line__c.label} must be populated</li><li>The Billed field on the {!$ObjectType.Time_Card_Line__c.label} must be unchecked (The {!$ObjectType.Time_Card_Line__c.label} has not been previously billed).</li>
+            <li>The Billable field on the {!$ObjectType.Time_Card_Line__c.label} must be checked.</li>
+            <li>Employee Default Billing Rate must be set on User record or Billing Rate must be set up and associated with {!$ObjectType.Time_Card_Line__c.label} Project and/or Project Task.</li></ul>" escape="false" severity="info" strength="3" rendered="{!!isSuccess}">
+            </apex:pageMessage>
+            <apex:pageBlockButtons >
+                <apex:actionStatus id="saveStatus"
+                                   onstart="AcctSeed.ASModule.disableButtons('Processing...')"
+                                   onstop="AcctSeed.ASModule.pageLoad()"/>
+                <apex:commandButton action="{!createBillings}"
+                                    value="Create Billings"
+                                    status="saveStatus"
+                                    reRender="theForm" rendered="{!!isSuccess && !isError}" />
+                <apex:commandButton onComplete="AcctSeed.ASModule.customBackToListAction('{!listViewId}', '', '{!SObjectApiName}');"
+                                    value="Back"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection rendered="{!!isSuccess && !isError}">
+                <apex:inputField value="{!bill.AcctSeed__Accounting_Period__c}" required="true" />
+                <apex:inputField value="{!bill.AcctSeed__Date__c}" required="true" />
+                <apex:inputField value="{!bill.AcctSeed__Billing_Format__c}" required="true" />
+                <apex:inputField value="{!bill.AcctSeed__Billing_Cycle_Start_Date__c}" required="true" />
+                <apex:outputText />
+                <apex:inputField value="{!bill.AcctSeed__Billing_Cycle_End_Date__c}" required="true" />
+            </apex:pageBlockSection>
+            <apex:dataTable value="{!timeCardWrapperList}" var="tcw" cellpadding="6" cellspacing="6" width="100%" rendered="{!!isSuccess && !isError}">
+                <apex:column width="100%">
+                    <apex:outputLabel value="Account:" style="font-weight:bold;" />&nbsp;&nbsp;
+                    <apex:outputField value="{!tcw.acct.Name}" />
+                    <br/>
+                    <apex:pageBlockTable value="{!tcw.timeCardLineList}" var="tclw">
+                        <apex:column value="{!tclw.tcLine.Name}" width="10%" />
+                        <apex:column value="{!tclw.tcline.Time_Card__r.Time_Card_Period__r.Name}" width="15%" />
+                        <apex:column headerValue="Employee Name" value="{!tclw.tcLine.Time_Card__r.Employee__r.Name}" width="10%" />
+                        <apex:column value="{!tclw.tcLine.Project__r.Name}" width="10%" />
+                        <apex:column value="{!tclw.tcLine.Project_Task__r.Name}" width="10%" />
+                        <apex:column headerValue="Revenue GL Account" width="10%">
+                            <apex:inputField value="{!tclw.glAccountBillLine.AcctSeed__Revenue_GL_Account__c}" style="width:180px" required="true" />
+                        </apex:column>
+                        <apex:column value="{!tclw.tcLine.AcctSeed__Total_Hours__c}" width="10%" headerClass="align-right" styleClass="align-right" footerClass="align-right"/>
+                        <apex:column headerValue="Billing Rate" headerClass="align-right" styleClass="align-right" footerClass="align-right">
+                            <apex:outputText id="rateAmount" value="{!tclw.BillingRateAmount}"/>
+                        </apex:column>
+                        <apex:column headerValue="Bill Amount" headerClass="align-right" styleClass="align-right" footerClass="align-right">
+                            <apex:outputText id="billAmount" value="{!tclw.Amount}" />
+                            <apex:facet name="footer">
+                                <apex:outputText id="totalAmount" value="{!tcw.amount}" />
+                            </apex:facet>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:column>
+            </apex:dataTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>Cash_Receipt_Record_Home</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>Cash_Receipt_Compact_Layout</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>Cash_Receipt_Compact_Layout</fullName>
+        <fields>Name</fields>
+        <fields>Account__c</fields>
+        <fields>Receipt_Date__c</fields>
+        <fields>Status__c</fields>
+        <fields>Amount__c</fields>
+        <fields>Balance__c</fields>
+        <label>Cash Receipt Compact Layout</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to document the money received from a customer. Typically matched to billing invoices in the cash application process to denote satisfactory payment of billing invoice by customer.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Filtered Look up to Salesforce account based on Accounting Type.</inlineHelpText>
+        <label>Customer</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Account.Accounting_Type__c</field>
+                <operation>equals</operation>
+                <value>Customer, Customer and Vendor</value>
+            </filterItems>
+            <filterItems>
+                <field>Account.Accounting_Active__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Cash Receipts</relationshipLabel>
+        <relationshipName>Cash_Receipts</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Accounting_Period__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to specify accounting period for financial reporting.</inlineHelpText>
+        <label>Accounting  Period</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Accounting_Period__c.Status__c</field>
+                <operation>equals</operation>
+                <value>Open</value>
+            </filterItems>
+            <infoMessage>The accounting period status must be open</infoMessage>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Period__c</referenceTo>
+        <relationshipLabel>Cash Receipts</relationshipLabel>
+        <relationshipName>Cash_Receipts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Accounting_Year__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>LEFT(  Accounting_Period__r.Name  ,4)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Accounting Year</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount of money received in a check or electronic deposit.</inlineHelpText>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Applied_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount of the cash receipt that has been specifically allocated to customer billings.</inlineHelpText>
+        <label>Applied Amount</label>
+        <summarizedField>Billing_Cash_Receipt__c.Applied_Amount__c</summarizedField>
+        <summaryForeignKey>Billing_Cash_Receipt__c.Cash_Receipt__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Balance__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Amount__c - Applied_Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Cash Receipt Amount - Applied amount.</inlineHelpText>
+        <label>Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Account__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Upon posting a debit entry will be made to this GL account.</inlineHelpText>
+        <label>Bank Account</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>The GL Account must be Bank Account. Please check the Bank check box in the GL Account record if you wish to record a Cash Receipt to this GL Account.</errorMessage>
+            <filterItems>
+                <field>GL_Account__c.Bank__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>GL_Account__c</referenceTo>
+        <relationshipLabel>Cash Receipts</relationshipLabel>
+        <relationshipName>Cash_Receipts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Deposit__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Provides reference to the deposit of which the cash receipt is a part of if populated.</inlineHelpText>
+        <label>Bank Deposit</label>
+        <referenceTo>Bank_Deposit__c</referenceTo>
+        <relationshipLabel>Cash Receipts</relationshipLabel>
+        <relationshipName>Cash_Receipts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>true</externalId>
+        <label>Bank Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bank_Reconciliation__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The associated bank reconciliation this cash receipt was cleared.</inlineHelpText>
+        <label>Bank Reconciliation</label>
+        <referenceTo>Bank_Reconciliation2__c</referenceTo>
+        <relationshipLabel>Cash Receipts</relationshipLabel>
+        <relationshipName>Cash_Receipts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Cleared_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date this cash receipt was cleared in the associated bank reconciliation.</inlineHelpText>
+        <label>Cleared Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Credit_GL_Account__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Overrides the Unapplied Cash GL Account set on Accounting Settings if populated.</inlineHelpText>
+        <label>Credit GL Account</label>
+        <referenceTo>GL_Account__c</referenceTo>
+        <relationshipLabel>Cash Receipts (Credit GL Account)</relationshipLabel>
+        <relationshipName>Cash_Receipts1</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Currency_Conversion_Rate__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The currency conversion rate for the currency.</inlineHelpText>
+        <label>Currency Conversion Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_1__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 1</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>The Accounting Variable must have a Type of &quot;GL Account Variable 1&quot;.</errorMessage>
+            <filterItems>
+                <field>Accounting_Variable__c.Type__c</field>
+                <operation>equals</operation>
+                <value>GL Account Variable 1</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipLabel>Cash Receipts</relationshipLabel>
+        <relationshipName>Cash_Receipts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_2__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 2</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>The Accounting Variable must have a Type of &quot;GL Account Variable 2&quot;.</errorMessage>
+            <filterItems>
+                <field>Accounting_Variable__c.Type__c</field>
+                <operation>equals</operation>
+                <value>GL Account Variable 2</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipLabel>Cash Receipts (GL Account Variable 2)</relationshipLabel>
+        <relationshipName>Cash_Receipts1</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_3__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 3</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Accounting_Variable__c.Type__c</field>
+                <operation>equals</operation>
+                <value>GL Account Variable 3</value>
+            </filterItems>
+            <infoMessage>The Accounting Variable must have a Type of &quot;GL Account Variable 3&quot;.</infoMessage>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipLabel>Cash Receipts (GL Account Variable 3)</relationshipLabel>
+        <relationshipName>Cash_Receipts2</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_4__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 4</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Accounting_Variable__c.Type__c</field>
+                <operation>equals</operation>
+                <value>GL Account Variable 4</value>
+            </filterItems>
+            <infoMessage>The Accounting Variable must have a Type of &quot;GL Account Variable 4&quot;.</infoMessage>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipLabel>Cash Receipts (GL Account Variable 4)</relationshipLabel>
+        <relationshipName>Cash_Receipts3</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Ledger_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Currency_Conversion_Rate__c) || Currency_Conversion_Rate__c = 0,Amount__c,Amount__c/Currency_Conversion_Rate__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The amount normalized to the base currency. This is Amount divided by the Currency Conversion Rate.</inlineHelpText>
+        <label>Ledger Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Number_of_Billing_Cash_Receipts__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billings Applied To</label>
+        <summaryForeignKey>Billing_Cash_Receipt__c.Cash_Receipt__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Payment_Reference__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Customer check number or electronic transaction reference.</inlineHelpText>
+        <label>Payment Reference</label>
+        <length>255</length>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Task__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to track a detailed component of Project.</inlineHelpText>
+        <label>Project Task</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Project_Task__c.Project__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Project_Task__c</referenceTo>
+        <relationshipLabel>Cash Receipts</relationshipLabel>
+        <relationshipName>Cash_Receipts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Typically used to track customer engagements or events.</inlineHelpText>
+        <label>Project</label>
+        <referenceTo>Project__c</referenceTo>
+        <relationshipLabel>Cash Receipts</relationshipLabel>
+        <relationshipName>Cash_Receipts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Purpose__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Customer Receipt</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Customer Prepayment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Vendor Refund</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Receipt</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Receipt_Date__c</fullName>
+        <defaultValue>Today()</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date cash was received.</inlineHelpText>
+        <label>Receipt Date</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>A value of &quot;Posted&quot; indicates the record is final.</inlineHelpText>
+        <label>Posting Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>In Process</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <label>Cash Receipt</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Receipt_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Purpose__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Payment_Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Posted</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Receipt_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Purpose__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Payment_Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Posted</value>
+        </filters>
+        <label>Posted</label>
+    </listViews>
+    <listViews>
+        <fullName>Unapplied</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Receipt_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Purpose__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Payment_Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Balance__c</field>
+            <operation>notEqual</operation>
+            <value>0</value>
+        </filters>
+        <label>Unapplied</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Unposted</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Receipt_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Purpose__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Payment_Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Posted</value>
+        </filters>
+        <label>Unposted</label>
+    </listViews>
+    <nameField>
+        <displayFormat>CR-{00000}</displayFormat>
+        <label>Cash Receipt Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Cash Receipts</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Account__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Accounting_Period__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Receipt_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Purpose__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Amount__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Balance__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Payment_Reference__c</customTabListAdditionalFields>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <listViewButtons>Post_Cash_Receipts</listViewButtons>
+        <listViewButtons>Unpost_Cash_Receipts</listViewButtons>
+        <lookupDialogsAdditionalFields>Account__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Accounting_Period__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Receipt_Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Purpose__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Amount__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Balance__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Payment_Reference__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Account__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Accounting_Period__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Receipt_Date__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Purpose__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Amount__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Balance__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Payment_Reference__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Account__c</searchFilterFields>
+        <searchFilterFields>Accounting_Period__c</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>Purpose__c</searchFilterFields>
+        <searchFilterFields>Payment_Reference__c</searchFilterFields>
+        <searchResultsAdditionalFields>Account__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Accounting_Period__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Receipt_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Purpose__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Amount__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Balance__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Payment_Reference__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Balance_Must_Be_Positive</fullName>
+        <active>true</active>
+        <description>The balance must always greater than 0</description>
+        <errorConditionFormula>ROUND(Balance__c,2) &lt; 0</errorConditionFormula>
+        <errorMessage>The cash receipt balance cannot be less than 0</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Cash_Receipt_Can_Not_be_Negative</fullName>
+        <active>true</active>
+        <errorConditionFormula>Amount__c &lt;0</errorConditionFormula>
+        <errorDisplayField>Amount__c</errorDisplayField>
+        <errorMessage>A cash receipt can not be for a negative amount</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>GL_Account_Variable_3_Correct_Type</fullName>
+        <active>true</active>
+        <description>Ensures the GL Account Variable 3 field is of type GL Account Variable 3</description>
+        <errorConditionFormula>NOT(ISBLANK( GL_Account_Variable_3__c )) &amp;&amp; TEXT(GL_Account_Variable_3__r.Type__c) != &quot;GL Account Variable 3&quot;</errorConditionFormula>
+        <errorDisplayField>GL_Account_Variable_3__c</errorDisplayField>
+        <errorMessage>The Accounting Variable must have a Type of &quot;GL Account Variable 3&quot;.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>GL_Account_Variable_4_Correct_Type</fullName>
+        <active>true</active>
+        <description>Ensures the GL Account Variable 4 field is of type GL Account Variable 4</description>
+        <errorConditionFormula>NOT(ISBLANK( GL_Account_Variable_4__c )) &amp;&amp; TEXT(GL_Account_Variable_4__r.Type__c) != &quot;GL Account Variable 4&quot;</errorConditionFormula>
+        <errorDisplayField>GL_Account_Variable_4__c</errorDisplayField>
+        <errorMessage>The Accounting Variable must have a Type of &quot;GL Account Variable 4&quot;.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Project_Task_Required_With_Project</fullName>
+        <active>true</active>
+        <description>Rule ensures a Project Task is Required if the Project field is used.</description>
+        <errorConditionFormula>NOT(ISBLANK(Project__c)) &amp;&amp; ISBLANK(Project_Task__c)</errorConditionFormula>
+        <errorDisplayField>Project_Task__c</errorDisplayField>
+        <errorMessage>A project task is required if a project is selected.</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Apply</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Apply</masterLabel>
+        <openType>sidebar</openType>
+        <page>CashReceiptApplyBillings</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Post</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Post</masterLabel>
+        <openType>sidebar</openType>
+        <page>CashReceiptPost</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Post_Cash_Receipts</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Post Cash Receipts</masterLabel>
+        <openType>sidebar</openType>
+        <page>CashReceiptBatchPost</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>Unpost</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Unpost</masterLabel>
+        <openType>sidebar</openType>
+        <page>CashReceiptUnpost</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Unpost_Cash_Receipts</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Unpost Cash Receipts</masterLabel>
+        <openType>sidebar</openType>
+        <page>CashReceiptBatchUnpost</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+</CustomObject>

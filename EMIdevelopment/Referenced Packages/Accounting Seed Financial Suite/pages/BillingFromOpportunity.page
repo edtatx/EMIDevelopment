@@ -1,0 +1,137 @@
+<apex:page standardController="Opportunity" sidebar="false" extensions="AcctSeed.BillingFromOpportunity,AcctSeed.EnvironmentUtils">
+
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/common.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/billing-opp.css')}" />
+
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!JSENCODE(DefaultLocale)}";
+        AcctSeed.ASModule.defaultCurrency = "{!JSENCODE(DefaultCurrency)}";
+        AcctSeed.ASModule.isMultiCurrencyEnabled = "{!JSENCODE(IF(isMultiCurrencyEnabled, "true", "false"))}";
+        AcctSeed.ASModule.currencyIsoCode = "{!JSENCODE(currencyIsoCode)}";
+        function setFocus() {}
+    </script>
+
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/currency-formatter.js')}" loadOnReady="true" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/checkbox-set.js')}" loadOnReady="true" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/checkbox-set-billing.js')}" loadOnReady="true" />
+
+    <apex:form id="theForm" styleClass="billFromOpp">
+
+        <apex:sectionHeader title="{!$ObjectType.Opportunity.label}" subtitle="{!Opportunity.Name}" />
+
+        <apex:pageBlock id="theBlock" title="Create {!$ObjectType.AcctSeed__Billing__c.label}">
+
+            <apex:pageMessages escape="false" />
+
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus"
+                                   onstart="AcctSeed.ASModule.disableButtons('Processing...')"
+                                   onstop="AcctSeed.ASModule.pageLoad(); AcctSeed.ASModule.billingCheckBoxes.rebind();" />
+                <apex:commandButton id="saveButton"
+                                    action="{!createBilling}"
+                                    value="Create Billing"
+                                    status="saveStatus"
+                                    reRender="theForm"
+                                    rendered="{!!ISBLANK(Opportunity.accountId) && showCommandButton && !showOnlyMessages}" />
+                <apex:commandButton id="cancelButton" action="{!cancel}" value="Back" immediate="true" />
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection id="firstBlockSection"
+                                   title="Billing"
+                                   collapsible="false"
+                                   columns="2"
+                                   rendered="{!!ISBLANK(Opportunity.accountId) && !showOnlyMessages}">
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width5">
+                    <apex:outputLabel value="{!$ObjectType.AcctSeed__Billing__c.fields.AcctSeed__Customer__c.Label}" />
+                    <apex:outputField value="{!theBilling.AcctSeed__Customer__c}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width30">
+                    <apex:outputLabel value="{!$ObjectType.AcctSeed__Billing__c.fields.AcctSeed__Date__c.Label}" />
+                    <apex:inputField value="{!theBilling.AcctSeed__Date__c}" required="true" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width5">
+                    <apex:outputLabel value="{!$ObjectType.Opportunity.fields.Amount.Label}" />
+                    <apex:outputText id="amount-full" value="{!Opportunity.Amount}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width30">
+                    <apex:outputLabel value="Cash Sale" />
+                    <apex:inputCheckbox value="{!isCashSale}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Billing Lines"
+                                   collapsible="false"
+                                   rendered="{!!ISBLANK(Opportunity.accountId) && !showOnlyMessages}">
+                <apex:pageBlockTable value="{!wrappedLines}" var="line" width="100%">
+                    <apex:column >
+                        <apex:facet name="header">
+                            <input type="checkbox" class="rbLines_checkbox_all" />
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!line.isSelected}" styleClass="rbLines_checkbox" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__Date__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__Date__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__Hours_Units__c.Label}" styleClass="amount-row-quantity">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__Hours_Units__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!HEADER_RATE_LABEL}" styleClass="amount-row-price">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__Rate__c}" />
+                    </apex:column>
+                    <apex:column headerClass="amount-all align-right" styleClass="amount-row align-right">
+                        <apex:facet name="header">
+                            <apex:outputText value="{!$ObjectType.Opportunity.fields.Amount.Label}" />
+                        </apex:facet>
+                        <apex:outputText id="billingAmount"
+                                         value="{!line.billingLineRec.AcctSeed__Rate__c * line.billingLineRec.AcctSeed__Hours_Units__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__List_Price__c.Label}"
+                                 headerClass="amount-all align-right" styleClass="align-right">
+                        <apex:outputField value="{!line.billingLineRec.AcctSeed__List_Price__c}" />
+                    </apex:column>                    
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__Product__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__Product__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__Revenue_GL_Account__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__Revenue_GL_Account__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__Project__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__Project__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__Project_Task__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__Project_Task__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__Comment__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__Comment__c}" styleClass="fieldComment" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__GL_Account_Variable_1__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__GL_Account_Variable_1__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__GL_Account_Variable_2__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__GL_Account_Variable_2__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__GL_Account_Variable_3__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__GL_Account_Variable_3__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing_Line__c.fields.AcctSeed__GL_Account_Variable_4__c.Label}">
+                        <apex:inputField value="{!line.billingLineRec.AcctSeed__GL_Account_Variable_4__c}" />
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+
+        <apex:outputField value="{!Opportunity.Name}" rendered="false" />
+        <apex:outputField value="{!Opportunity.AccountId}" rendered="false" />
+        <apex:outputField value="{!Opportunity.CloseDate}" rendered="false" />
+        <apex:outputText value="{!Opportunity.Amount}" rendered="false" />
+        <apex:outputField value="{!Opportunity.Description}" rendered="false" />
+
+    </apex:form>
+
+</apex:page>

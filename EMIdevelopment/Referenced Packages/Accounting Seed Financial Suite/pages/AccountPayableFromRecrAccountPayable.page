@@ -1,0 +1,45 @@
+<apex:page standardController="AcctSeed__Recurring_Account_Payable__c" extensions="AcctSeed.AccountPayableFromRecrAccountPayable,AcctSeed.EnvironmentUtils">
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/common.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/> 
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!JSENCODE(DefaultLocale)}";
+        AcctSeed.ASModule.defaultCurrency = "{!JSENCODE(DefaultCurrency)}";
+        AcctSeed.ASModule.isMultiCurrencyEnabled = "{!JSENCODE(IF(isMultiCurrencyEnabled, "true", "false"))}";
+        AcctSeed.ASModule.currencyIsoCode = "{!JSENCODE(currencyIsoCode)}";
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/currency-formatter.js')}" loadOnReady="true"/>     
+    <apex:form id="theForm">
+        <apex:sectionHeader title="{!$ObjectType.AcctSeed__Recurring_Account_Payable__c.label}" subtitle="{!AcctSeed__Recurring_Account_Payable__c.Name}" /> 
+        <apex:pageBlock id="thePageBlock" title="Create {!$ObjectType.AcctSeed__Account_Payable__c.label}"> 
+            <apex:pageMessages escape="false"/>
+            <apex:pageMessage rendered="{!isInActiveError}" severity="error" strength="3" summary="You cannot create a {!$ObjectType.AcctSeed__Account_Payable__c.label} from an inactive {!$ObjectType.AcctSeed__Recurring_Account_Payable__c.label} record" />
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" onstop="AcctSeed.ASModule.pageLoad()"/>
+                <apex:commandButton id="saveButton" action="{!createPayable}" value="Create {!$ObjectType.AcctSeed__Account_Payable__c.label}" status="saveStatus"  rendered="{!!isInActiveError}" reRender="theForm" />
+                <apex:commandButton id="cancelButton" action="{!cancel}" value="Back" immediate="true" status="saveStatus"/>
+            </apex:pageBlockButtons>   
+            <apex:pageBlockSection rendered="{!!isInActiveError}" columns="1">
+                <apex:pageBlockTable value="{!payableList}" var="bw" width="100%">
+                    <apex:column value="{!bw.rPayable.Name}"/>
+                    <apex:column value="{!bw.payable.AcctSeed__Vendor__c}"/>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Account_Payable__c.fields.AcctSeed__Next_Account_Payable_Date__c.label}">
+                        <apex:outputField value="{!bw.rPayable.AcctSeed__Next_Account_Payable_Date__c}" />
+                    </apex:column>                    
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Account_Payable__c.fields.AcctSeed__Accounting_Period__c.label}">
+                        <apex:inputField value="{!bw.Payable.AcctSeed__Accounting_Period__c}" required="true"/>
+                    </apex:column>
+                    <apex:column headerValue="Total" headerClass="align-right" footerClass="align-right" styleClass="align-right">
+                        <apex:outputText id="payableAmount" value="{!bw.Amount}"/>
+                        <apex:facet name="footer">
+                            <apex:outputText id="totalAmount" value="{!payableAmount}"/>                            
+                        </apex:facet>
+                    </apex:column>                    
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>             
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

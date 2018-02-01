@@ -1,0 +1,299 @@
+<apex:page docType="html-5.0" standardStylesheets="false" showHeader="false" controller="GanttChartFullScreenController">
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>Gantt Visualforce Page</title>
+        <apex:includeScript value="{!URLFOR($Resource.Gantt, '/codebase/dhtmlxgantt.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Gantt, '/codebase/ext/dhtmlxgantt_auto_scheduling.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Gantt, '/codebase/ext/dhtmlxgantt_fullscreen.js')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Gantt, '/codebase/dhtmlxgantt.css')}"/>
+
+    </head>
+    <script src="../../codebase/dhtmlxgantt.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../codebase/dhtmlxgantt.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
+    
+    <script type="text/javascript" src="../common/testdata.js"></script>
+    <style type="text/css">
+        html, body{ height:100%; padding:0px; margin:0px; overflow:auto;}
+        .gantt_task_line.gantt_dependent_task {
+            background-color: #65c16f;
+            border: 1px solid #3c9445;
+        }
+        .gantt_task_line.gantt_dependent_task .gantt_task_progress {
+            background-color: #46ad51;
+        }.gantt_task_line, .gantt_line_wrapper {
+            margin-top: -9px;
+        }
+        .gantt_side_content {
+            margin-bottom: 7px;
+        }
+        .gantt_task_link .gantt_link_arrow {
+            margin-top: -12px
+        }
+        .gantt_side_content.gantt_right {
+            bottom: 0;
+        }.baseline {
+            position: absolute;
+            border-radius: 2px;
+            opacity: 0.6;
+            margin-top: -7px;
+            height: 12px;
+            background: #ffd180;
+            border: 1px solid rgb(255,153,0);
+        }.actual {    
+           position: absolute;
+            border-radius: 2px;
+            opacity: 0.6;
+            margin-top: -7px;
+            height: 12px;
+            width:12px;
+            background: red;
+            border-width: 6px;
+            box-sizing: border-box;          
+            transform: rotate(45deg);
+            border: 6px solid #7fbc64;
+            border-top-color: rgb(127, 188, 100);
+            border-top-style: solid;
+            border-top-width: 1px;
+            border-right-color: rgb(127, 188, 100);
+            border-right-style: solid;
+            border-right-width: 1px;
+            border-bottom-color: rgb(127, 188, 100);
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-left-color: rgb(127, 188, 100);
+            border-left-style: solid;
+            border-left-width: 1px;
+            border-image-source: initial;
+            border-image-slice: initial;
+            border-image-width: initial;
+            border-image-outset: initial;
+            border-image-repeat: initial;
+        }.ActualText{
+            position: absolute;
+            border-radius: 2px;
+            opacity: 0.6;
+            margin-top: -7px;
+            height: 12px;
+            width:12px;
+        }
+    </style>    
+
+    <body>
+   
+     <apex:form id="cpmcalcform">
+        <input type="radio" id="scale1" name="scale" value="1" checked=""/>
+        <label for="scale1">Day scale</label>&nbsp;
+        <input type="radio" id="scale2" name="scale" value="2"/>
+        <label for="scale2">Week scale</label>&nbsp;
+        <input type="radio" id="scale3" name="scale" value="3"/>
+        <label for="scale3">Month scale</label>&nbsp;
+        <input type="radio" id="scale4" name="scale" value="4"/>
+        <label for="scale4">Year scale</label><br/>
+         <!--input type="button" value="Save" onclick="UpdateJSON(this.form);" /-->
+        <apex:commandButton value="Save" onclick="UpdateJSON(this.form);return false;" />   
+        <input id="fullscreen_button" type="button" value="Toggle Fullscreen"/>
+        <apex:actionFunction name="AfterSerialize" action="{!SaveJSON}" reRender="cpmcalcform" oncomplete="window.top.location='/{!project.id}';">
+            <apex:param id="aname" assignTo="{!JsonString}" name="jstring" value="" />
+        </apex:actionFunction>
+    </apex:form>
+    <script type="text/javascript">
+       function UpdateJSON(form)
+    {
+        var jsonstring = gantt.serialize();
+        //alert(JSON.stringify(jsonstring));
+        AfterSerialize(JSON.stringify(jsonstring));
+    }
+  
+   </script>
+    <div id="gantt_here" style='width:100%; height:100%;'></div>
+    
+    <script type="text/javascript">        
+         var demo_tasks = {!JsonString};
+
+        gantt.config.lightbox.sections = [
+            {name: "description", height: 30, map_to: "text", type: "textarea", focus: true},
+            {name: "time", type: "duration", map_to: "auto"}
+        ];
+       
+        gantt.config.task_height = 16;
+        gantt.config.row_height = 50;
+        gantt.config.scale_unit = "month";
+        gantt.config.date_scale = "%F, %Y";
+
+        gantt.config.scale_height = 50;
+
+        gantt.config.subscales = [
+            {unit:"day", step:1, date:"%D %j" }
+        ];
+
+        gantt.config.columns = [
+            { name:"text", tree:true, width:"*", resize:true },
+            { name:"start_date", align: "center"},
+            { name:"duration", align: "center", width:47 }            
+        ];
+        
+        
+        //gantt.config.scroll_on_click= true;
+        gantt.config.auto_scheduling = true;
+        //gantt.config.auto_scheduling_strict = true;
+        gantt.templates.rightside_text = function(start, end, task){
+        if(task.type == gantt.config.types.milestone){
+                return task.text;
+            }
+            return "";
+        };
+
+
+        gantt.attachEvent("onTaskLoading", function(task){
+            task.planned_start = gantt.date.parseDate(task.planned_start, "xml_date");
+            task.planned_end = gantt.date.parseDate(task.planned_end, "xml_date");
+            task.actual_start = gantt.date.parseDate(task.actual_start, "xml_date");
+            task.actual_end = gantt.date.parseDate(task.actual_end, "xml_date");
+            return true;
+        });
+
+        gantt.addTaskLayer(function draw_planned(task) {
+            if (task.planned_start && task.planned_end) {
+                var sizes = gantt.getTaskPosition(task, task.planned_start, task.planned_end);
+                var el = document.createElement('div');
+                el.className = 'baseline';
+                el.style.left = sizes.left + 'px';
+                el.style.width = sizes.width + 'px';                
+                el.style.top = sizes.top + gantt.config.task_height  + 13 + 'px';                
+                return el;
+            }
+            return false;
+        });
+        gantt.addTaskLayer(function draw_planned(task) {
+            if (task.planned_start && task.planned_end) {
+                var sizes = gantt.getTaskPosition(task, task.planned_end, task.planned_end);
+                var el = document.createElement('div');
+                el.className = 'ActualText';
+                el.style.left = sizes.left + 12 + 'px';
+                //el.style.width = sizes.width + 'px';    
+                el.style.top = sizes.top + gantt.config.task_height  + 13 + 'px'; 
+
+                var content = document.createTextNode('Baseline: ' + task.planned_end.toLocaleDateString());
+                el.appendChild(content); 
+                return el;
+            }
+            return false;
+        });
+        gantt.addTaskLayer(function draw_planned(task) {
+            if (task.actual_start && task.actual_end) {
+                var sizes = gantt.getTaskPosition(task, task.planned_end, task.planned_end);
+                var el = document.createElement('div');
+                el.className = 'actual';
+                el.style.left = sizes.left + 'px';
+                //el.style.width = sizes.width + 'px';                
+                el.style.top = sizes.top + gantt.config.task_height  + 26 + 'px';  
+                return el;
+            }
+            return false;
+        });
+        gantt.addTaskLayer(function draw_planned(task) {
+            if (task.actual_start && task.actual_end) {
+                var sizes = gantt.getTaskPosition(task, task.planned_end, task.planned_end);
+                var el = document.createElement('div');
+                el.className = 'ActualText';
+                el.style.left = sizes.left + 12 + 'px';
+                //el.style.width = sizes.width + 'px';    
+                el.style.top = sizes.top + gantt.config.task_height  + 26 + 'px'; 
+
+                var content = document.createTextNode('Actual: ' + task.actual_end.toLocaleDateString());
+                el.appendChild(content); 
+                return el;
+            }
+            return false;
+        });
+
+       var button = document.getElementById("fullscreen_button");
+        button.addEventListener("click", function(){
+            if (!gantt.getState().fullscreen) {
+                // expanding the gantt to full screen
+                gantt.expand();
+            }
+            else {
+                // collapsing the gantt to the normal mode
+                gantt.collapse();
+            }
+        }, false);
+            
+       
+
+         function setScaleConfig(value){
+        switch (value) {
+            case "1":
+                gantt.config.scale_unit = "day";
+                gantt.config.step = 1;
+                gantt.config.date_scale = "%d %M";
+                gantt.config.subscales = [];
+                gantt.config.scale_height = 27;
+                gantt.templates.date_scale = null;
+                break;
+            case "2":
+                var weekScaleTemplate = function(date){
+                    var dateToStr = gantt.date.date_to_str("%d %M");
+                    var endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
+                    return dateToStr(date) + " - " + dateToStr(endDate);
+                };
+
+                gantt.config.scale_unit = "week";
+                gantt.config.step = 1;
+                gantt.templates.date_scale = weekScaleTemplate;
+                gantt.config.subscales = [
+                    {unit:"day", step:1, date:"%D" }
+                ];
+                gantt.config.scale_height = 50;
+                break;
+            case "3":
+                gantt.config.scale_unit = "month";
+                gantt.config.date_scale = "%F, %Y";
+                gantt.config.subscales = [
+                    {unit:"day", step:1, date:"%j, %D" }
+                ];
+                gantt.config.scale_height = 50;
+                gantt.templates.date_scale = null;
+                break;
+            case "4":
+                gantt.config.scale_unit = "year";
+                gantt.config.step = 1;
+                gantt.config.date_scale = "%Y";
+                gantt.config.min_column_width = 50;
+
+                gantt.config.scale_height = 90;
+                gantt.templates.date_scale = null;
+
+                
+                gantt.config.subscales = [
+                    {unit:"month", step:1, date:"%M" }
+                ];
+                break;
+        }
+    }
+
+    setScaleConfig('4');
+
+    gantt.init("gantt_here");
+   gantt.parse(demo_tasks,"json");
+
+    var func = function(e) {
+        e = e || window.event;
+        var el = e.target || e.srcElement;
+        var value = el.value;
+        setScaleConfig(value);
+        gantt.render();
+    };
+
+    var els = document.getElementsByName("scale");
+    for (var i = 0; i < els.length; i++) {
+        els[i].onclick = func;
+    }
+
+
+     
+    </script>
+   
+
+    </body>
+</apex:page>

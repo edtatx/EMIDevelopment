@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Financial_Cube__c$Name</field>
+    </columns>
+    <columns>
+        <field>Financial_Cube__c.Financial_Cube_Transactions__r$Name</field>
+    </columns>
+    <columns>
+        <field>Financial_Cube__c.Financial_Cube_Transactions__r$Transaction__c</field>
+    </columns>
+    <columns>
+        <field>Financial_Cube__c.Financial_Cube_Transactions__r$Amount__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Financial_Cube__c$Opening_Balance__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Financial_Cube__c$Current_Period__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Financial_Cube__c$Year_To_Date__c</field>
+    </columns>
+    <description>All balance sheet related GL accounts</description>
+    <filter>
+        <criteriaItems>
+            <column>Financial_Cube__c$Accounting_Period__c</column>
+            <operator>equals</operator>
+            <value></value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Financial_Cube__c$GL_Account_Type__c</column>
+            <operator>equals</operator>
+            <value>Balance Sheet</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Financial_Cube__c$Ledger_Type__c</column>
+            <operator>equals</operator>
+            <value>Transactional</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Financial_Cube__c$GL_Account__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Balance Sheet</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Financial_Cubes_withorwithout_Financial_Cube_Trans__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Financial_Cube__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

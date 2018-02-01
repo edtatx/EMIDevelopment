@@ -1,0 +1,5 @@
+To the Attention of: {!Contact.Name} 
+
+Attached is your billing #{!Billing__c.Name} dated {!Billing__c.Date__c}. The current balance on this billing is {!Billing__c.Balance__c} 
+
+Thank you for your business.

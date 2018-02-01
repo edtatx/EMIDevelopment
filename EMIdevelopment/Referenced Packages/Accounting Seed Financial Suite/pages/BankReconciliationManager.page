@@ -1,0 +1,163 @@
+<apex:page id="thePage" standardController="AcctSeed__Bank_Reconciliation2__c" extensions="AcctSeed.BankReconciliationManager,AcctSeed.EnvironmentUtils" sidebar="false">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!JSENCODE(DefaultLocale)}";
+        AcctSeed.ASModule.defaultCurrency = "{!JSENCODE(DefaultCurrency)}";
+        AcctSeed.ASModule.getClearedBankReconciliationAction = "{!$RemoteAction.BankReconciliationManager.getClearedBankReconciliations}";
+        AcctSeed.ASModule.clearAction = "{!$RemoteAction.BankReconciliationManager.clear}";
+        AcctSeed.ASModule.unclearAction = "{!$RemoteAction.BankReconciliationManager.unclear}";
+        AcctSeed.ASModule.searchRecordsAction = "{!$RemoteAction.BankReconciliationManager.searchRecords}";
+        AcctSeed.ASModule.calculateDepositsAndDisbursementsAction = "{!$RemoteAction.BankReconciliationManager.calculateDepositsAndDisbursements}";
+        AcctSeed.ASModule.packageQualifier = "{!JSENCODE(PACKAGE_QUALIFIER)}";
+        AcctSeed.ASModule.isMultiCurrencyEnabled = "{!JSENCODE(IF(IS_MULTI_CURRENCY_ENABLED, "true", "false"))}";
+        function setFocusOnLoad() {}
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/bank-reconciliation-manager.js')}" loadOnReady="true"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.dataTables.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/moment-with-locales.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/datetime-moment.js')}" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/common.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/jquery.dataTables.min.css')}" />
+
+    <apex:sectionHeader title="Bank Reconciliation" subtitle="Clear and Unclear Transactions" />
+    <apex:form id="theForm">
+        <apex:pageBlock title="Bank Reconciliation Information">
+            <apex:pageMessages escape="false" rendered="{!isError}" />
+            <apex:outputPanel id="errorPanel" style="display:none">
+                <apex:pageMessage summary="" severity="error" strength="3" />
+            </apex:outputPanel>
+            <apex:pageBlockButtons id="bankRecbuttons">
+                <apex:commandButton action="/{!Bank_Reconciliation2__c.Id}" value="Back" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection id="pageBlockSection" columns="2">
+                <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.Name}" />
+                <apex:outputText id="begBalanceAmount" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Beginning_Balance__c}" style="display:none"/>
+                <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Start_Date__c}" style="display:none"/>
+                <apex:outputText id="clearedDepositAmount" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Cleared_Deposits__c}" style="display:none"/>
+                <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__End_Date__c}" />
+                <apex:outputText id="clearedDisbursmentAmount" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Cleared_Disbursements__c}" style="display:none"/>
+                <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Bank_Account__c}" style="display:none"/>
+                <apex:outputText id="calBegBalanceAmount" label="Calculated Ending Balance" value="{!calculatedBalanceRec.AcctSeed__Beginning_Balance__c}" style="display:none"/>
+                <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_1__c}" />
+                <apex:outputText id="endBalanceAmount" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Ending_Balance__c}" style="display:none"/>
+                <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_2__c}" />
+                <apex:outputText id="unclearedAmount" label="Uncleared Amount" value="{!calculatedBalanceRec.AcctSeed__Ending_Balance__c}" style="display:none"/>
+                <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_3__c}" />
+                <apex:outputText />
+                <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_4__c}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock id="loadingImage" >
+        <apex:pageBlockSection columns="1" collapsible="false">
+            <div id="loader1" style="font-weight:bold;left:60px;top:370px;width:84%;height:400px">
+                <img src="/img/loading.gif" style="text-align:center" width="16" height="16" alt="loading gif" />&nbsp;&nbsp;Loading...
+            </div>
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:outputPanel id="thePanel" style="display:none">
+            <table style="width:100%">
+                <tr style="vertical-align: top;">
+                    <td style="width:50%">
+                        <apex:pageBlock id="clearedPageBlock" title="Cleared Transactions">
+                            <apex:outputPanel id="noClearedRecords" style="display:none">
+                                <apex:pageMessage summary="There are currently no cleared records" severity="info" strength="3" />
+                            </apex:outputPanel>
+                            <apex:outputPanel id="clearedSuccess" style="display:none">
+                                <apex:pageMessage summary="The selected source records have been uncleared" severity="confirm" strength="3" />
+                            </apex:outputPanel>
+                            <apex:pageBlockButtons id="buttons">
+
+                                <apex:actionStatus id="saveStatus"
+                                                   onstart="AcctSeed.ASModule.disableButtons('Processing...');"
+                                                   onstop="AcctSeed.ASModule.showMessages();"/>
+
+                                <apex:commandButton id="unclearButton"
+                                                    status="saveStatus"
+                                                    value="Unclear Selected"
+                                                    rerender="theForm"
+                                                    onComplete="AcctSeed.ASModule.unclearBankReconciliations(); AcctSeed.ASModule.setSelectAllUnchecked('clearedCheckboxHeader');" />
+
+                            </apex:pageBlockButtons>
+                            <apex:pageBlockSection columns="2">
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel id="lrcdlabel" value="Least Recent Cleared Date" style="display:none"/>
+                                    <div id="clearLRDate2"></div>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel id="mrcdlabel" value="Most Recent Cleared Date" style="display:none"/>
+                                    <div id="clearMRDate2"></div>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="" />
+                                    <apex:outputText value="&nbsp;" escape="false" />
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <br/>
+                            <table id="clearedTable" class="display"></table>
+                        </apex:pageBlock>
+                        <input type="hidden" id="bankRecId" value="{!bankRecId}" />
+                        <input type="hidden" id="bankAccountId" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Bank_Account__c}" />
+                    </td>
+                    <td style="width:50%">
+                        <apex:pageBlock id="unclearedPageBlock" title="Uncleared Transactions">
+                            <apex:outputPanel id="noUnclearedRecords" style="display:none">
+                                <apex:pageMessage summary="No results were returned for the criteria provided. Please change the criteria and try again." severity="info" strength="3"  />
+                            </apex:outputPanel>
+                            <apex:outputPanel id="unclearedSuccess" style="display:none">
+                                <apex:pageMessage summary="The selected source records have been cleared" severity="confirm" strength="3" />
+                            </apex:outputPanel>
+                            <apex:outputPanel id="lineLimitError" style="display:none">
+                                <apex:pageMessage summary="The cleared bank reconcilation transaction limit of 1000 will be exceeded by clearing the selected records." severity="error" strength="3" />
+                            </apex:outputPanel>
+                            <apex:pageBlockButtons id="buttons">
+                                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" onstop="AcctSeed.ASModule.showMessages()"/>
+
+                                <apex:commandButton value="Search"
+                                                    rerender="theForm"
+                                                    status="saveStatus"
+                                                    onComplete="AcctSeed.ASModule.searchRecords(); AcctSeed.ASModule.getClearedBankReconciliations();"/>
+
+                                <apex:commandButton id="clearButton"
+                                                    value="Clear Selected"
+                                                    rerender="theForm"
+                                                    status="saveStatus"
+                                                    onComplete="AcctSeed.ASModule.clearBankReconciliations(); AcctSeed.ASModule.setSelectAllUnchecked('unclearedCheckboxHeader');"/>
+
+                            </apex:pageBlockButtons>
+                            <apex:pageBlockSection columns="2">
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Start Date" />
+                                    <apex:inputField id="startDate" value="{!unclearedStartDate.AcctSeed__Start_Date__c}" required="true" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="End Date" />
+                                    <apex:inputField id="endDate" value="{!unclearedEndDate.AcctSeed__End_Date__c}" required="true" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputLabel value="Type" />
+                                    <apex:selectList id="unclearedType" value="{!selectedUnclearedType}" size="1">
+                                        <apex:selectOptions value="{!type}" />
+                                    </apex:selectList>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <br/>
+                            <table id="unclearedTable" class="display"></table>
+                        </apex:pageBlock>
+                        <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Cleared_Deposits__c}" rendered="false" />
+                        <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Cleared_Disbursements__c}" rendered="false" />
+                        <input type="hidden" id="glavVar1" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_1__c}" />
+                        <input type="hidden" id="glavVar2" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_2__c}" />
+                        <input type="hidden" id="glavVar3" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_3__c}" />
+                        <input type="hidden" id="glavVar4" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_4__c}" />
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+    </apex:form>
+
+</apex:page>

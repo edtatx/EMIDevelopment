@@ -1,0 +1,22 @@
+<apex:page id="thePage" standardController="AcctSeed__Billing__c" extensions="AcctSeed.BillingDeepClone">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/>
+
+    <apex:form id="theForm">
+        <apex:sectionHeader title="Clone {!$ObjectType.AcctSeed__Billing__c.label}" subtitle="{!AcctSeed__Billing__c.Name}" />
+        <apex:pageBlock id="thePageBlock" title="Clone {!$ObjectType.AcctSeed__Billing__c.label}">
+            <apex:pageMessage summary="The clone function will clone the {!$ObjectType.AcctSeed__Billing__c.label} and all associated {!$ObjectType.AcctSeed__Billing__c.label} Lines." severity="info" strength="3" />
+            <apex:pageMessages escape="false"/>
+            <apex:pageBlockButtons >
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...');"/>
+                <apex:commandButton action="{!cloneWithlines}" status="saveStatus" value="Clone {!$ObjectType.AcctSeed__Billing__c.label}" reRender="theForm" onComplete="AcctSeed.ASModule.redirectToSobject();"/>
+                <apex:commandButton action="{!cancel}" value="Back" immediate="true"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+
+        <apex:inputHidden id="acctSeedCommonRedirectTargetId" value="{!theNewBillingId}"/>
+        <apex:inputHidden id="acctSeedCommonRedirectIsErrorFlag" value="{!isError}"/>
+
+    </apex:form>
+
+</apex:page>

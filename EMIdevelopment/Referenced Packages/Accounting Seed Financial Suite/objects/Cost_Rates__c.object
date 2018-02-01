@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>Labor_Cost_Rate_Record_Home</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>Labor_Cost_Rate_Compact_Layout</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>Labor_Cost_Rate_Compact_Layout</fullName>
+        <fields>Name</fields>
+        <fields>Employee__c</fields>
+        <fields>Hourly_Cost__c</fields>
+        <fields>Weekly_Salary_Cost__c</fields>
+        <label>Labor Cost Rate Compact Layout</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>The labor cost associated with an employee or resource.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Employee__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Look up to salesforce user</inlineHelpText>
+        <label>Employee</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Cost_Rates</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Hourly_Cost__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used for hourly job costing or standard costing. Rates can include overhead or benefits burden if desired. Cost is not capped. Number of units times hourly cost will be what is recorded in the transaction.</inlineHelpText>
+        <label>Hourly Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Overtime_Hourly_Cost__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Overtime Hourly Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Task__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Denotes a specific Project Task this cost rate is used for.</inlineHelpText>
+        <label>Project Task</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>$Source.Project__c</field>
+                <operation>equals</operation>
+                <valueField>Project_Task__c.Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Project_Task__c</referenceTo>
+        <relationshipLabel>Labor Cost Rates</relationshipLabel>
+        <relationshipName>Cost_Rates</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Denotes a specific Project this cost rate is used for.</inlineHelpText>
+        <label>Project</label>
+        <referenceTo>Project__c</referenceTo>
+        <relationshipLabel>Labor Cost Rates</relationshipLabel>
+        <relationshipName>Cost_Rates</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Weekly_Salary_Cost__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used for actual job costing of salaried employees. Cost is capped and is derived by taking the weekly salaried amount divided by the number of hours an employee works.</inlineHelpText>
+        <label>Weekly Salary Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Labor Cost Rate</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Employee__c</columns>
+        <columns>Project__c</columns>
+        <columns>Project_Task__c</columns>
+        <columns>Hourly_Cost__c</columns>
+        <columns>Weekly_Salary_Cost__c</columns>
+        <columns>Overtime_Hourly_Cost__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>CRT-{00000}</displayFormat>
+        <label>Cost Rate Name</label>
+        <trackHistory>true</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Labor Cost Rates</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Employee__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Hourly_Cost__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Weekly_Salary_Cost__c</customTabListAdditionalFields>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>Employee__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Hourly_Cost__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Weekly_Salary_Cost__c</lookupDialogsAdditionalFields>
+        <lookupFilterFields>Employee__c</lookupFilterFields>
+        <lookupFilterFields>Hourly_Cost__c</lookupFilterFields>
+        <lookupFilterFields>Weekly_Salary_Cost__c</lookupFilterFields>
+        <lookupFilterFields>Project__c</lookupFilterFields>
+        <lookupFilterFields>Project_Task__c</lookupFilterFields>
+        <lookupPhoneDialogsAdditionalFields>Employee__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Hourly_Cost__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Weekly_Salary_Cost__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Employee__c</searchFilterFields>
+        <searchFilterFields>Hourly_Cost__c</searchFilterFields>
+        <searchFilterFields>Weekly_Salary_Cost__c</searchFilterFields>
+        <searchResultsAdditionalFields>Employee__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Hourly_Cost__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Weekly_Salary_Cost__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Not_Both_Hourly_Or_Weekly_Salary</fullName>
+        <active>true</active>
+        <errorConditionFormula>NOT(ISNULL(Hourly_Cost__c)) &amp;&amp; NOT(ISNULL(Weekly_Salary_Cost__c))</errorConditionFormula>
+        <errorMessage>You can only enter an Hourly Cost or a Weekly Salary Cost but not both.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Require_Hourly_Or_Weekly_Salary</fullName>
+        <active>true</active>
+        <description>Require either hourly or weekly salary field is populated.</description>
+        <errorConditionFormula>ISNULL(Weekly_Salary_Cost__c) &amp;&amp; ISNULL(Hourly_Cost__c)</errorConditionFormula>
+        <errorMessage>You must enter either an Hourly Cost or a Weekly Salary Cost value.</errorMessage>
+    </validationRules>
+</CustomObject>

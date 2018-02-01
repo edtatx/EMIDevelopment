@@ -1,0 +1,310 @@
+<apex:page id="thePage" tabStyle="Run_Financial_Report__tab" controller="AcctSeed.RunFinancialReportController" sidebar="false">
+    <apex:stylesheet value="/sCSS/21.0/sprites/1297816277000/Theme3/default/gc/versioning.css" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/run-financial-report.js')}" />
+    <apex:sectionHeader title="Financial Reports" subtitle="Run Financial Report" />
+    <apex:tabPanel id="tabPanel" switchType="client" selectedTab="tab1" styleClass="theTabPanel" tabClass="theTabPanel" contentClass="tabContent" activeTabClass="activeTab" inactiveTabClass="inactiveTab">
+        <!-- =============================== Profit & Loss Report TAB =================================== -->
+        <apex:tab name="tab1" id="tab1" label="Profit & Loss" ontabenter="setTab('profitAndLoss')">
+            <apex:form id="theForm1">
+                <apex:pageMessages escape="false"/>
+                <apex:pageBlock mode="edit" title="Profit & Loss">
+                    <apex:pageBlockButtons id="plButtons">
+                        <apex:actionStatus id="saveStatus1" onstart="AcctSeed.ASModule.disableButtons('tab1','Processing...')" />
+                        <apex:commandButton value="Run" status="saveStatus1" action="{!runProfitAndLossReport}" rerender="theForm1" />
+                    </apex:pageBlockButtons>
+                    <div id="lightning"></div>
+                    <apex:pageBlockSection title="Enter Criteria" collapsible="false" columns="2">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Start Accounting Period" for="startPeriod" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="start_profit_and_loss">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:inputField value="{!startPeriodObj.AcctSeed__Accounting_Period__c}" />
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodFieldEmpty}">
+                                    <strong>Error:</strong> Start accounting period is required
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_1__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="End Accounting Period" for="endPeriod" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="end_profit_and_loss">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:inputField value="{!endPeriodObj.AcctSeed__Accounting_Period__c}" />
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isPeriodRangeError}">
+                                    <strong>Error:</strong> End accounting period cannot be more than 12 periods past start accounting period
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodAfterEndPeriodError}">
+                                    <strong>Error:</strong> End accounting period cannot be before start accounting period
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isEndPeriodFieldEmpty}">
+                                    <strong>Error:</strong> End accounting period is required
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_2__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Group By Sub Type 1" />
+                            <apex:inputCheckbox id="subType1_pl" value="{!isGroupBySubtype1}" onchange="AcctSeed.ASModule.setSubType1Checkbox('subType1_pl', 'subType2_pl');" />
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_3__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Group By Sub Type 2" />
+                            <apex:inputCheckbox id="subType2_pl" value="{!isGroupBySubtype2}" onchange="AcctSeed.ASModule.setSubType2Checkbox('subType1_pl', 'subType2_pl');"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_4__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Suppress Zero Amount Rows?" />
+                            <apex:inputCheckbox value="{!suppressZeroAmountRows}"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                   <apex:outputPanel id="profitAndLoss">
+                        <apex:outputPanel >
+                            <c:BatchStatusComponent reportType="profitAndLoss" selectedReportType="{!selectedTab}" numberOfJobs="20" />                          
+                        </apex:outputPanel>
+                        <apex:actionFunction name="setTab" 
+                                                action="{!setDefaultStartAndEndPeriods}" 
+                                                rerender="profitAndLoss, profitAndLossVsBudget, balanceSheet, trialBalance, customReport, actionPoller1, start_profit_and_loss, end_profit_and_loss, start_profit_and_loss_vs_budget, end_profit_and_loss_vs_budget, start_balance_sheet, end_balance_sheet, trial_balance_period, custom_report_period">
+                            <apex:param name="selectedTab" assignTo="{!selectedTab}" value=""/>
+                        </apex:actionFunction>
+                    </apex:outputPanel>
+            </apex:form>
+        </apex:tab>
+        <!-- ============================= Profit & Loss Versus Budget Report TAB =================================== -->
+        <apex:tab name="tab2" id="tab2" label="Profit & Loss Versus Budget" ontabenter="setTab('profitAndLossVsBudget')">
+            <apex:form id="theForm2">
+                <apex:pageMessages />
+                <apex:pageBlock mode="edit" title="Profit & Loss Versus Budget">
+                    <apex:pageBlockButtons id="plButtons">
+                        <apex:actionStatus id="saveStatus2" onstart="AcctSeed.ASModule.disableButtons('tab2','Processing...')" />
+                        <apex:commandButton value="Run" status="saveStatus2" action="{!runProfitAndLossVsBudgetReport}" rerender="theForm2" />
+                    </apex:pageBlockButtons>
+                    <div id="lightning"></div>
+                    <apex:pageBlockSection title="Enter Criteria" collapsible="false" columns="2">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Start Accounting Period" for="startPeriod" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="start_profit_and_loss_vs_budget">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:inputField value="{!startPeriodObj.AcctSeed__Accounting_Period__c}" />
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodFieldEmpty}">
+                                    <strong>Error:</strong> Start accounting period is required
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_1__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="End Accounting Period" for="endPeriod" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="end_profit_and_loss_vs_budget">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:inputField value="{!endPeriodObj.AcctSeed__Accounting_Period__c}" />
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isPeriodRangeError}">
+                                    <strong>Error:</strong> You have selected to display over 12 accounting periods. This report supports the selection of a maximum of 12 accounting periods.
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodAfterEndPeriodError}">
+                                    <strong>Error:</strong> End accounting period cannot be before start accounting period
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isEndPeriodFieldEmpty}">
+                                    <strong>Error:</strong> End accounting period is required
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_2__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Budget Ledger" for="budget_ledger" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:inputField value="{!selectedLedger.AcctSeed__Ledger__c}" />
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isLedgerFieldEmpty}">
+                                    <strong>Error:</strong> Budget Ledger is required.
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isLedgerTypeError}">
+                                    <strong>Error:</strong> Type of selected Ledger must be "Budget".
+                                </apex:outputPanel>                               
+                            <apex:outputPanel />
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_3__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Group By Sub Type 1" />
+                            <apex:inputCheckbox id="subType1_plvb" value="{!isGroupBySubtype1}" onchange="AcctSeed.ASModule.setSubType1Checkbox('subType1_plvb', 'subType2_plvb')" />
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_4__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Group By Sub Type 2" />
+                            <apex:inputCheckbox id="subType2_plvb" value="{!isGroupBySubtype2}" onchange="AcctSeed.ASModule.setSubType2Checkbox('subType1_plvb', 'subType2_plvb')"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:outputText />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Suppress Zero Amount Rows?" />
+                            <apex:inputCheckbox value="{!suppressZeroAmountRows}"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                   <apex:outputPanel id="profitAndLossVsBudget">
+                        <apex:outputPanel >
+                            <c:BatchStatusComponent reportType="profitAndLossVsBudget" selectedReportType="{!selectedTab}" numberOfJobs="20" />                          
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+            </apex:form>
+        </apex:tab>
+        <!-- =============================== Balance Sheet Report TAB ===================================== -->
+        <apex:tab name="tab3" id="tab3" label="Balance Sheet" ontabenter="setTab('balanceSheet')">
+            <apex:form id="theForm3">
+                <apex:pageBlock mode="edit" title="Balance Sheet">
+                    <apex:pageMessages />
+                    <apex:pageBlockButtons >
+                        <apex:actionStatus id="saveStatus3" onstart="AcctSeed.ASModule.disableButtons('tab3','Processing...')" />
+                        <apex:commandButton value="Run" status="saveStatus3" action="{!runBalanceSheetReport}" rerender="theForm3"  />
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockSection title="Enter Criteria" collapsible="false" columns="2">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Start Accounting Period" for="startPeriod" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="start_balance_sheet">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:inputField value="{!startPeriodObj.AcctSeed__Accounting_Period__c}"/>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodFieldEmpty}">
+                                    <strong>Error:</strong> Start accounting period is required
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodFieldNonValidStatus}">
+                                    <strong>Error:</strong> Start accounting period must be either the first open accounting period or a closed or archived accounting period.
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_1__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="End Accounting Period" for="endPeriod" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="end_balance_sheet">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:inputField value="{!endPeriodObj.AcctSeed__Accounting_Period__c}"/>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isPeriodRangeError}">
+                                    <strong>Error:</strong> End accounting period cannot be more than 12 periods
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodAfterEndPeriodError}">
+                                    <strong>Error:</strong> End accounting period cannot be before start accounting period
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isEndPeriodFieldEmpty}">
+                                    <strong>Error:</strong> End accounting period is required
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isEndPeriodFieldNonValidStatus}">
+                                    <strong>Error:</strong> End accounting period must be either the first open accounting period or a closed or archived accounting period
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_2__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Group By Sub Type" />
+                            <apex:inputCheckbox value="{!isGroupBySubtype1}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_3__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Suppress Zero Amount Rows?" />
+                            <apex:inputCheckbox value="{!suppressZeroAmountRows}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_4__c}" />
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                <apex:outputPanel id="balanceSheet">
+                    <apex:outputPanel >
+                        <c:BatchStatusComponent reportType="balanceSheet" selectedReportType="{!selectedTab}" numberOfJobs="20" />
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:form>
+        </apex:tab>
+        <!-- ================================= Trial Balance Report TAB ====================================== -->
+        <apex:tab name="tab4" id="tab4" label="Trial Balance" ontabenter="setTab('trialBalance');">
+            <apex:form id="theForm4">
+                <apex:pageBlock mode="edit" title="Trial Balance">
+                    <apex:pageMessages />
+                    <apex:pageBlockButtons >
+                        <apex:actionStatus id="saveStatus4" onstart="AcctSeed.ASModule.disableButtons('tab4','Processing...')" />
+                        <apex:commandButton value="Run" status="saveStatus4" action="{!runTrialBalanceReport}" rerender="theForm4" />
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockSection title="Enter Criteria" collapsible="false" columns="2">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Accounting Period" for="startPeriod" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="trial_balance_period">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:inputField value="{!startPeriodObj.AcctSeed__Accounting_Period__c}"/>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodFieldEmpty}">
+                                    <strong>Error:</strong> Start accounting period is required
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodFieldNonValidStatus}">
+                                    <strong>Error:</strong> The accounting period must be the first open accounting period which is preceded by a closed accounting period. Or a closed or archived accounting period.
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_1__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Suppress Zero Amount Rows?" />
+                            <apex:inputCheckbox value="{!suppressZeroAmountRows}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_2__c}" />
+                        <apex:outputText />
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_3__c}" />
+                        <apex:outputText />
+                        <apex:inputField value="{!reportRow.AcctSeed__GL_Account_Variable_4__c}" />
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                <apex:outputPanel id="trialBalance">
+                    <apex:outputPanel >
+                        <c:BatchStatusComponent reportType="trialBalance" selectedReportType="{!selectedTab}" numberOfJobs="20" />
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:form>
+        </apex:tab>
+        <!-- ================================== Custom Report TAB ====================================== -->
+        <apex:tab name="tab5" id="tab5" label="Custom Reports" ontabenter="setTab('customReport');">
+            <apex:form id="theForm5">
+                <apex:pageBlock mode="edit" title="Custom Reports">
+                    <apex:pageMessages />
+                    <apex:pageBlockButtons >
+                        <apex:actionStatus id="saveStatus5" onstart="AcctSeed.ASModule.disableButtons('tab5','Processing...')" />
+                        <apex:commandButton value="Run" status="saveStatus5" action="{!runCustomReport}" rerender="theForm5" />
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockSection title="Enter Criteria" collapsible="false" columns="1" id="view-financials-criteria">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Select Report" for="selectReport" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:selectList disabled="{!customReports.size < 1}" required="true" value="{!selectedReportId}" multiselect="false" size="1" id="selectReport">
+                                    <apex:selectOptions value="{!customReports}" />
+                                </apex:selectList>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Accounting Period" for="enterPeriod" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="custom_report_period">
+                                <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                                <apex:inputField value="{!startPeriodObj.AcctSeed__Accounting_Period__c}"/>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodFieldEmpty}">
+                                    <strong>Error:</strong> Start accounting period is required
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="errorMsg" rendered="{!isStartPeriodFieldNonValidStatus}">
+                                    <strong>Error:</strong> The accounting period must be closed or the first sequential open accounting period
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Suppress Zero Amount Rows?" />
+                            <apex:inputCheckbox value="{!suppressZeroAmountRows}"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                <apex:outputPanel id="customReport">
+                    <apex:outputPanel >
+                        <c:BatchStatusComponent reportType="customReport" selectedReportType="{!selectedTab}" numberOfJobs="20" />
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:form>
+        </apex:tab>
+    </apex:tabPanel>
+    <!-- Page refresh every 5 sec -->
+    <apex:form >
+        <apex:outputPanel id="actionPoller1">
+            <apex:actionPoller rerender="profitAndLoss, profitAndLossVsBudget, balanceSheet,trialBalance,customReport" interval="5"/>
+        </apex:outputPanel>
+    </apex:form>
+
+</apex:page>

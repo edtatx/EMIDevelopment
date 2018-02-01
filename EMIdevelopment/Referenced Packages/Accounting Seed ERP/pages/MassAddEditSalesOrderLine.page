@@ -1,0 +1,7 @@
+<apex:page standardController="AcctSeedERP__Sales_Order_Line__c" extensions="AcctSeedERP.MassAddEditLineController" recordSetVar="soLines">
+
+    <apex:pageMessages />
+    <apex:outputLink rendered="{!isError}" onClick="javascript: history.back();" style="margin-left: 20px;">&nbsp;«&nbsp;Back</apex:outputLink>
+    <AcctSeed:MassAddEditLineComponent masterRecordAttr="{!masterRecord}" isRecordPostedAttr="{!isRecordPosted}" cancelAction="{!cancel}" rendered="{!!isError}"/>
+
+</apex:page>

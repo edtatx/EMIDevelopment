@@ -1,0 +1,78 @@
+<apex:page id="thePage" standardController="AcctSeed__Billing__c" contentType="text/html;charset=utf-8" extensions="AcctSeed.BillingPDFManager">
+
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, 'javascript/jquery.min.js')}" />
+
+    <script type="text/javascript">
+
+        var j$ = jQuery.noConflict();
+        var BillingPDFModule = (function(window, document, $) {
+	        function disableButtons(label) {
+                $(".btn").toggleClass("btnDisabled").val(label).prop("disabled", true);
+	        }
+	
+	        $(document).ready(function() {
+	            $('[id*=saveAttachButton]').hide();
+	            $('[id*=emailAttachButton]').hide();
+	            $(window).load(function() {
+	                 $('#loader1').css("display", "none");
+	                 $('[id*=saveAttachButton]').show();
+	                 $('[id*=emailAttachButton]').show();
+	            });
+	        });
+            return {
+                disableButtons: disableButtons
+            };
+
+        })(window, document, j$);
+
+    </script>
+
+    <apex:form id="theForm">
+        <apex:sectionHeader title="Billing" subtitle="Billing PDF" />
+        <apex:pageBlock mode="maindetail">
+            <apex:pageMessages id="thePageMessages" escape="false" />
+            <apex:pageMessage summary="You must define a Visualforce PDF page on the Billing Format record associated with this billing." severity="error" strength="3" rendered="{!ISBLANK(pdfName)}" />
+            <apex:pageMessage summary="You must define a Default Email Template on the Billing Format record associated with this billing." severity="error" strength="3" rendered="{!isTemplateError}" />
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="BillingPDFModule.disableButtons('Processing...')" />
+                <apex:commandButton id="saveAttachButton" action="{!saveAttach}" value="Save PDF" status="saveStatus" reRender="theForm" disabled="{!DisableSave}" />
+                <apex:commandButton id="emailAttachButton" action="{!saveAndEmail}" value="Send Email" status="saveStatus" reRender="theForm" disabled="{!DisableEmail}"/>
+                <apex:commandButton id="cancelButton" action="{!cancel}" value="Back" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Billing Information" columns="2" collapsible="false" rendered="{!renderPage}">
+                <apex:outputField id="billingName" value="{!AcctSeed__Billing__c.Name}" />
+                <apex:outputField id="billingType" value="{!AcctSeed__Billing__c.AcctSeed__Type__c}" />
+                <apex:outputField id="customerName" value="{!AcctSeed__Billing__c.Customer__r.Name}" />
+                <apex:outputField id="billingTotal" value="{!AcctSeed__Billing__c.AcctSeed__Total__c}" />
+                <apex:outputField id="postingStatus" value="{!AcctSeed__Billing__c.AcctSeed__Status__c}" />
+                <apex:outputField id="billingBalanceAmount" value="{!AcctSeed__Billing__c.AcctSeed__Balance__c}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Billing Contact" for="billingcontactname" />
+                    <apex:outputText id="billingcontactname" value="{!AcctSeed__Billing__c.Billing_Contact__r.Name} ({!AcctSeed__Billing__c.Billing_Contact__r.Email})" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Email Recipient Information" columns="2" collapsible="false" rendered="{!renderPage}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Send to Contact" />
+                    <apex:inputField value="{!billing.AcctSeed__Billing_Contact__c}">               
+                        <apex:actionSupport event="onchange" reRender="theForm" />
+                    </apex:inputField>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="CC Me" for="ccUser" />
+                    <apex:inputCheckbox id="ccUser" value="{!sendccUser}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="CC Addresses" for="ccAddresses" />
+                    <apex:inputText id="ccAddresses" value="{!ccAddresses}" title="seperate each email address with a semi-colon (;)" style="width:200px"/>
+                </apex:pageBlockSectionItem>                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:pageBlock title="Billing PDF Preview" rendered="{!renderPage}">
+        <div id="loader1" style="font-weight:bold">
+            <img src="/img/loading.gif" style="text-align:center" width="16" height="16" alt="loading gif" />&nbsp;&nbsp;Creating Billing PDF...
+        </div>
+        <apex:iframe id="iframe1" src="{!pdfName}?id={!AcctSeed__Billing__c.Id}{!SortField}" />
+    </apex:pageBlock>
+</apex:page>

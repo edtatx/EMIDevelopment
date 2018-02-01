@@ -1,0 +1,150 @@
+<apex:page standardController="Account" extensions="AcctSeed.PaymentMethodManager">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/stripe-common.js')}" loadOnReady="true"/>
+    <apex:pageMessage severity="info" summary="You need to either create or connect to a Stripe account in order to create payments in Stripe. Please go to the Accounting Settings tab and under the Stripe Settings tab click the Connect to Stripe button." strength="3" rendered="{!noStripeConnectedId}"/>
+    <apex:form id="payment-form" rendered="{!!noStripeConnectedId}">
+        <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...');"  />
+        <apex:actionFunction status="tableStatus" action="{!switchStatusOfPaymentMethod}" name="switchStatusOfPaymentMethod" immediate="true" reRender="pageMessages, paymentMethodSection">
+            <apex:param assignTo="{!payMethodIdForChangeStatus}" name="payMethodIdForChangeStatus" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction status="saveStatus" action="{!addErrorMessage}" name="addErrorMessage" immediate="true" reRender="payment-form">
+            <apex:param assignTo="{!errorMessage}" name="errorMessage" value="" />
+            <apex:param assignTo="{!errorField}" name="errorField" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction status="saveStatus" action="{!cancel}" name="cancel" immediate="true" reRender="pageMessages"/>
+        <apex:sectionHeader title="{!$ObjectType.Account.Label}" subtitle="Manage Payment Methods"/>
+        <apex:pageblock id="thePageBlock" mode="edit" title="Manage Payment Methods">
+            <apex:pageMessages id="pageMessages" escape="false"/>
+            <apex:pageBlockButtons id="buttons">
+                <apex:commandButton action="{!createPayment}" value="Create Payment Method" status="saveStatus" id="submitPayment" reRender="payment-form" rendered="{!!isError}"/>
+                <apex:commandButton action="{!cancel}" value="Back" id="cancelButton" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1" title="Create New Payment Method" collapsible="false" id="createPaymentMethodSection" rendered="{!!isError}">
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width30">
+                    <apex:outputLabel value="Card Holder Name" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" />
+                        <apex:inputText value="{!cardHolderName}" html-data-stripe="name" maxlength="255"/>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isCardHolderNameError}">
+                            <strong>Error:</strong><apex:outputText value="{!cardHolderNameError}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width30">
+                    <apex:outputLabel value="Card Number" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" />
+                        <apex:inputText value="{!cardNumber}" html-data-stripe="number" maxlength="19"/>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isCardNumberError}">
+                            <strong>Error:</strong><apex:outputText value="{!cardNumberError}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width5">
+                    <apex:outputLabel value="Card Type" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:selectList value="{!cardType}" size="1" html-data-stripe="brand">
+                            <apex:selectOptions value="{!cardTypeSelectOptions}" />
+                        </apex:selectList>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isCardTypeError}">
+                            <strong>Error:</strong><apex:outputText value="{!cardTypeError}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width5">
+                    <apex:outputLabel value="Expiration Month" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:selectList value="{!expMonth}" size="1" html-data-stripe="exp-month">
+                            <apex:selectOptions value="{!expMonthSelectOptions}" />
+                        </apex:selectList>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isExpMonthError}">
+                            <strong>Error:</strong><apex:outputText value="{!expMonthError}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width5">
+                    <apex:outputLabel value="Expiration Year" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:selectList value="{!expYear}" size="1" html-data-stripe="exp-year">
+                            <apex:selectOptions value="{!expYearSelectOptions}" />
+                        </apex:selectList>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isExpYearError}">
+                            <strong>Error:</strong><apex:outputText value="{!expYearError}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width30">
+                    <apex:outputLabel value="CVC" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" />
+                        <apex:inputText value="{!cvc}" html-data-stripe="cvc" maxlength="5" size="5"/>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isCvcError}">
+                            <strong>Error:</strong><apex:outputText value="{!cvcError}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem labelStyleClass="width5" dataStyleClass="width5">
+                    <apex:outputLabel value="Default Payment Method" />
+                    <apex:inputCheckbox value="{!isDefaultPaymentMethod}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Manage Existing Payment Methods" columns="1" collapsible="false" id="paymentMethodSection" rendered="{!!isError}">
+                <apex:pageMessage severity="info" strength="2" summary="No payment methods exist for this account." rendered="{!paymentMethods.size == 0}"/>
+                <apex:actionstatus id="tableStatus" onstart="AcctSeed.ASModule.loadingTable(true);" onstop="AcctSeed.ASModule.loadingTable(false);">
+                    <apex:facet name="start">
+                        <apex:facet name="start">
+                            <div class="waitingHolder" style="text-align:left; position: relative;" width="16" height="16">
+                                <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                                <span class="waitingDescription">Loading...</span>
+                            </div>
+                        </apex:facet>
+                    </apex:facet>
+                </apex:actionstatus>
+                <apex:pageBlockTable value="{!paymentMethods}" styleClass="paymentMethodTable" var="paymentMethod" rendered="{!paymentMethods.size > 0}">
+                    <apex:column width="15%">
+                        <apex:facet name="header">Action</apex:facet>
+                        <apex:outputLink value="javascript:void(0);"
+                                         onclick="AcctSeed.ASModule.switchStatusOfPaymentMethodJS('{!paymentMethod.Id}', '{!JSENCODE(CONFIRMATION_QUESTION)}');">
+                            <apex:outputText value="{!IF(paymentMethod.AcctSeed__Status__c == 'Active', 'Make Inactive', 'Make Active')}" style="color: blue;"/>
+                        </apex:outputLink>
+                    </apex:column>
+                    <apex:column width="15%">
+                        <apex:facet name="header">Card Holder Name</apex:facet>
+                        <apex:outputField value="{!paymentMethod.AcctSeed__Card_Holder_Name__c}"/>
+                    </apex:column>
+                    <apex:column width="15%">
+                        <apex:facet name="header">Card</apex:facet>
+                        <apex:outputText value="{!paymentMethod.AcctSeed__Type__c} {!paymentMethod.AcctSeed__Last_Four_Digits__c}"/>
+                    </apex:column>
+                    <apex:column width="10%">
+                        <apex:facet name="header">Status</apex:facet>
+                        <apex:outputText value="{!paymentMethod.AcctSeed__Status__c}"/>
+                    </apex:column>
+                    <apex:column width="10%">
+                        <apex:facet name="header">Created Date</apex:facet>
+                        <apex:outputField value="{!paymentMethod.CreatedDate}"/>
+                    </apex:column>
+                    <apex:column width="10%">
+                        <apex:facet name="header">Expiration Month</apex:facet>
+                        <apex:outputText value="{!paymentMethod.AcctSeed__Expiration_Month__c}"/>
+                    </apex:column>
+                    <apex:column width="10%">
+                        <apex:facet name="header">Expiration Year</apex:facet>
+                        <apex:outputText value="{!paymentMethod.AcctSeed__Expiration_Year__c}"/>
+                    </apex:column>
+                    <apex:column width="20%">
+                        <apex:facet name="header">Default</apex:facet>
+                        <apex:outputField value="{!paymentMethod.AcctSeed__Default__c}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <!-- Merge fields on Page to avoid using StandardController.addFields()-->
+            <apex:outputField value="{!account.AcctSeed__Stripe_Customer_Id__c}" rendered="false"/>
+            <apex:outputField value="{!account.Name}" rendered="false"/>
+        </apex:pageblock>
+    </apex:form>
+</apex:page>

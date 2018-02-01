@@ -1,0 +1,141 @@
+<apex:page id="thePage" standardController="AcctSeed__Billing__c" extensions="AcctSeed.BillingApplyCreditMemo,AcctSeed.EnvironmentUtils" sidebar="false">
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/cash-apply.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!JSENCODE(DefaultLocale)}";
+        AcctSeed.ASModule.defaultCurrency = "{!JSENCODE(DefaultCurrency)}";
+        AcctSeed.ASModule.isMultiCurrencyEnabled = "{!JSENCODE(IF(IS_MULTI_CURRENCY_ENABLED, "true", "false"))}";
+        AcctSeed.ASModule.currencyIsoCode = "{!JSENCODE(currencyIsoCode)}";
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/cash-apply.js')}" loadOnReady="true" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.dataTables.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/jquery.dataTables.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, 'javascript/vex.combined.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, 'css/vex.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, 'css/vex-theme-default.css')}" />
+    <apex:form id="theForm" onkeypress="return AcctSeed.ASModule.noenter(event);">
+        <apex:actionFunction name="refreshTable" rerender="theForm" action="{!refreshAndInitBillings}" status="loadingStatus" oncomplete="AcctSeed.ASModule.redrawTable();" />
+        <apex:actionstatus id="loadingStatus" onstart="AcctSeed.ASModule.loadingTable(true);AcctSeed.ASModule.disableButtons('Processing...');AcctSeed.ASModule.disableArrowButtons();" onstop="AcctSeed.ASModule.loadingTable(false)">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="el_loading" style="left:220px;top:360px;position:absolute;width:84%;height:70px;">
+                    <div class="waitingHolder" style="align:top;margin-top:0px">
+                        <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                        <span class="waitingDescription">Loading...</span>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionstatus>
+        <script>
+            AcctSeed.ASModule.refreshTable = refreshTable;
+        </script>
+        <apex:sectionHeader title="{!$ObjectType.AcctSeed__Billing__c.label}" subtitle="{!AcctSeed__Billing__c.Name}" />
+        <apex:pageBlock id="thePageBlock" title="Credit Memo Apply">
+            <apex:pageMessages id="thePageMessages" escape="false" />
+
+            <apex:pageMessage summary="A foreign credit memo can be applied to open billings with the same currency and currency conversion rate. All billings with the same currency and currency conversion rate are displayed below."
+                    severity="info"
+                    strength="3"
+                    rendered="{!!isBaseCurrency && AcctSeed__Billing__c.AcctSeed__Type__c = "Credit Memo" && AcctSeed__Billing__c.AcctSeed__Status__c="Posted" && creditMemoLineWrapperList.size > 0}" />
+
+            <apex:pageMessage summary="The credit memo must be posted to apply to invoices" severity="error" strength="3" rendered="{!AcctSeed__Billing__c.AcctSeed__Status__c!='Posted' && AcctSeed__Billing__c.AcctSeed__Type__c='Credit Memo'}" />
+            <apex:pageMessage summary="This billing is an invoice and not a credit memo" severity="error" strength="3" rendered="{!AcctSeed__Billing__c.AcctSeed__Type__c!='Credit Memo'}" />
+            <apex:pageMessage summary="The credit memo does not have any matching billing invoice records for {!AcctSeed__Billing__c.Customer__r.Name}" severity="error" strength="3" rendered="{!AcctSeed__Billing__c.AcctSeed__Type__c='Credit Memo' && AcctSeed__Billing__c.AcctSeed__Status__c='Posted' && creditMemoLineWrapperList.size=0}" />
+            <apex:pageBlockButtons id="buttons">
+                <apex:commandButton id="saveButton" action="{!save}" value="Save &amp; Complete" status="loadingStatus" reRender="theForm" oncomplete="AcctSeed.ASModule.pageLoad();" rendered="{!NOT(isCompleted) && AcctSeed__Billing__c.AcctSeed__Status__c = "Posted" && AcctSeed__Billing__c.AcctSeed__Type__c="Credit Memo" && !isLastModifiedError && creditMemoLineWrapperList.size > 0}" />
+                <apex:commandButton id="saveRefreshButton" action="{!saveAndRefresh}" value="Save &amp; Refresh" status="loadingStatus" reRender="theForm" oncomplete="AcctSeed.ASModule.redrawTable();" rendered="{!NOT(isCompleted) && AcctSeed__Billing__c.AcctSeed__Status__c="Posted" && AcctSeed__Billing__c.AcctSeed__Type__c="Credit Memo" && !isLastModifiedError && creditMemoLineWrapperList.size>0}" />
+                <apex:commandButton id="cancelButton" action="/{!Billing__c.Id}" value="Back" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection id="creditMemoInfo" title="Credit Memo" columns="2" collapsible="false" rendered="{!creditMemoLineWrapperList.size>0 && AcctSeed__Billing__c.AcctSeed__Status__c='Posted' && AcctSeed__Billing__c.AcctSeed__Type__c='Credit Memo' && !isLastModifiedError}">
+                <apex:outputField value="{!creditMemo.AcctSeed__Customer__c}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Total" />
+                    <apex:outputText id="applyAmount" styleClass="alignRight" value="{!creditMemo.AcctSeed__Total__c * -1}" />
+                </apex:pageBlockSectionItem>
+                <apex:outputtext />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Applied Amount" />
+                    <apex:outputText id="applyAppliedAmount" styleClass="alignRight" />
+                </apex:pageBlockSectionItem>
+                <apex:outputtext />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Credit Memo Balance" />
+                    <apex:outputText id="applyBalanceAmount" styleClass="alignRight" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:PageBlockSection id="theBillingSection" title="Invoices" columns="1" collapsible="false" rendered="{!creditMemoLineWrapperList.size > 0 && AcctSeed__Billing__c.AcctSeed__Status__c='Posted' && AcctSeed__Billing__c.AcctSeed__Type__c='Credit Memo' && !isLastModifiedError}">
+                <apex:outputPanel id="thePanel" style="visibility:hidden">
+
+                    <apex:dataTable id="theBillingMemoTable" styleClass="display" value="{!creditMemoLineWrapperList}" var="item">
+                        <apex:column id="customerColumn" style="vertical-align: top; width: 150px" rendered="{!childAccountsIds.size > 0}">
+                            <apex:facet name="header">Customer</apex:facet>
+                            <apex:outputField value="{!item.bill.AcctSeed__Customer__c}" />
+                        </apex:column>
+                        <apex:column style="vertical-align:top;width:120px">
+                            <apex:facet name="header">Billing Name</apex:facet>
+                            <apex:outputLink value="/{!item.bcmLine.AcctSeed__Billing_Invoice__c}">
+                                    {!IF(ISBLANK(item.bill.AcctSeed__Proprietary_Billing_Number__c), item.bill.Name, (item.bill.AcctSeed__Proprietary_Billing_Number__c))}
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column value="{!item.bill.AcctSeed__Date__c}" style="vertical-align:top;width:40px">
+                            <apex:facet name="header">Date</apex:facet>
+                        </apex:column>
+                        <apex:column value="{!item.bill.AcctSeed__Due_Date2__c}" style="vertical-align:top;width:40px">
+                            <apex:facet name="header">Due Date</apex:facet>
+                        </apex:column>
+                        <apex:column style="vertical-align:top;text-align:right;width:80px" footerClass="alignRight" headerClass="alignRight">
+                            <apex:facet name="header">Billing Amount</apex:facet>
+                            <apex:outputText id="billingAmount" value="{!item.bill.AcctSeed__Total__c}" />
+                        </apex:column>
+                        <apex:column style="width:260px;vertical-align:top;text-align:right;width:80px" footerClass="alignRight" headerClass="alignRight">
+                            <apex:facet name="header">Total Applied</apex:facet>
+                            <apex:outputText id="appliedAmountOrig" value="{!item.originalTotalAppliedAmount}" style="display:none" />
+                            <apex:outputText id="appliedAmount" value="{!item.AppliedAmount}" />
+                        </apex:column>
+                        <apex:column id="theBillingBalance" style="width:80px;vertical-align:top;text-align:right" footerClass="alignRight" headerClass="alignRight">
+                            <apex:facet name="header">Billing Balance</apex:facet>
+                            <apex:outputText id="balanceAmount" value="{!item.Balance}" />
+                        </apex:column>
+                        <apex:column style="text-align:right;width:40px" rendered="{!!isCompleted}">
+                            <apex:outputPanel id="buttonPanel" layout="inline" rendered="{!!item.isPeriodClosed}">
+                                <apex:commandLink styleClass="buttonLink" id="from" onclick="return false;" style="display:{!IF(!ISBLANK(item.bcmLine.AcctSeed__Amount__c) && !item.isPeriodClosed,'none','')}">
+                                    <button type="button" class="arrowButton" style="background: url('/img/icon/t4v35/utility/forward_60.png') center no-repeat; background-size: 70% 70%;"/>
+                                </apex:commandLink>
+                                <apex:commandLink styleClass="buttonLink" id="to" onclick="return false;" style="display:{!IF(!!ISBLANK(item.bcmLine.AcctSeed__Amount__c) && !item.isPeriodClosed,'none','')}">
+                                    <button type="button" class="arrowButton .slds-icon-text-warning" style="background: url('/img/icon/t4v35/utility/back_60.png') center no-repeat; background-size: 70% 70%;"/>
+                                </apex:commandLink>
+                            </apex:outputPanel>
+                        </apex:column>
+                        <apex:column style="width:80px;vertical-align:top;text-align:right" footerClass="alignRight" headerClass="alignRight">
+                            <apex:facet name="header">Applied Amount</apex:facet>
+                            <apex:inputField id="receivedAmount" style="width:60px;text-align:right" value="{!item.bcmLine.AcctSeed__Amount__c}" required="false" rendered="{!!isCompleted && !item.isPeriodClosed}" />
+                            <apex:outputText id="billingAppliedAmount" value="{!item.bcmLine.AcctSeed__Amount__c}" rendered="{!isCompleted || item.isPeriodClosed}" />
+                        </apex:column>
+                        <apex:column style="width:150px;vertical-align:top;">
+                            <apex:facet name="header">Accounting Period</apex:facet>
+                            <apex:outputPanel styleClass="requiredInput" style="margin-left:5px" layout="block">
+                                <apex:outputPanel id="accountingPeriodPanel" layout="block">
+                                    <apex:outputPanel id="accountingPeriodRequired" styleClass="requiredBlock" style="display:{!IF(ISBLANK(item.bcmLine.AcctSeed__Amount__c),'none','')}" />
+                                </apex:outputPanel>
+                                <apex:inputField style="width:60px" value="{!item.bcmLine.AcctSeed__Accounting_Period__c}" rendered="{!!isCompleted && !item.isPeriodClosed}" required="false" />
+                            </apex:outputPanel>
+                            <apex:outputField style="width:60px" value="{!item.bcmLine.AcctSeed__Accounting_Period__c}" rendered="{!isCompleted || item.isPeriodClosed}" />
+                        </apex:column>
+                    </apex:dataTable>
+
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:inputHidden id="offset" value="{!offset}" />
+        <apex:inputHidden id="recLimit" value="{!recLimit}" />
+        <apex:inputHidden id="sortFieldIndex" value="{!sortFieldIndex}" />
+        <apex:inputHidden id="sortOrderIndex" value="{!sortOrderIndex}" />
+        <apex:inputHidden id="appliedApplyAmountOrig" value="{!appliedAmount}" />
+        <apex:inputHidden id="recordSetSize" value="{!recordSetSize}" />
+        <apex:inputHidden id="isDirty" value="{!isDirty}" />
+        <apex:inputHidden id="isError" value="{!isError}" />
+    </apex:form>
+</apex:page>

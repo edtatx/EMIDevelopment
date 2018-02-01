@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>Billing_Cash_Receipt_Record_Home</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>Billing_Cash_Receipt_Compact_Layout</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>Billing_Cash_Receipt_Compact_Layout</fullName>
+        <fields>Name</fields>
+        <fields>Billing__c</fields>
+        <fields>Cash_Receipt__c</fields>
+        <fields>Applied_Amount__c</fields>
+        <fields>Accounting_Period__c</fields>
+        <fields>Adjustment_Amount__c</fields>
+        <fields>Adjustment_GL_Account__c</fields>
+        <label>Billing Cash Receipt Compact Layout</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to document the relationship a billing record has with a cash receipt record. A billing cash receipt record is created during the cash application process.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Accounting_Period__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to specify accounting period for financial reporting.</inlineHelpText>
+        <label>Applied Accounting Period</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>The accounting period status must be &quot;Open&quot;</errorMessage>
+            <filterItems>
+                <field>Accounting_Period__c.Status__c</field>
+                <operation>equals</operation>
+                <value>Open</value>
+            </filterItems>
+            <infoMessage>The accounting period status must be open</infoMessage>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Period__c</referenceTo>
+        <relationshipLabel>Billing Cash Receipts</relationshipLabel>
+        <relationshipName>Billing_Cash_Receipts</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Adjustment_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Amount adjusted in the cash application process. Typically a write off of a billing balance or payment discount.</inlineHelpText>
+        <label>Adjustment Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Adjustment_GL_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>GL accounts used to account for adjustments.</inlineHelpText>
+        <label>Adjustment GL Account</label>
+        <referenceTo>GL_Account__c</referenceTo>
+        <relationshipLabel>Billing Cash Receipts</relationshipLabel>
+        <relationshipName>Billing_Cash_Receipts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Applied_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Amount of Cash Receipt Applied to this billing</inlineHelpText>
+        <label>Applied Amount</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billing__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Billing</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Billing__c.Status__c</field>
+                <operation>equals</operation>
+                <value>Posted</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Billing__c</referenceTo>
+        <relationshipLabel>Applied Cash Receipts</relationshipLabel>
+        <relationshipName>Billing_Cash_Receipts</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Cash_Receipt__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Amount adjusted in the cash application process. Typically a write off of a billing balance or payment discount.</inlineHelpText>
+        <label>Cash Receipt</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Cash_Receipt__c.Status__c</field>
+                <operation>equals</operation>
+                <value>Posted</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Cash_Receipt__c</referenceTo>
+        <relationshipLabel>Billings Applied To</relationshipLabel>
+        <relationshipName>Billing_Cash_Receipts</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Period_Applied__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Accounting_Period__c),Cash_Receipt__r.Accounting_Period__r.Name, Accounting_Period__r.Name)</formula>
+        <label>Period Applied</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Billing Cash Receipt</label>
+    <nameField>
+        <displayFormat>BCR-{00000}</displayFormat>
+        <label>Billing Cash Receipt Name</label>
+        <trackHistory>true</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Billing Cash Receipts</pluralLabel>
+    <searchLayouts>
+        <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>Billing__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Cash_Receipt__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Period_Applied__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Applied_Amount__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Adjustment_Amount__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Adjustment_GL_Account__c</lookupDialogsAdditionalFields>
+        <lookupFilterFields>Billing__c</lookupFilterFields>
+        <lookupFilterFields>Cash_Receipt__c</lookupFilterFields>
+        <lookupFilterFields>Period_Applied__c</lookupFilterFields>
+        <lookupFilterFields>Applied_Amount__c</lookupFilterFields>
+        <lookupFilterFields>Adjustment_Amount__c</lookupFilterFields>
+        <lookupFilterFields>Adjustment_GL_Account__c</lookupFilterFields>
+        <lookupPhoneDialogsAdditionalFields>Billing__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Cash_Receipt__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Period_Applied__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Applied_Amount__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Adjustment_Amount__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Adjustment_GL_Account__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Billing__c</searchFilterFields>
+        <searchFilterFields>Cash_Receipt__c</searchFilterFields>
+        <searchFilterFields>Period_Applied__c</searchFilterFields>
+        <searchFilterFields>Applied_Amount__c</searchFilterFields>
+        <searchFilterFields>Adjustment_Amount__c</searchFilterFields>
+        <searchFilterFields>Adjustment_GL_Account__c</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Accounting_Period_Is_Required</fullName>
+        <active>false</active>
+        <description>A billing cash receipt must contain a value for the accounting period field.</description>
+        <errorConditionFormula>ISBLANK(Accounting_Period__c)</errorConditionFormula>
+        <errorDisplayField>Accounting_Period__c</errorDisplayField>
+        <errorMessage>A billing cash receipt must contain a value for the accounting period field.</errorMessage>
+    </validationRules>
+</CustomObject>

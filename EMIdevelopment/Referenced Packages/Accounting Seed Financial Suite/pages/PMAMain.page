@@ -1,0 +1,345 @@
+<apex:page id="thePage" standardController="AcctSeed__Accounting_Settings__c" extensions="AcctSeed.PMAMainControllerExt,AcctSeed.IntegrityReportControllerExt,AcctSeed.PurgeDataControllerExt" tabStyle="Accounting_Settings__tab">
+    <apex:stylesheet value="/sCSS/21.0/sprites/1297816277000/Theme3/default/gc/versioning.css" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/> 
+    <apex:tabPanel switchType="server" id="theTabPanel" value="{!selectedTab}" styleClass="theTabPanel" tabClass="theTabPanel" contentClass="tabContent" activeTabClass="activeTab" inactiveTabClass="inactiveTab">
+        <apex:sectionHeader title="Accounting Settings" subtitle="{!subTitle}" />
+        <apex:tab name="tab1" id="tabOne" label="Configuration Settings">
+            <apex:form id="theForm">
+                <apex:pageblock id="thePageBlock" title="Configuration Settings">
+                    <apex:pageMessages />
+                    <apex:pageBlockButtons id="buttonsTop">
+                        <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Saving...')" />
+                        <apex:commandButton value="Edit" action="{!editMode}" rendered="{!NOT(isEditMode) && isUpdateable}" />
+                        <apex:commandButton id="saveButtonTop" value="Save" status="saveStatus" action="{!saveForm}" rendered="{!isEditMode}" reRender="theForm" />
+                        <apex:commandButton id="cancelButtonTop" value="Cancel" action="{!cancelMode}" rendered="{!isEditMode}" immediate="true"/>
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockSection title="Multi Currency Settings" columns="2" collapsible="false" rendered="{!isMultiCurrencyEnabled}">
+                        <apex:outputField value="{!main.AcctSeed__Enable_Multi_Currency__c}"/>
+                        <apex:inputField value="{!main.AcctSeed__Currency_Gain_Loss_GL_Account__c}" rendered="{!AND(isEditMode, isMultiCurrencyEnabled, main.AcctSeed__Enable_Multi_Currency__c)}" required="{!main.AcctSeed__Enable_Multi_Currency__c}"/>
+                        <apex:outputField value="{!main.AcctSeed__Currency_Gain_Loss_GL_Account__c}" rendered="{!AND(NOT(isEditMode), isMultiCurrencyEnabled, main.AcctSeed__Enable_Multi_Currency__c)}"/>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="General Ledger Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__Default_Ledger__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Current_Year_Earnings_GL_Account__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Default_Bank_Account__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Retained_Earnings_GL_Account__c}" rendered="{!isEditMode}" />
+
+                        <apex:outputField value="{!main.AcctSeed__Default_Ledger__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Current_Year_Earnings_GL_Account__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Default_Bank_Account__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Retained_Earnings_GL_Account__c}" rendered="{!!isEditMode}" />
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Billing Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__Enable_Billing_Period_Sensitive_Aging__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Revenue_GL_Account__c}" rendered="{!isEditMode}" />
+
+                        <apex:outputField value="{!main.AcctSeed__Enable_Billing_Period_Sensitive_Aging__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Revenue_GL_Account__c}" rendered="{!!isEditMode}" />
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Accounts Receivable and Cash Receipts Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__AR_Control_GL_Account__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Unapplied_Cash_GL_Account__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Customer_Payment_Adjustment_GL_Account__c}" rendered="{!isEditMode}" />
+
+                        <apex:outputField value="{!main.AcctSeed__AR_Control_GL_Account__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Unapplied_Cash_GL_Account__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Customer_Payment_Adjustment_GL_Account__c}" rendered="{!!isEditMode}" />
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Payable and Cash Disbursement Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__Enable_AP_Period_Sensitive_Aging__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__AP_Control_GL_Account__c}" rendered="{!isEditMode}" />
+                        <apex:outputText rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Payment_Discount_GL_Account__c}" rendered="{!isEditMode}" />
+                        <apex:outputText rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Prepaid_Expense_GL_Account__c}" rendered="{!isEditMode}" />
+
+                        <apex:outputField value="{!main.AcctSeed__Enable_AP_Period_Sensitive_Aging__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__AP_Control_GL_Account__c}" rendered="{!!isEditMode}" />
+                        <apex:outputText rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Payment_Discount_GL_Account__c}" rendered="{!!isEditMode}" />
+                        <apex:outputText rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Prepaid_Expense_GL_Account__c}" rendered="{!!isEditMode}" />
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Project Accounting Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__Labor_GL_Account__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Default_Project_Task_Labor_GL_Account__c}" rendered="{!isEditMode}" />
+
+                        <apex:outputField value="{!main.AcctSeed__Labor_GL_Account__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Default_Project_Task_Labor_GL_Account__c}" rendered="{!!isEditMode}" />
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection id="productCostSection" title="Product Costing Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__Enable_Product_Costing__c}" rendered="{!isEditMode}">
+                            <apex:actionSupport event="onchange" rerender="productCostSection" />
+                        </apex:inputField>
+                        <apex:inputField value="{!main.AcctSeed__Vouchers_Payable_GL_Account__c}" rendered="{!isEditMode}" required="{!main.AcctSeed__Enable_Product_Costing__c}" />
+                        <apex:outputText value="" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Inventory_Variance_GL_Account__c}" rendered="{!isEditMode}" required="{!main.AcctSeed__Enable_Product_Costing__c}" />
+                        <apex:outputText value="" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Work_in_Process_GL_Account__c}" rendered="{!isEditMode}" />
+
+                        <apex:outputField value="{!main.AcctSeed__Enable_Product_Costing__c}" rendered="{!NOT(isEditMode)}" />
+                        <apex:outputField value="{!main.AcctSeed__Vouchers_Payable_GL_Account__c}" rendered="{!NOT(isEditMode)}" />
+                        <apex:outputText value="" rendered="{!NOT(isEditMode)}" />
+                        <apex:outputField value="{!main.AcctSeed__Inventory_Variance_GL_Account__c}" rendered="{!NOT(isEditMode)}" />
+                        <apex:outputText value="" rendered="{!NOT(isEditMode)}" />
+                        <apex:outputField value="{!main.AcctSeed__Work_in_Process_GL_Account__c}" rendered="{!NOT(isEditMode)}" />
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="PDF Format Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__Default_Billing_Format__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Billing_Activity_Statement_Format__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Default_Purchase_Order_Format__c}" rendered="{!isEditMode && isERPEnabled}" />
+                        <apex:inputField value="{!main.AcctSeed__Billing_Outstanding_Statement_Format__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Default_Packing_Slip_Format__c}" rendered="{!isEditMode && isERPEnabled}" />
+
+                        <apex:outputField value="{!main.AcctSeed__Default_Billing_Format__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Billing_Activity_Statement_Format__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Default_Purchase_Order_Format__c}" rendered="{!!isEditMode && isERPEnabled}" />
+                        <apex:outputField value="{!main.AcctSeed__Billing_Outstanding_Statement_Format__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Default_Packing_Slip_Format__c}" rendered="{!!isEditMode && isERPEnabled}" />
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Time Card Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__Display_Billable_Flag_in_Time_Card_Entry__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Label_for_Time_Card_Variable_1__c}" rendered="{!isEditMode}" />
+                        <apex:outputText value="" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Label_for_Time_Card_Variable_2__c}" rendered="{!isEditMode}" />
+
+                        <apex:outputField value="{!main.AcctSeed__Display_Billable_Flag_in_Time_Card_Entry__c}" rendered="{!NOT(isEditMode)}" />
+                        <apex:outputField value="{!main.AcctSeed__Label_for_Time_Card_Variable_1__c}" rendered="{!NOT(isEditMode)}" />
+                        <apex:outputText value="" rendered="{!NOT(isEditMode)}" />
+                        <apex:outputField value="{!main.AcctSeed__Label_for_Time_Card_Variable_2__c}" rendered="{!NOT(isEditMode)}" />
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Bank Direct Connect Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__Default_Vendor__c}" rendered="{!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Default_Vendor__c}" rendered="{!NOT(isEditMode)}" />
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Cash Disbursement PDF Offset Settings" columns="2" collapsible="false">
+                        <apex:inputField value="{!main.AcctSeed__Date_Top_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Date_Right_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Amount_Top_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Amount_Right_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Amount_Words_Top_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Amount_Words_Left_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Payee_Top_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Payee_Left_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Payee_Address_Top_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Payee_Address_Left_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Memo_Top_Offset__c}" rendered="{!isEditMode}" />
+                        <apex:inputField value="{!main.AcctSeed__Memo_Left_Offset__c}" rendered="{!isEditMode}" />
+
+                        <apex:outputField value="{!main.AcctSeed__Date_Top_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Date_Right_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Amount_Top_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Amount_Right_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Amount_Words_Top_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Amount_Words_Left_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Payee_Top_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Payee_Left_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Payee_Address_Top_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Payee_Address_Left_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Memo_Top_Offset__c}" rendered="{!!isEditMode}" />
+                        <apex:outputField value="{!main.AcctSeed__Memo_Left_Offset__c}" rendered="{!!isEditMode}" />
+                    </apex:pageBlockSection>
+                </apex:pageblock>
+            </apex:form>
+        </apex:tab>
+        <apex:tab label="Integrity Reports" name="tab2" id="tabTwo" rendered="{!isUpdateable}">
+            <apex:form id="theFormTwo">
+                <apex:pageBlock id="thePageBlock" title="Integrity Reports">
+                    <apex:pageMessages />
+                    <apex:pageMessage summary="" severity="info" strength="3" escape="false">The Accounting Seed Integrity Report utility is safe to run at any time and will <span style="font-weight:bold">NOT</span> change any data in your Salesforce instance. The utility is a reporting mechanism that provides a means of confirming the general ledger transaction table is complete and accurate.
+                        <br/>
+                        <br/>The Transaction Integrity Report validates all transactions to ensure the transactions are associated with a valid source record and have one related financial cube transaction. Any transaction without a source record or one financial cube transaction will have an integrity report entry record created denoting the transaction.
+                        <br/>
+                        <br/>The Posted Record Integrity Report validates all posted records have an equvalent debit and credit transaction aggregate amounts. The Posted Record Integrity Report will generate an integrity report entry for any source record out of balance (total transaction credits do not equal total transaction debits). The integrity report utility only supports (5) reports executing concurrently. The user executing the report will receive an email once each report has been generated.
+                        <br/>
+                        <br/>
+                    </apex:pageMessage>
+                    <apex:pageBlockButtons id="buttonsTop">
+                        <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Submitting...')" />
+                        <apex:commandButton value="Submit" status="saveStatus" action="{!processReports}" reRender="theFormTwo" />
+                    </apex:pageBlockButtons>
+                    <br/>
+                    <apex:pageBlockSection id="thepageBlockSection2" title="Select Accounting Period" collapsible="false">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Accounting Period" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                                <apex:outputPanel styleClass="requiredBlock" />
+                                <apex:selectList value="{!selectedAccountingPeriod}" size="1">
+                                    <apex:selectOptions value="{!AccountingPeriods}" />
+                                    <apex:actionSupport event="onchange" reRender="thepageBlockSection2" />
+                                </apex:selectList>
+                                <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isSelectedAccountingPeriodError}"><strong>Error:</strong> You must enter a value</apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:form>
+        </apex:tab>
+        <apex:tab label="Purge Data" name="tab3" id="tabThree" rendered="{!isUpdateable}">
+            <apex:form id="theFormThree">
+                <apex:pageBlock id="thePurgeBlock" title="Purge Data">
+                    <apex:outputPanel id="apexErrorMessages">
+                        <apex:pageMessages rendered="{!visiblePageMessages}" />
+                    </apex:outputPanel>
+                    <apex:actionStatus id="processedStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" />
+                    <!-- Fix for autofocus on datepicker -->
+                    <input type="text" id="hiddenText" style="width:0px;height:0px;border: none;background-color: #fff;background: transparent;" />
+                    <apex:actionRegion >
+                        <apex:pageBlockSection title="Purge AP Aging History" collapsible="false" columns="2">
+                            <apex:pageBlockSectionItem labelStyle="width:5%" dataStyle="width:1%">
+                                <apex:outputLabel value="Accounting Period" />
+                                <apex:outputPanel styleClass="requiredInput" layout="block">
+                                    <apex:outputPanel styleClass="requiredBlock" />
+                                    <apex:selectList value="{!purgeAccountingPeriodAPAgingHistory}" size="1">
+                                        <apex:selectOptions value="{!purgeAccountingPeriods}" />
+                                    </apex:selectList>
+                                    <apex:outputPanel styleClass="errorMsg" rendered="{!accountingPeriodAPAgingHistoryError}" layout="block">
+                                        <strong>Error:</strong> You must enter a value
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputPanel styleClass="pbButton">
+                                    <apex:commandButton id="purgeApAgingHistoryButton" value="Purge" status="processedStatus" action="{!executePurgingAPAgingHistory}" reRender="thePurgeBlock">
+                                        <apex:actionSupport event="oncomplete" action="{!hidePageMessages}" reRender="purgeApAgingHistoryButton" />
+                                    </apex:commandButton>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </apex:actionRegion>
+                    <apex:actionRegion >
+                        <apex:pageBlockSection title="Purge Billing Aging History" collapsible="false" columns="2">
+                            <apex:pageBlockSectionItem labelStyle="width:5%" dataStyle="width:1%">
+                                <apex:outputLabel value="Accounting Period" />
+                                <apex:outputPanel styleClass="requiredInput" layout="block">
+                                    <apex:outputPanel styleClass="requiredBlock" />
+                                    <apex:selectList value="{!purgeAccountingPeriodBillingAgingHistory}" size="1">
+                                        <apex:selectOptions value="{!purgeAccountingPeriods}" />
+                                    </apex:selectList>
+                                    <apex:outputPanel styleClass="errorMsg" rendered="{!accountingPeriodBillingAgingHistoryError}" layout="block">
+                                        <strong>Error:</strong> You must enter a value
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputPanel styleClass="pbButton">
+                                    <apex:commandButton id="purgeBillingAgingHistoryButton" value="Purge" status="processedStatus" action="{!executePurgingBillingAgingHistory}" reRender="thePurgeBlock">
+                                        <apex:actionSupport event="oncomplete" action="{!hidePageMessages}" reRender="purgeBillingAgingHistoryButton" />
+                                    </apex:commandButton>
+                                 </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </apex:actionRegion>
+                    <apex:actionRegion >
+                        <apex:pageBlockSection title="Purge Integrity Report Entries" collapsible="false" columns="2">
+                            <apex:pageBlockSectionItem labelStyle="width:5%" dataStyle="width:1%">
+                                <apex:outputLabel value="Accounting Period" />
+                                <apex:outputLabel value="All&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" escape="false"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputPanel styleClass="pbButton">
+                                    <apex:commandButton id="purgeIntegrityReportEntriesButton" value="Purge" status="processedStatus" action="{!executePurgingIntegrityReportEntry}" reRender="thePurgeBlock">
+                                        <apex:actionSupport event="oncomplete" action="{!hidePageMessages}" reRender="purgeIntegrityReportEntriesButton" />
+                                    </apex:commandButton>
+                                 </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </apex:actionRegion>
+                    <apex:actionRegion >
+                        <apex:pageBlockSection title="Purge Financial Report Results" collapsible="false" columns="2">
+                            <apex:pageBlockSectionItem labelStyle="width:5%" dataStyle="width:1%">
+                                <apex:outputLabel value="Accounting Period" />
+                                <apex:outputLabel value="All&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" escape="false"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputPanel styleClass="pbButton">
+                                    <apex:commandButton id="purgeFinancialReportEntriesButton" value="Purge" status="processedStatus" action="{!executePurgingFinancialReportResult}" reRender="thePurgeBlock">
+                                        <apex:actionSupport event="oncomplete" action="{!hidePageMessages}" reRender="purgeFinancialReportEntriesButton" />
+                                    </apex:commandButton>
+                                 </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </apex:actionRegion>
+                    <apex:actionRegion >
+                        <apex:pageBlockSection title="Purge Zero Balance Financial Cubes" collapsible="false" columns="2">
+                            <apex:pageBlockSectionItem labelStyle="width:5%" dataStyle="width:1%">
+                                <apex:outputLabel value="Accounting Period" />
+                                <apex:outputLabel value="All&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" escape="false"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputPanel styleClass="pbButton">
+                                    <apex:commandButton id="purgeZeroBalanceFinancialCubesButton" value="Purge" status="processedStatus" action="{!executePurgingZeroBalanceFinancialCubes}" reRender="thePurgeBlock">
+                                        <apex:actionSupport event="oncomplete" action="{!hidePageMessages}" reRender="purgeZeroBalanceFinancialCubesButton" />
+                                    </apex:commandButton>
+                                 </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </apex:actionRegion>
+                    <apex:actionRegion rendered="{!isERPEnabled}">
+                        <apex:pageBlockSection title="Purge Inventory Balance History" collapsible="false" columns="2">
+                            <apex:pageBlockSectionItem labelStyle="width:5%" dataStyle="width:1%">
+                                <apex:outputLabel value="Start Date" />
+                                <apex:inputField value="{!instanceForDate.AcctSeed__Start_Date__c}" id="purgeDateInventoryBalanceHistory" />
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputPanel styleClass="pbButton">
+                                    <apex:commandButton id="purgeInventoryBalanceHistoryButton" value="Purge" status="processedStatus" action="{!executePurgingInventoryBalanceHistory}" reRender="thePurgeBlock">
+                                        <apex:actionSupport event="oncomplete" action="{!hidePageMessages}" reRender="purgeInventoryBalanceHistoryButton" />
+                                    </apex:commandButton>
+                                 </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                        </apex:pageBlockSection>
+                    </apex:actionRegion>
+                </apex:pageBlock>
+            </apex:form>
+        </apex:tab>
+        <apex:tab label="Stripe Settings" name="tab4" id="tabFour" rendered="{!isUpdateable}">
+            <apex:form id="theFormFour">
+                <apex:pageBlock id="thePageBlock" title="Stripe Settings">
+                    <apex:pageMessages />
+                    <apex:actionStatus id="processedStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" />
+                    <apex:pageBlockButtons id="buttonsTop">
+                    </apex:pageBlockButtons>
+                    <br/>
+                    <apex:pageBlockSection title="Connected Accounts" collapsible="false" columns="1">
+                          <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Connected Stripe Account Id"/>
+                                <apex:outputField value="{!main.AcctSeed__Stripe_Connected_Account_Id__c}"/>
+                          </apex:pageBlockSectionItem>
+                          <apex:pageBlockSectionItem >
+                              <apex:outputLabel value=""/>
+                              <apex:outputPanel styleClass="pbButton" rendered="{!!isValidStripeAccountId}">
+                                  <apex:outputLink value="{!stripeConnectLink}" styleClass="btn stripe-connect" style="text-decoration: blink;" target="_self">
+                                      <span>Connect with Stripe</span>
+                                  </apex:outputLink>
+                              </apex:outputPanel>
+                          </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Payment Link Configuration" collapsible="false" columns="1" rendered="{!isValidStripeAccountId}">
+                        <apex:pageBlockSectionItem >
+                              <apex:outputLabel value=""/>
+                              <apex:outputPanel styleClass="pbButton">
+                                  <apex:outputLink value="{!paymentLinkConnectLink}" styleClass="btn stripe-connect" style="text-decoration: blink;" target="_self" rendered="{!isPaymentLinkPermSetAssigned}">
+                                    <apex:outputPanel layout="none" rendered="{!!isPaymentLinkEnabled}">
+                                        <span>Configure Payment Link</span>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel layout="none" rendered="{!isPaymentLinkEnabled}">
+                                        <span>Re-Configure Payment Link</span>
+                                    </apex:outputPanel>
+                                  </apex:outputLink>
+                              </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:pageMessage severity="info" strength="3" summary="You must have either the AS Full Admin or Accounting Manager permission set assigned to use this feature" rendered="{!!isPaymentLinkPermSetAssigned && !isPaymentLinkEnabled}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem rendered="{!isPaymentLinkEnabled}">
+                            <apex:outputLabel value="Payment Link Username" />
+                            <apex:outputField value="{!main.AcctSeed__Payment_Link_Username__c}" />
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:form>
+        </apex:tab>
+    </apex:tabPanel>
+</apex:page>

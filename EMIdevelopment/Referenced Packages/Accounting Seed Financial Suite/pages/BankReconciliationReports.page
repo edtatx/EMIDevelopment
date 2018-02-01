@@ -1,0 +1,24 @@
+<apex:page id="thePage" standardController="AcctSeed__Bank_Reconciliation2__c" extensions="AcctSeed.BankReconciliationReports">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/bank-reconciliation.js')}"/>
+    <apex:sectionHeader title="Bank Reconciliation" subtitle="{!AcctSeed__Bank_Reconciliation2__c.Name}" />
+    <apex:form id="theForm">
+        <apex:pageBlock title="Bank Reconciliation Report">
+            <apex:pageMessages />
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" />
+                <apex:commandbutton id="attachButton" value="Create and Attach Report" status="saveStatus" action="{!createBankReconciliationReports}" reRender="theForm" />
+                <apex:commandbutton value="Back" action="{!cancel}" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1" collapsible="false">
+                <div id="loader1" style="font-weight:bold">
+                    <img src="/img/loading.gif" style="text-align:center" width="16" height="16" alt="loading gif" />&nbsp;&nbsp;Creating Report...
+                </div>
+                <apex:iframe id="iframe1" src="{!$Page.AcctSeed__BankReconciliationPDFReport}?Id={!AcctSeed__Bank_Reconciliation2__c.Id}" scrolling="true" width="100%" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__End_Date__c}" rendered="false" />
+        <apex:outputField value="{!AcctSeed__Bank_Reconciliation2__c.Bank_Account__r.Name}" rendered="false" />
+    </apex:form>
+</apex:page>

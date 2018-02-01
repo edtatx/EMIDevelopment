@@ -1,0 +1,11 @@
+<apex:page standardController="Opportunity" action="{!checkSalesOrderExists}" extensions="AcctSeedERP.SalesOrderFromOpportunity" >
+    <apex:form >
+        <apex:sectionHeader title="Opportunity" subtitle="{!Opportunity.Name}" />
+        <apex:pageBlock title="Create Sales Order">
+        <apex:pageMessages />
+            <apex:pageBlockButtons >
+                <apex:commandButton action="/{!Opportunity.Id}" value="Back"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

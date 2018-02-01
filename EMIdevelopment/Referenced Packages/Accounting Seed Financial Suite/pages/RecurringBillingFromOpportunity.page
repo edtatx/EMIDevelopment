@@ -1,0 +1,90 @@
+<apex:page standardController="Opportunity" sidebar="false" extensions="AcctSeed.RecurringBillingFromOpportunity,AcctSeed.EnvironmentUtils">
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/common.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!JSENCODE(DefaultLocale)}";
+        AcctSeed.ASModule.defaultCurrency = "{!JSENCODE(DefaultCurrency)}";
+        AcctSeed.ASModule.isMultiCurrencyEnabled = "{!JSENCODE(IF(isMultiCurrencyEnabled, "true", "false"))}";
+        AcctSeed.ASModule.currencyIsoCode = "{!JSENCODE(currencyIsoCode)}";
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/currency-formatter.js')}" loadOnReady="true" />
+    <!-- Checkboxes -->
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/checkbox-set.js')}" loadOnReady="true" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/checkbox-set-billing.js')}" loadOnReady="true" />
+    <!-- /Checkboxes -->
+    <apex:form id="theForm">
+        <apex:sectionHeader title="{!$ObjectType.Opportunity.label}" subtitle="{!Opportunity.Name}" />
+        <apex:pageBlock id="thePageBlock" title="Create Recurring Billing">
+            <apex:pageMessages escape="false" rendered="{!isError}" />
+            <apex:outputPanel id="theMessages">
+                <apex:pageMessage summary="There are existing recurring billings associated with this opportunity" severity="warning" strength="3" rendered="{!isExistingRBill}" />
+            </apex:outputPanel>
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" onstop="AcctSeed.ASModule.pageLoad(); AcctSeed.ASModule.billingCheckBoxes.rebind();" />
+                <apex:commandButton id="saveButton" action="{!createRecurringBilling}" value="Create Recurring Billing" status="saveStatus" reRender="theForm" rendered="{!Opportunity.isWon && !ISBLANK(Opportunity.accountId) && !showOnlyMessages}" />
+                <apex:commandButton id="cancelButton" action="{!cancel}" value="Back" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Recurring Billing" collapsible="false" columns="2" rendered="{!Opportunity.isWon && !ISBLANK(Opportunity.accountId)  && !showOnlyMessages}">
+                <apex:outputField value="{!Opportunity.AccountId}" />
+                <apex:inputField value="{!rBill.AcctSeed__Billing_Frequency__c}" required="true" />
+                <apex:inputField value="{!rBill.Name}" required="true" />
+                <apex:inputField value="{!rBill.AcctSeed__Next_Billing_Date__c}" required="true" />
+                <apex:outputText id="amount-full" value="{!Opportunity.Amount}" />
+                <apex:inputField value="{!rBill.AcctSeed__Status__c}" required="true" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Recurring Billing Lines" collapsible="false" rendered="{!Opportunity.isWon && !ISBLANK(Opportunity.accountId)  && !showOnlyMessages}">
+                <apex:pageBlockTable value="{!rBillList}" var="rBillLine" width="100%">
+                    <apex:column >
+                        <apex:facet name="header">
+                            <input type="checkbox" class="rbLines_checkbox_all" />
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!rBillLine.isSelected}" styleClass="rbLines_checkbox" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__Date__c.Label}">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__Date__c}" required="true" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__Quantity__c.Label}" styleClass="amount-row-quantity">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__Quantity__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!HEADER_RATE_LABEL}" styleClass="amount-row-price">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__Rate__c}" />
+                    </apex:column>
+                    <apex:column headerClass="amount-all align-right" styleClass="amount-row align-right">
+                        <apex:facet name="header">
+                            <apex:outputText value="{!$ObjectType.Opportunity.fields.Amount.Label}" />
+                        </apex:facet>
+                        <apex:outputText id="billingAmount" value="{!rBillLine.lineObj.AcctSeed__Rate__c * rBillLine.lineObj.AcctSeed__Quantity__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__Product__c.Label}">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__Product__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__Revenue_GL_Account__c.Label}">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__Revenue_GL_Account__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__Project__c.Label}">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__Project__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__Project_Task__c.Label}">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__Project_Task__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__GL_Account_Variable_1__c.Label}">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__GL_Account_Variable_1__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__GL_Account_Variable_2__c.Label}">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__GL_Account_Variable_2__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__GL_Account_Variable_3__c.Label}">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__GL_Account_Variable_3__c}" />
+                    </apex:column>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Recurring_Billing_Line__c.fields.AcctSeed__GL_Account_Variable_4__c.Label}">
+                        <apex:inputField value="{!rBillLine.lineObj.AcctSeed__GL_Account_Variable_4__c}" />
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

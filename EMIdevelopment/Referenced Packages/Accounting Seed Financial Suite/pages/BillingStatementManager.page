@@ -1,0 +1,104 @@
+<apex:page id="thePage" standardController="Account" extensions="AcctSeed.BillingStatementManager">
+    <apex:stylesheet value="/sCSS/21.0/sprites/1297816277000/Theme3/default/gc/versioning.css" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/billing-statement-manager.js')}" loadOnReady="true"/>
+
+    <script type="text/javascript">
+        function setFocusOnLoad() {}
+    </script>
+
+    <apex:form id="theForm">
+        <apex:sectionHeader title="{!$ObjectType.Account.label}" subtitle="{!Account.Name}" />
+        <apex:tabPanel switchType="ajax" value="{!selectedTab}" id="theTabPanel" styleClass="theTabPanel" tabClass="theTabPanel" contentClass="tabContent" activeTabClass="activeTab" inactiveTabClass="inactiveTab">
+            <apex:tab label="Outstanding Statement" name="outstanding" id="tabOne" oncomplete="AcctSeed.ASModule.loadFrame1();">
+                <apex:pageBlock title="{!$ObjectType.AcctSeed__Billing__c.label} Outstanding Statement">
+                    <apex:pageMessages rendered="{!!isValidationError}" />
+                    <apex:pageMessage summary="You must define a PDF Format record where Type = Customer Outstanding and set the Default Customer Statement field on the Accounting Settings tab in order to support this feature." severity="error" strength="3" rendered="{!isOutstandingFormatError}" />
+                    <apex:pageBlockButtons id="buttons">
+                        <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtonsOnBSMPage('Processing...')" />
+                        <apex:commandButton id="saveAttachButton1" style="display:none" value="Save PDF" action="{!saveAttach}" status="saveStatus" reRender="theForm" rendered="{!!isOutstandingFormatError}" oncomplete="AcctSeed.ASModule.loadFrame1();" />
+                        <apex:commandButton id="emailAttachButton1" style="display:none" action="{!saveAndEmail}" value="Send Email" status="saveStatus" reRender="theForm" disabled="{!DisableOutstandingEmail}" rendered="{!!isOutstandingFormatError}" oncomplete="AcctSeed.ASModule.loadFrame1();" />
+                        <apex:commandButton id="cancelButton1" action="{!cancel}" value="Back" immediate="true" />
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockSection rendered="{!!isOutstandingFormatError}">
+                        <apex:outputField value="{!Account.Name}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Billing Contact" for="billingcontactname" />
+                            <apex:outputText id="billingcontactname" value="{!Account.Billing_Contact__r.Name} ({!Account.Billing_Contact__r.Email})" />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Send to Contact" />
+                            <apex:inputField value="{!outstandingAccount.AcctSeed__Billing_Contact__c}">
+                                <apex:actionSupport event="onchange" reRender="theForm" oncomplete="AcctSeed.ASModule.loadFrame1();" />
+                            </apex:inputField>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="CC Me" for="ccUser" />
+                            <apex:inputCheckbox id="ccUser" value="{!outstandingCCUser}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="CC Addresses" for="outstandingCCAddresses" />
+                            <apex:inputText id="outstandingCCAddresses" value="{!outstandingCCAddresses}" title="seperate each email address with a semi-colon (;)" style="width:200px"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                <apex:pageBlock id="pdfBlock1" title="{!$ObjectType.AcctSeed__Billing__c.label} Outstanding Statement PDF Preview" rendered="{!!isOutstandingFormatError}">
+                    <div id="loader1" style="font-weight:bold;">
+                        <img src="/img/loading.gif" style="text-align:center" width="16" height="16" alt="loading gif" />&nbsp;&nbsp;Creating Outstanding Statement PDF...
+                    </div>
+                    <div id="frameDiv">
+                        <apex:iframe id="iframe1" src="{!outstandingPDFName}?id={!Account.Id}&formatId={!outstandingFormat.Id}&reportType=outstanding" />
+                    </div>
+                </apex:pageBlock>
+            </apex:tab>
+            <apex:tab label="Activity Statement" name="activity" id="tabTwo" oncomplete="AcctSeed.ASModule.loadFrame2();">
+                <apex:pageBlock title="{!$ObjectType.AcctSeed__Billing__c.label} Activity Statement">
+                    <apex:pageMessages id="pageMessage" rendered="{!!isValidationError}" />
+                    <apex:pageMessage summary="You must define a PDF Format record where Type = Customer Activity and set the Default Activity Statement field on the Accounting Settings tab in order to support this feature." severity="error" strength="3" rendered="{!isActivityFormatError}" />
+                    <apex:pageBlockButtons id="buttons">
+                        <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtonsOnBSMPage('Processing...')" />
+                        <apex:commandButton id="saveAttachButton2" style="display:none" value="Save PDF" action="{!saveAttach}" status="saveStatus" reRender="theForm" rendered="{!!isActivityFormatError && !isValidationError}" oncomplete="AcctSeed.ASModule.loadFrame2();" />
+                        <apex:commandButton id="emailAttachButton2" style="display:none" action="{!saveAndEmail}" value="Send Email" status="saveStatus" reRender="theForm" disabled="{!DisableActivityEmail}" rendered="{!!isActivityFormatError}" oncomplete="AcctSeed.ASModule.loadFrame2();" />
+                        <apex:commandButton id="cancelButton2" action="{!cancel}" value="Back" immediate="true" />
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockSection rendered="{!!isActivityFormatError}">
+                        <apex:outputField value="{!Account.Name}" />
+                        <apex:inputField id="startDate2" value="{!activityBill.AcctSeed__Date__c}" label="Statement Start Date" required="true">
+                            <apex:actionSupport event="onchange" oncomplete="AcctSeed.ASModule.loadFrame2();" rerender="theForm" />
+                        </apex:inputField>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Billing Contact" for="billingcontactname" />
+                            <apex:outputText id="billingcontactname" value="{!Account.Billing_Contact__r.Name} ({!Account.Billing_Contact__r.Email})" />
+                        </apex:pageBlockSectionItem>
+                        <apex:inputField id="endDate2" value="{!activityBill.AcctSeed__Due_Date2__c}" label="Statement End Date" required="true">
+                            <apex:actionSupport event="onchange" oncomplete="AcctSeed.ASModule.loadFrame2();" rerender="theForm" />
+                        </apex:inputField>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Send to Contact" />
+                            <apex:inputField value="{!activityAccount.AcctSeed__Billing_Contact__c}">
+                                <apex:actionSupport event="onchange" rerender="theForm" oncomplete="AcctSeed.ASModule.loadFrame2();" />
+                            </apex:inputField>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="CC Me" for="ccUser" />
+                            <apex:inputCheckbox id="ccUser" value="{!activityCCUser}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="CC Addresses" for="activityCCAddresses" />
+                            <apex:inputText id="activityCCAddresses" value="{!activityCCAddresses}" title="seperate each email address with a semi-colon (;)" style="width:200px"/>
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                <apex:pageBlock id="pdfBlock2" title="Billing Activity Statement PDF Preview" rendered="{!!isActivityFormatError && !isValidationError}">
+                    <div id="loader2" style="font-weight:bold;">
+                        <img src="/img/loading.gif" style="text-align:center" width="16" height="16" alt="loading gif" />&nbsp;&nbsp;Creating Activity Statement PDF...
+                    </div>
+                    <div id="frameDiv">
+                        <apex:iframe id="iframe2" src="{!activityPDFName}?id={!Account.Id}&formatId={!activityFormat.Id}&startDate={!ActivityStartDate}&endDate={!ActivityEndDate}&reportType=activity" />
+                    </div>
+                </apex:pageBlock>
+            </apex:tab>
+        </apex:tabPanel>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>This template is used to email a billing to a customer and includes a payment link.</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Billing Payment Link Email Template</name>
+    <style>none</style>
+    <subject>{!Organization.Name} - Billing #{!Billing__c.Name}</subject>
+    <textOnly>{!Contact.Name},
+
+Attached is your billing #{!Billing__c.Name} dated {!Billing__c.Date__c}. The current balance on this billing is {!Billing__c.Balance__c} 
+
+Please use the hyperlink below to pay this billing.
+
+{!Billing__c.Payment_Link__c} 
+
+Thank you for your business.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

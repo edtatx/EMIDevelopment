@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>GL_Account_Record_Home</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>GL_Account_Compact_Layout</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>GL_Account_Compact_Layout</fullName>
+        <fields>Name</fields>
+        <fields>Type__c</fields>
+        <fields>Sub_Type_1__c</fields>
+        <fields>Sub_Type_2__c</fields>
+        <fields>Bank__c</fields>
+        <label>GL Account Compact Layout</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to document the general ledger accounts used by the financial suite accounting application. This is a traditional general ledger account.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Active__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Denotes if the GL Account is active. Most filtered lookups to the GL Account object look for an active status.</inlineHelpText>
+        <label>Active</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Bank__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates if the GL Account can be selected to record Cash Receipts and Disbursements and used in Bank Direct Connect and Bank Reconciliation.</inlineHelpText>
+        <label>Bank</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Billing_Description__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This is an alternate name for the GL Account when used in Billings to display a more customer Friendly description of the GL Account. This feature only is applicable to Revenue GL Accounts.</inlineHelpText>
+        <label>Billing Description</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Expense_Report_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used in expense report entry screen to provide a more user friendly name for a GL Account</inlineHelpText>
+        <label>Expense Report Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mileage_Account__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box if the account is to be used to track Mileage in Expenses Reports.</inlineHelpText>
+        <label>Mileage Account</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Mileage_Rate__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used for mileage rate for expenses.</inlineHelpText>
+        <label>Mileage Rate</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>4</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sub_Type_1__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used in conjunction with the Type field to further classify GL Accounts. Balance Sheet accounts must be Assets, Liabilities or Owners Equity.</inlineHelpText>
+        <label>Sub Type 1</label>
+        <picklist>
+            <controllingField>Type__c</controllingField>
+            <picklistValues>
+                <fullName>Assets</fullName>
+                <default>false</default>
+                <controllingFieldValues>Balance Sheet</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Liabilities</fullName>
+                <default>false</default>
+                <controllingFieldValues>Balance Sheet</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Owners Equity</fullName>
+                <default>false</default>
+                <controllingFieldValues>Balance Sheet</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Revenue</fullName>
+                <default>false</default>
+                <controllingFieldValues>Revenue</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost of Sales</fullName>
+                <default>false</default>
+                <controllingFieldValues>Expense</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Operating Expenses</fullName>
+                <default>false</default>
+                <controllingFieldValues>Expense</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Expenses</fullName>
+                <default>false</default>
+                <controllingFieldValues>Expense</controllingFieldValues>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Type_2__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used in conjunction with the Type and Subtype 1 fields to further classify GL Accounts in reports. This pick list is dependent on Subtype 1.</inlineHelpText>
+        <label>Sub Type 2</label>
+        <picklist>
+            <controllingField>Sub_Type_1__c</controllingField>
+            <picklistValues>
+                <fullName>Cash</fullName>
+                <default>false</default>
+                <controllingFieldValues>Assets</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Current Assets</fullName>
+                <default>false</default>
+                <controllingFieldValues>Assets</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fixed Assets</fullName>
+                <default>false</default>
+                <controllingFieldValues>Assets</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Current Liabilities</fullName>
+                <default>false</default>
+                <controllingFieldValues>Liabilities</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Long Term Liabilities</fullName>
+                <default>false</default>
+                <controllingFieldValues>Liabilities</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shareholders Equity</fullName>
+                <default>false</default>
+                <controllingFieldValues>Owners Equity</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billed Revenue</fullName>
+                <default>false</default>
+                <controllingFieldValues>Revenue</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Revenue</fullName>
+                <default>false</default>
+                <controllingFieldValues>Revenue</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Over/Under Billings Adjustment</fullName>
+                <default>false</default>
+                <controllingFieldValues>Revenue</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Costs</fullName>
+                <default>false</default>
+                <controllingFieldValues>Cost of Sales</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Salaries</fullName>
+                <default>false</default>
+                <controllingFieldValues>Operating Expenses</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Selling &amp; Marketing</fullName>
+                <default>false</default>
+                <controllingFieldValues>Operating Expenses</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Office</fullName>
+                <default>false</default>
+                <controllingFieldValues>Operating Expenses</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Professional Services</fullName>
+                <default>false</default>
+                <controllingFieldValues>Operating Expenses</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Building &amp; Facilities</fullName>
+                <default>false</default>
+                <controllingFieldValues>Operating Expenses</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Automotive</fullName>
+                <default>false</default>
+                <controllingFieldValues>Operating Expenses</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Utilities</fullName>
+                <default>false</default>
+                <controllingFieldValues>Operating Expenses</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Travel</fullName>
+                <default>false</default>
+                <controllingFieldValues>Operating Expenses</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <controllingFieldValues>Operating Expenses</controllingFieldValues>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Expenses</fullName>
+                <default>false</default>
+                <controllingFieldValues>Other Expenses</controllingFieldValues>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>TM_Revenue_Conversion__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used for correctly mapping expense related transactions to the proper revenue related GL Account when creating Billing records from Time Card or Expense Report records.</inlineHelpText>
+        <label>Time and Expense Revenue Conversion</label>
+        <referenceTo>GL_Account__c</referenceTo>
+        <relationshipLabel>GL Accounts</relationshipLabel>
+        <relationshipName>Project_GL_Accounts</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Must be Balance Sheet, Revenue or Expense.</inlineHelpText>
+        <label>Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Balance Sheet</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Revenue</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Expense</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Used_in_Expense_Reports__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Must be marked True to be available for selection in submitting an expense.</inlineHelpText>
+        <label>Used in Expense Reports</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>GL Account</label>
+    <listViews>
+        <fullName>All1</fullName>
+        <columns>NAME</columns>
+        <columns>Type__c</columns>
+        <columns>Sub_Type_1__c</columns>
+        <columns>Sub_Type_2__c</columns>
+        <columns>Bank__c</columns>
+        <columns>Used_in_Expense_Reports__c</columns>
+        <columns>Active__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Balance_Sheet</fullName>
+        <columns>NAME</columns>
+        <columns>Type__c</columns>
+        <columns>Sub_Type_1__c</columns>
+        <columns>Sub_Type_2__c</columns>
+        <columns>Bank__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>Balance Sheet</value>
+        </filters>
+        <label>Balance Sheet</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Expense</fullName>
+        <columns>NAME</columns>
+        <columns>Type__c</columns>
+        <columns>Sub_Type_1__c</columns>
+        <columns>Sub_Type_2__c</columns>
+        <columns>Bank__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>Expense</value>
+        </filters>
+        <label>Expense</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Revenue</fullName>
+        <columns>NAME</columns>
+        <columns>Type__c</columns>
+        <columns>Sub_Type_1__c</columns>
+        <columns>Sub_Type_2__c</columns>
+        <columns>Bank__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>Revenue</value>
+        </filters>
+        <label>Revenue</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>GL Account Name</label>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>GL Accounts</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Active__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Bank__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Used_in_Expense_Reports__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Mileage_Account__c</customTabListAdditionalFields>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Active__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Bank__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Used_in_Expense_Reports__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Mileage_Account__c</lookupDialogsAdditionalFields>
+        <lookupFilterFields>NAME</lookupFilterFields>
+        <lookupFilterFields>Active__c</lookupFilterFields>
+        <lookupFilterFields>Bank__c</lookupFilterFields>
+        <lookupFilterFields>Type__c</lookupFilterFields>
+        <lookupFilterFields>Used_in_Expense_Reports__c</lookupFilterFields>
+        <lookupFilterFields>Mileage_Account__c</lookupFilterFields>
+        <lookupPhoneDialogsAdditionalFields>Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Active__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Bank__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Used_in_Expense_Reports__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Mileage_Account__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Type__c</searchFilterFields>
+        <searchFilterFields>Active__c</searchFilterFields>
+        <searchFilterFields>Bank__c</searchFilterFields>
+        <searchFilterFields>Used_in_Expense_Reports__c</searchFilterFields>
+        <searchFilterFields>Mileage_Account__c</searchFilterFields>
+        <searchResultsAdditionalFields>Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Bank__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Used_in_Expense_Reports__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Mileage_Account__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Mileage_Acccount_Require_Rate</fullName>
+        <active>true</active>
+        <description>Require a mileage rate if the GL Account is a mileage account</description>
+        <errorConditionFormula>Mileage_Account__c = true &amp;&amp; ISBLANK( Mileage_Rate__c )</errorConditionFormula>
+        <errorDisplayField>Mileage_Rate__c</errorDisplayField>
+        <errorMessage>You must specify a mileage rate for a mileage account.</errorMessage>
+    </validationRules>
+</CustomObject>

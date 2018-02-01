@@ -1,0 +1,7 @@
+<apex:page standardController="AcctSeed__Account_Payable_Line__c" extensions="AcctSeed.MassAddEditLineController" recordSetVar="apLines">
+
+    <apex:pageMessages />
+    <apex:outputLink rendered="{!isError}" onClick="javascript: history.back();" style="margin-left: 20px;">&nbsp;«&nbsp;Back</apex:outputLink>
+    <c:MassAddEditLineComponent masterRecordAttr="{!masterRecord}" isRecordPostedAttr="{!isRecordPosted}" cancelAction="{!cancel}" rendered="{!!isError}"/>
+
+</apex:page>

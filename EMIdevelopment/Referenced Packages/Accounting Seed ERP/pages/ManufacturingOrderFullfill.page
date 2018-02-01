@@ -1,0 +1,106 @@
+<apex:page id="thePage" standardController="AcctSeed__Project__c" extensions="AcctSeedERP.ManufacturingOrderFullfill,AcctSeedERP.EnvironmentUtils" recordSetVar="sos" sidebar="false">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!DefaultLocale}";
+        AcctSeed.ASModule.defaultCurrency = "{!DefaultCurrency}";
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true" /> 
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeedERP__accounting_erp_resources, '/javascript/manufacturing-order-fullfill.js')}" loadOnReady="true" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeedERP__accounting_erp_resources, '/css/erp.common.css')}"/>  
+    <apex:form id="theForm">
+        <apex:sectionHeader title="Project - Work Orders" subtitle="Create Purchase Orders"/>        
+        <apex:pageBlock id="thePageBlockMaterial" title="Material Products">
+        <apex:pageMessages escape="false" rendered="{!showMessages}"/>
+            <apex:pageMessage severity="info" strength="3" summary="You must include a value for vendor for every line you want to create a purchase order" rendered="{!materialWrapperList.size>0}"/>
+            <apex:pageMessage severity="error" strength="3" summary="You have attempted to create a purchase order with over 1000 lines. Please limit the number of manufacturing orders (projects) selected from the list view" rendered="{!isPurchaseOrderSizeLimit}"/>
+            <apex:pageBlockButtons id="pageBlockButtonDraftTop">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Creating Draft Purchase Orders...')" />
+                <apex:commandButton id="draftButton" status="saveStatus" value="View Draft Purchase Orders" action="{!createDraftPurchaseOrders}" rerender="theForm" rendered="{!!isProcessed && materialWrapperList.size>0}" oncomplete="AcctSeed.ASModule.formatCurrency()"/>     
+                <apex:commandButton id="cancelButtonTop" action="{!cancel}" value="Back" immediate="true"/>                           
+            </apex:pageBlockButtons>          
+            <apex:pageBlockTable value="{!materialWrapperList}" var="prod" width="100%" rendered="{!materialWrapperList.size>0}">
+                <apex:column value="{!prod.product.Name}"/>
+                <apex:column value="{!prod.product.ProductCode}"/>
+                <apex:column value="{!prod.product.Description}"/>
+                <apex:column headerValue="Vendor">
+                    <apex:inputField value="{!prod.po.AcctSeedERP__Vendor__c}" rendered="{!!isProcessed}"/>
+                    <apex:outputField value="{!prod.po.AcctSeedERP__Vendor__c}" rendered="{!isProcessed}"/>                    
+                </apex:column>                               
+           </apex:pageBlockTable>              
+        </apex:pageBlock>        
+        <apex:pageBlock id="thePageBlockPO" title="Draft Purchase Orders" rendered="{!poWrapperList.size>0}">
+            <apex:pageMessage severity="info" strength="3" summary="You must include a quantity greater than 0 and unit price for every purchase order line you want to include on the purchase order" rendered="{!!isProcessed}"/>        
+            <apex:pageBlockButtons id="pageBlockButtonvalueCreateTop">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Creating Purchase Orders...')" />
+                <apex:commandButton id="createButtonTop" status="saveStatus" value="Create Purchase Orders" action="{!createPurchaseOrders}" reRender="theForm" rendered="{!!isProcessed}" oncomplete="AcctSeed.ASModule.formatCurrency()"/>     
+            </apex:pageBlockButtons>               
+            <apex:repeat id="theTablePO" value="{!poWrapperList}" var="pw">
+                <table class="vendor-table" style="width:100%">
+                    <tr>
+                        <td class="vendor-label">Vendor:</td>
+                        <td><apex:outputField label="" value="{!pw.po.AcctSeedERP__Vendor__c}" /></td>
+                     </tr>                   
+                    <tr style="display:{!IF(isProcessed,'','none')}">
+                        <td class="vendor-label">Purchase Order:</td>
+                        <td><apex:outputLink value="/{!pw.po.Id}" id="theLink">{!pw.po.Name}</apex:outputLink></td>
+                     </tr>                                        
+                </table>
+                <br/>
+                <br/>
+                <apex:pageBlockTable id="pageBlockTableLines" value="{!pw.polWrapperList}" var="polw" style="width:100%;margin-left:10px">
+                    <apex:column value="{!polw.poLine.AcctSeedERP__Product__c}"/>                    
+                    <apex:column value="{!polw.productCode}">
+                        <apex:facet name="header">Product Code</apex:facet>
+                    </apex:column>                    
+                    <apex:column value="{!polw.poLine.AcctSeedERP__Project__c}" rendered="{!pw.isProjectDimension}"/>                    
+                    <apex:column value="{!polw.poLine.AcctSeedERP__Project_Task__c}" rendered="{!pw.isProjectTaskDimension}"/>                    
+                    <apex:column value="{!polw.poLine.AcctSeedERP__GL_Account_Variable_1__c}" rendered="{!pw.isGLAccount1Dimension}">
+                        <apex:facet name="header">GL Account<br/>Variable 1</apex:facet>
+                    </apex:column>                                      
+                    <apex:column value="{!polw.poLine.AcctSeedERP__GL_Account_Variable_2__c}" rendered="{!pw.isGLAccount2Dimension}">
+                        <apex:facet name="header">GL Account<br/>Variable 2</apex:facet>
+                    </apex:column>                                             
+                    <apex:column value="{!polw.poLine.AcctSeedERP__GL_Account_Variable_3__c}" rendered="{!pw.isGLAccount3Dimension}">
+                        <apex:facet name="header">GL Account<br/>Variable 3</apex:facet>
+                    </apex:column>                                             
+                    <apex:column value="{!polw.poLine.AcctSeedERP__GL_Account_Variable_4__c}" rendered="{!pw.isGLAccount4Dimension}">
+                        <apex:facet name="header">GL Account<br/>Variable 4</apex:facet>
+                    </apex:column>                                             
+                    <apex:column value="{!polw.quantityNeeded}" headerClass="align-right" styleClass="align-right">
+                        <apex:facet name="header">Quantity<br/>Needed</apex:facet>
+                    </apex:column>                    
+                    <apex:column value="{!polw.available}" headerClass="align-right" styleClass="align-right">
+                        <apex:facet name="header">Quantity<br/>In Stock</apex:facet>
+                    </apex:column>                                                     
+                    <apex:column value="{!polw.unreceived}" headerClass="align-right" styleClass="align-right">
+                        <apex:facet name="header">Quantity<br/>Unreceived</apex:facet>
+                    </apex:column>                                         
+                    <apex:column value="{!polw.product.AcctSeedERP__Minimum_Order_Quantity__c}" headerClass="align-right" styleClass="align-right"> 
+                        <apex:facet name="header">Minimum<br/>Order Quantity</apex:facet>
+                    </apex:column>                     
+                    <apex:column value="{!polw.product.AcctSeedERP__Safety_Stock_Quantity__c}" headerClass="align-right" styleClass="align-right"> 
+                        <apex:facet name="header">Safety<br/>Stock Quantity</apex:facet>
+                    </apex:column>                                                                              
+                    <apex:column headerValue="Quantity" width="80px" headerClass="align-right" styleClass="align-right">
+                        <apex:inputField id="quantity" style="width:80px" value="{!polw.poLine.AcctSeedERP__Quantity__c}" styleClass="align-right"  onkeyup="AcctSeed.ASModule.calculateAmount(this)" onchange="AcctSeed.ASModule.calculateAmount(this)" required="false" rendered="{!!isProcessed}"/>
+                        <apex:outputField style="width:80px" value="{!polw.poLine.AcctSeedERP__Quantity__c}" styleClass="align-right" rendered="{!isProcessed}"/>
+                    </apex:column>                                      
+                    <apex:column headerValue="Unit Price" headerClass="align-right" styleClass="align-right">
+                        <apex:inputField id="unitPrice" style="width:80px" value="{!polw.poLine.AcctSeedERP__Unit_Price__c}" styleClass="align-right" onkeyup="AcctSeed.ASModule.calculateAmount(this)" onchange="AcctSeed.ASModule.calculateAmount(this)" required="false" rendered="{!!isProcessed}"/>    
+                        <apex:outputField style="width:80px" value="{!polw.poLine.AcctSeedERP__Unit_Price__c}" styleClass="align-right" rendered="{!isProcessed}"/>                                      
+                    </apex:column>                                         
+                    <apex:column width="15%" headerValue="Total" headerClass="align-right" styleClass="align-right" footerClass="align-right">
+                        <apex:outputText id="totalAmount" value="{!polw.poLine.AcctSeedERP__Quantity__c * polw.poLine.AcctSeedERP__Unit_Price__c}" styleClass="align-right"/>
+                        <apex:facet name="footer">   
+                            <apex:outputText id="grandTotalAmount" value="{!pw.totalAmount}" styleClass="align-right"/>
+                        </apex:facet>                                          
+                    </apex:column>
+                </apex:pageBlockTable>     
+                <br/><br/>     
+            </apex:repeat>                    
+        </apex:pageBlock>     
+    </apex:form>
+</apex:page>

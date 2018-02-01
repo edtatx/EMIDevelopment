@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Available_Quantity__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Purchasing_Quantity__c + Inbound_Quantity__c - Sales_Order_Quantity__c - Manufacturing_Quantity__c - Outbound_Quantity__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Available Quantity</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Inbound_Quantity__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Inbound Quantity</label>
+        <summarizedField>Inbound_Inventory_Movement__c.Quantity__c</summarizedField>
+        <summaryForeignKey>Inbound_Inventory_Movement__c.Inventory_Balance__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Location__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Location</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Location__c.Warehouse__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.Warehouse__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Location__c</referenceTo>
+        <relationshipLabel>Inventory Balances</relationshipLabel>
+        <relationshipName>Inventory_Balances</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Manufacturing_Quantity__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Manufacturing Quantity</label>
+        <summarizedField>Manufacturing_Inventory_Movement__c.Quantity__c</summarizedField>
+        <summaryForeignKey>Manufacturing_Inventory_Movement__c.Inventory_Balance__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Outbound_Quantity__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Outbound Quantity</label>
+        <summarizedField>Outbound_Inventory_Movement__c.Quantity__c</summarizedField>
+        <summaryForeignKey>Outbound_Inventory_Movement__c.Inventory_Balance__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Product__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Product</label>
+        <referenceTo>Product2</referenceTo>
+        <relationshipLabel>Inventory Balance</relationshipLabel>
+        <relationshipName>Inventory_Balance</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Purchasing_Quantity__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Purchasing Quantity</label>
+        <summarizedField>Purchase_Order_Inventory_Movement__c.Quantity__c</summarizedField>
+        <summaryForeignKey>Purchase_Order_Inventory_Movement__c.Inventory_Balance__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Sales_Order_Quantity__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Sales Order Quantity</label>
+        <summarizedField>Sales_Order_Inventory_Movement__c.Quantity__c</summarizedField>
+        <summaryForeignKey>Sales_Order_Inventory_Movement__c.Inventory_Balance__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Warehouse__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Warehouse</label>
+        <referenceTo>Warehouse__c</referenceTo>
+        <relationshipLabel>Inventory Balance</relationshipLabel>
+        <relationshipName>Inventory_Balance</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Inventory Balance</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Product__c</columns>
+        <columns>Warehouse__c</columns>
+        <columns>Location__c</columns>
+        <columns>Available_Quantity__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>INV-{00000}</displayFormat>
+        <label>Inventory Balance Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Inventory Balances</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Product__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Warehouse__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Location__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Inbound_Quantity__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Outbound_Quantity__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Available_Quantity__c</customTabListAdditionalFields>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <listViewButtons>Create_Inventory_History</listViewButtons>
+        <lookupDialogsAdditionalFields>Product__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Warehouse__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Location__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Inbound_Quantity__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Outbound_Quantity__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Available_Quantity__c</lookupDialogsAdditionalFields>
+        <lookupFilterFields>NAME</lookupFilterFields>
+        <lookupFilterFields>Product__c</lookupFilterFields>
+        <lookupFilterFields>Warehouse__c</lookupFilterFields>
+        <lookupFilterFields>Location__c</lookupFilterFields>
+        <lookupFilterFields>Inbound_Quantity__c</lookupFilterFields>
+        <lookupFilterFields>Outbound_Quantity__c</lookupFilterFields>
+        <lookupPhoneDialogsAdditionalFields>Product__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Warehouse__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Location__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Inbound_Quantity__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Outbound_Quantity__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Available_Quantity__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Product__c</searchFilterFields>
+        <searchFilterFields>Warehouse__c</searchFilterFields>
+        <searchFilterFields>Location__c</searchFilterFields>
+        <searchFilterFields>Inbound_Quantity__c</searchFilterFields>
+        <searchFilterFields>Outbound_Quantity__c</searchFilterFields>
+        <searchFilterFields>Available_Quantity__c</searchFilterFields>
+        <searchResultsAdditionalFields>Product__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Warehouse__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Location__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Inbound_Quantity__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Outbound_Quantity__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Available_Quantity__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Location_Is_Required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Location__c)</errorConditionFormula>
+        <errorDisplayField>Location__c</errorDisplayField>
+        <errorMessage>You must enter a value</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Outbound_Less_Than_Equal_Inbound</fullName>
+        <active>true</active>
+        <description>Ensure outbound inventory movements are less than or equal to outbound inventory movements</description>
+        <errorConditionFormula>(Manufacturing_Quantity__c +  Purchasing_Quantity__c +  Inbound_Quantity__c) &lt; ( Sales_Order_Quantity__c +  Outbound_Quantity__c)</errorConditionFormula>
+        <errorMessage>The aggregate outbound quantity on the inventory balance cannot be more than the aggregate inbound quantity</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Prevent_Update_Location_if_Movements</fullName>
+        <active>true</active>
+        <description>Prevent changing the location if there are associated inventory movements</description>
+        <errorConditionFormula>NOT(ISNEW()) &amp;&amp; (Inbound_Quantity__c &gt; 0 ||  Outbound_Quantity__c &gt; 0 ||  Manufacturing_Quantity__c &gt; 0 ||  Sales_Order_Quantity__c &gt; 0 ||  Purchasing_Quantity__c &gt; 0) &amp;&amp;  PRIORVALUE(Location__c) != Location__c</errorConditionFormula>
+        <errorDisplayField>Location__c</errorDisplayField>
+        <errorMessage>You cannot change the location if there are associated inventory movements. You must delete all inventory movements in order to change the location.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Prevent_Update_Product_if_Movements</fullName>
+        <active>true</active>
+        <description>Prevent changing the product if there are associated inventory movements</description>
+        <errorConditionFormula>NOT(ISNEW()) &amp;&amp; (Inbound_Quantity__c &gt; 0 ||  Outbound_Quantity__c &gt; 0 ||  Manufacturing_Quantity__c &gt; 0 ||  Sales_Order_Quantity__c &gt; 0 ||  Purchasing_Quantity__c &gt; 0) &amp;&amp;  PRIORVALUE(Product__c) != Product__c</errorConditionFormula>
+        <errorDisplayField>Product__c</errorDisplayField>
+        <errorMessage>You cannot change the product if there are associated inventory movements. You must delete all inventory movements in order to change the product.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Prevent_Update_Warehouse_if_Movements</fullName>
+        <active>true</active>
+        <description>Prevent changing the warehouse if there are associated inventory movements</description>
+        <errorConditionFormula>NOT(ISNEW()) &amp;&amp; (Inbound_Quantity__c &gt; 0 ||  Outbound_Quantity__c &gt; 0 ||  Manufacturing_Quantity__c &gt; 0 ||  Sales_Order_Quantity__c &gt; 0 ||  Purchasing_Quantity__c &gt; 0) &amp;&amp;  PRIORVALUE(Warehouse__c) != Warehouse__c</errorConditionFormula>
+        <errorDisplayField>Warehouse__c</errorDisplayField>
+        <errorMessage>You cannot change the warehouse if there are associated inventory movements. You must delete all inventory movements in order to change the warehouse.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Product_Is_Inventory_Product</fullName>
+        <active>true</active>
+        <description>Only inventoried products can be associated with an inventory balance</description>
+        <errorConditionFormula>Product__r.AcctSeed__Inventory_Product__c = false</errorConditionFormula>
+        <errorDisplayField>Product__c</errorDisplayField>
+        <errorMessage>Only a product where the inventory product field is true can be associated with an inventory balance</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Product_Is_Required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Product__c)</errorConditionFormula>
+        <errorDisplayField>Product__c</errorDisplayField>
+        <errorMessage>You must enter a value</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Warehouse_Is_Required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Warehouse__c)</errorConditionFormula>
+        <errorDisplayField>Warehouse__c</errorDisplayField>
+        <errorMessage>You must enter a value</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Create_Inventory_History</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Create Inventory History</masterLabel>
+        <openType>sidebar</openType>
+        <page>InventoryBalanceHistory</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>Transfer</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Transfer</masterLabel>
+        <openType>sidebar</openType>
+        <page>InventoryMovementTransfer</page>
+        <protected>false</protected>
+    </webLinks>
+</CustomObject>

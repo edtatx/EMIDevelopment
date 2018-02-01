@@ -1,0 +1,32 @@
+<apex:page standardController="AcctSeed__Billing__c" extensions="AcctSeed.ScheduledRevenueExpensesFromBilling">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/>    
+    <apex:form id="theForm">
+        <apex:sectionHeader title="{!$ObjectType.AcctSeed__Billing__c.label}" subtitle="{!AcctSeed__Billing__c.Name}" /> 
+        <apex:pageBlock id="thePageBlock" title="Create {!$ObjectType.AcctSeed__Scheduled_Revenue_Expense__c.label}"> 
+            <apex:pageMessages escape="false"/>
+            <apex:pageMessage rendered="{!isNoSelectionError}" severity="error" strength="3" summary="No {!$ObjectType.AcctSeed__Billing__c.label} record is selected." />
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')"/>
+                <apex:commandButton id="saveButton" action="{!createScheduledRevenueExpense}" value="Amortize Revenue" status="saveStatus" reRender="theForm"/>
+                <apex:commandButton id="cancelButton" action="{!cancel}" value="Back" status="saveStatus" immediate="true" reRender="theForm"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+                <apex:inputField value="{!billing.AcctSeed__Customer__c}" rendered="{!NOT(isNoSelectionError) }"/>
+                <apex:inputField value="{!scr.AcctSeed__Product__c}"/>
+                <apex:inputField value="{!billing.AcctSeed__Billing_Cycle_Start_Date__c}" label="Start Date" required="true" rendered="{!NOT(isNoSelectionError) }"/>
+                <apex:inputField value="{!scr.AcctSeed__Project__c}"/>
+                <apex:inputField value="{!billing.AcctSeed__Billing_Cycle_End_Date__c}" label="End Date" required="true" rendered="{!NOT(isNoSelectionError) }"/> 
+                <apex:inputField value="{!scr.AcctSeed__Project_Task__c}"/>
+                <apex:inputField value="{!scr.Amount__c }"/>
+                <apex:inputField value="{!scr.AcctSeed__GL_Account_Variable_1__c}"/>
+                <apex:inputField value="{!scr.AcctSeed__Debit_GL_Account__c}" required="true" />
+                <apex:inputField value="{!scr.AcctSeed__GL_Account_Variable_2__c}"/>
+                <apex:inputField value="{!scr.AcctSeed__Credit_GL_Account__c}" required="true" />
+                <apex:inputField value="{!scr.AcctSeed__GL_Account_Variable_3__c}"/>
+                <apex:inputField value="{!scr.AcctSeed__Description__c}" />
+                <apex:inputField value="{!scr.AcctSeed__GL_Account_Variable_4__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

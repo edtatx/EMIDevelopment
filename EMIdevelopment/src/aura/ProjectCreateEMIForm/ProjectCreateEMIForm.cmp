@@ -1,0 +1,84 @@
+<aura:component controller="ProjectCreateScreenControllerEMINew"
+                implements="lightning:actionOverride,force:hasRecordId,force:hasSObjectName,force:lightningQuickActionWithoutHeader,force:appHostable,flexipage:availableForRecordHome"
+                            access="global">
+    
+    <aura:attribute name="projObj" type="AcctSeed__Project__c" default="{'sobjectType':'AcctSeed__Project__c'}" />  
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="opname" type="String" />
+    <aura:attribute name="startDate" type="Date" />
+    <aura:attribute name="projName" type="String" />
+    <aura:attribute name="quoteId" type="Id" />
+    <aura:attribute name="acctName" type="String" />
+    
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+  	
+    <!--create a component attribute -->
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    
+    <!--loading spinner start... style=Brand Medium (blue dots)-->
+ 	<aura:if isTrue="{!v.Spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+           <div class="slds-spinner--brand  slds-spinner slds-spinner--medium" role="alert">
+             <div class="slds-spinner__dot-a"></div>
+             <div class="slds-spinner__dot-b"></div>
+           </div>
+        </div>
+ 	</aura:if>
+  <!-- Loading spinner end--> 
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div  class="slds-page-header slds-align_absolute-center slds-is-relative">
+        <div class="slds-media">
+            <div class="slds-media__figure">
+                <lightning:icon iconName="custom:custom67" />
+            </div>
+                <div area-labelledby="newprojectform">
+                    <fieldset class="slds-box slds-theme--default slds-container--small slds-is-relative">
+                        <legend id="newprojectform" class="slds-text-heading--medium slds-p-vertical--medium slds-is-relative">Create a Job</legend>
+                
+                        <form class="slds-form--stacked slds-is-relative">      
+                            <div class="slds-form-element slds-is-required slds-is-relative">
+                                <div class="slds-form-element__control slds-is-relative">
+                                    <ui:inputDate aura:id="opname" label="Opportunity " class="slds-input" labelClass="slds-form-element__label"
+                                                  value="{!v.opname}" required="false" disabled="true"/>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-form-element slds-is-required slds-is-relative">
+                                <div class="slds-form-element__control slds-is-relative">
+                                    <ui:inputDate aura:id="acctName" label="Account " class="slds-input" labelClass="slds-form-element__label"
+                                                  value="{!v.acctName}" required="false" disabled="true"/>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-form-element slds-is-required slds-is-relative">
+                                <div class="slds-form-element__control slds-is-relative">
+                                    <ui:inputDate aura:id="startDate" label="Expected Start Date from Opportunity" class="slds-input" labelClass="slds-form-element__label"
+                                                  value="{!v.startDate}" required="false" disabled="true"/>
+                                </div>
+                            </div>
+                            
+                             <div class="slds-form-element slds-is-required slds-is-relative">
+                                <div class="slds-form-element__control slds-is-relative">
+                                    <ui:inputText aura:id="projectName" label="Job Name" class="slds-input" labelClass="slds-form-element__label"
+                                                  value="{!v.projObj.Name}" required="true"/>
+                                    <br></br>
+                                </div>
+                            </div>
+                            
+                            <!--div class="slds-form-element"-->
+                                <lightning:buttonGroup >
+                                    <lightning:button variant="brand" label="Create" onclick="{!c.handleSaveRecord}" />	
+                                    <lightning:button label="Cancel" onclick="{!c.handleCancel}" />
+                                </lightning:buttonGroup>
+                            <!--/div-->	
+                 
+                        </form>
+                    
+                    </fieldset>
+                </div>
+           </div>
+       </div>
+</aura:component>

@@ -1,0 +1,31 @@
+<aura:component controller="ProjectTaskMassUpdateControllerEMI"
+                implements="lightning:actionOverride,force:hasRecordId,force:hasSObjectName,force:lightningQuickActionWithoutHeader,force:appHostable,flexipage:availableForRecordHome"
+                            access="global">
+   
+    <aura:attribute name="recordId" type="Id" />  
+    <aura:attribute name="mydata" type="Object"/>
+    <aura:attribute name="mycolumns" type="List"/>
+    <aura:attribute name="tasks" type="AcctSeed__Project_Task__c"/>
+    <aura:attribute name="days" type="Integer"/>
+    <aura:attribute name="projname" type="String"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <!--aura:handler name="getProj" value="{! this }" action="{! c.getProj }"/-->
+    
+    <lightning:card iconName="standard:contact" title="{! 'Tasks for Job ' + v.projname}">
+        <lightning:input Name="Number of Days for Adjustment" value="{!v.days}" label="Number of Days for Adjustment" placeholder="Please enter the number of days for adjustment" /> 
+        <br/>
+        <lightning:datatable data="{! v.mydata }" 
+            aura:id="tasks"
+            columns="{! v.mycolumns }" 
+            keyField="id"
+         />
+     </lightning:card>
+    <br></br>
+    <lightning:buttonGroup >
+        <lightning:button variant="brand" label="Save" onclick="{!c.onSave}" />	
+        <lightning:button label="Cancel" onclick="{!c.onCancel}" />
+    </lightning:buttonGroup>
+</aura:component>
+
+<!-- onrowselection="{! c.onSave }" -->

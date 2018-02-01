@@ -1,0 +1,7 @@
+<apex:page standardController="AcctSeed__Journal_Entry_Line__c" extensions="AcctSeed.MassAddEditLineController" recordSetVar="jeLines">
+
+    <apex:pageMessages />
+    <apex:outputLink rendered="{!isError}" onClick="javascript: history.back();" style="margin-left: 20px;">&nbsp;«&nbsp;Back</apex:outputLink>
+    <c:MassAddEditLineComponent masterRecordAttr="{!masterRecord}" isRecordPostedAttr="{!isRecordPosted}" cancelAction="{!cancel}" rendered="{!!isError}"/>
+
+</apex:page>

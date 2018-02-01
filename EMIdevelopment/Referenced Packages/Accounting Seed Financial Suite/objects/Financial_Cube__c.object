@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>Financial_Cube_Record_Home</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>Financial_Cube_Compact_Layout</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>Financial_Cube_Compact_Layout</fullName>
+        <fields>Name</fields>
+        <fields>Accounting_Period__c</fields>
+        <fields>GL_Account__c</fields>
+        <fields>Opening_Balance__c</fields>
+        <fields>Amount__c</fields>
+        <fields>Year_To_Date__c</fields>
+        <label>Financial Cube Compact Layout</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to sum transaction records across various dimensions for reporting. Transactions which map to the same gl account, accounting period, ledger, and GL account variables are aggregated by financial cube for the purpose of generating financial reports.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Accounting_Period_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>TEXT(Accounting_Period__r.Status__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Accounting Period Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Accounting_Period__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Accounting Period</label>
+        <referenceTo>Accounting_Period__c</referenceTo>
+        <relationshipName>Financial_Cubes</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount for the current period</inlineHelpText>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Cube_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>All budget cubes should have a value of “Current Period” other values are used for internal purposes only.</inlineHelpText>
+        <label>Cube Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Period</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Current Year Earnings</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Retained Earnings</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Current_Period__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(Ledger_Type__c = &quot;Budget&quot;, Amount__c, 
+	IF(Ledger_Type__c = &quot;Transactional&quot; &amp;&amp; Accounting_Period_Status__c = &quot;Archived&quot;, Amount__c,
+		IF(Ledger_Type__c = &quot;Transactional&quot; &amp;&amp; TEXT(Cube_Type__c) = &quot;Current Year Earnings&quot;, Amount__c,
+			IF(Ledger_Type__c = &quot;Transactional&quot; &amp;&amp; TEXT(Cube_Type__c) = &quot;Retained Earnings&quot;, Amount__c,
+				IF(Ledger_Type__c = &quot;Transactional&quot; &amp;&amp; TEXT(Cube_Type__c) = &quot;Period&quot;,Transaction_Amount__c,0
+
+				)
+			)
+		)
+	)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Current Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Text(GL_Account__r.Type__c)</formula>
+        <label>GL Account Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_1__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 1</label>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipName>Financial_Cubes</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_2__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 2</label>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipName>Financial_Cubes1</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_3__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 3</label>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipName>Financial_Cubes2</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_4__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 4</label>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipName>Financial_Cubes3</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger Account.</inlineHelpText>
+        <label>GL Account</label>
+        <referenceTo>GL_Account__c</referenceTo>
+        <relationshipName>Financial_Cubes</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Key_Group__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>true</externalId>
+        <label>Key Group</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Key__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <deprecated>false</deprecated>
+        <externalId>true</externalId>
+        <label>Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Ledger_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>TEXT(Ledger__r.Type__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Ledger Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ledger__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Ledger</label>
+        <referenceTo>Ledger__c</referenceTo>
+        <relationshipName>Financial_Cubes</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>MTD_Actual_P_L__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL(Ledger__r.Type__c, &quot;Transactional&quot;),  Transaction_Amount__c*-1,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>MTD Actual (P&amp;L)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>MTD_Budget_P_L__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL( Ledger__r.Type__c , &quot;Budget&quot;), Amount__c *-1,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>MTD Budget (P&amp;L)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Opening_Balance__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The balance of the GL account and variable combination at the beginning of the accounting period</inlineHelpText>
+        <label>Opening Balance</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Type_1__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Text(GL_Account__r.Sub_Type_1__c )</formula>
+        <label>Sub Type 1</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sub_Type_2__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Text(GL_Account__r.Sub_Type_2__c)</formula>
+        <label>Sub Type 2</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Transaction_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Transaction Amount</label>
+        <summarizedField>Financial_Cube_Transaction__c.Amount__c</summarizedField>
+        <summaryForeignKey>Financial_Cube_Transaction__c.Financial_Cube__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>YTD_Actual_P_L__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL( Ledger__r.Type__c , &quot;Transactional&quot;), Year_To_Date__c *-1,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>YTD Actual (P&amp;L)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>YTD_Budget_P_L__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL( Ledger__r.Type__c , &quot;Budget&quot;), Year_To_Date__c *-1,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>YTD Budget (P&amp;L)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Year_To_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Opening_Balance__c + Current_Period__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Year To Date</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Year__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>4 digit representation of the year. Example “2016”</inlineHelpText>
+        <label>Year</label>
+        <precision>4</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Financial Cube</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Cube_Type__c</columns>
+        <columns>Ledger__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Opening_Balance__c</columns>
+        <columns>Amount__c</columns>
+        <columns>GL_Account__c</columns>
+        <columns>GL_Account_Variable_1__c</columns>
+        <columns>GL_Account_Variable_2__c</columns>
+        <columns>GL_Account_Variable_3__c</columns>
+        <columns>GL_Account_Variable_4__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Budget</fullName>
+        <columns>NAME</columns>
+        <columns>Cube_Type__c</columns>
+        <columns>Ledger__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Opening_Balance__c</columns>
+        <columns>Amount__c</columns>
+        <columns>GL_Account__c</columns>
+        <columns>GL_Account_Variable_1__c</columns>
+        <columns>GL_Account_Variable_2__c</columns>
+        <columns>GL_Account_Variable_3__c</columns>
+        <columns>GL_Account_Variable_4__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Ledger_Type__c</field>
+            <operation>equals</operation>
+            <value>Budget</value>
+        </filters>
+        <label>Financial Cube</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Current_Balances</fullName>
+        <columns>NAME</columns>
+        <columns>Ledger__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Cube_Type__c</columns>
+        <columns>GL_Account__c</columns>
+        <columns>GL_Account_Variable_1__c</columns>
+        <columns>GL_Account_Variable_2__c</columns>
+        <columns>GL_Account_Variable_3__c</columns>
+        <columns>GL_Account_Variable_4__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Year__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Current Balances</label>
+    </listViews>
+    <listViews>
+        <fullName>PeriodBalances</fullName>
+        <columns>NAME</columns>
+        <columns>Cube_Type__c</columns>
+        <columns>Year__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Amount__c</columns>
+        <columns>GL_Account__c</columns>
+        <columns>GL_Account_Variable_1__c</columns>
+        <columns>GL_Account_Variable_2__c</columns>
+        <columns>GL_Account_Variable_3__c</columns>
+        <columns>GL_Account_Variable_4__c</columns>
+        <columns>Transaction_Amount__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Cube_Type__c</field>
+            <operation>equals</operation>
+            <value>Period</value>
+        </filters>
+        <label>Period Balances</label>
+    </listViews>
+    <nameField>
+        <displayFormat>FC-{00000}</displayFormat>
+        <label>Financial Cube Name</label>
+        <trackHistory>true</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Financial Cubes</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Accounting_Period__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Cube_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>GL_Account__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>GL_Account_Variable_1__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>GL_Account_Variable_2__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>GL_Account_Variable_3__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>GL_Account_Variable_4__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Opening_Balance__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Current_Period__c</customTabListAdditionalFields>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>Accounting_Period__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Cube_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>GL_Account__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>GL_Account_Variable_1__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>GL_Account_Variable_2__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>GL_Account_Variable_3__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>GL_Account_Variable_4__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Opening_Balance__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Current_Period__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Accounting_Period__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Cube_Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>GL_Account__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>GL_Account_Variable_1__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>GL_Account_Variable_2__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>GL_Account_Variable_3__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>GL_Account_Variable_4__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Opening_Balance__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Current_Period__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Accounting_Period__c</searchFilterFields>
+        <searchFilterFields>Cube_Type__c</searchFilterFields>
+        <searchFilterFields>GL_Account__c</searchFilterFields>
+        <searchFilterFields>Ledger_Type__c</searchFilterFields>
+        <searchFilterFields>Year__c</searchFilterFields>
+        <searchResultsAdditionalFields>Accounting_Period__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Cube_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>GL_Account__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>GL_Account_Variable_1__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>GL_Account_Variable_2__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>GL_Account_Variable_3__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>GL_Account_Variable_4__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Opening_Balance__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Current_Period__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Cube_Type_Is_Required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(TEXT(Cube_Type__c))</errorConditionFormula>
+        <errorDisplayField>Cube_Type__c</errorDisplayField>
+        <errorMessage>You must enter a cube type</errorMessage>
+    </validationRules>
+</CustomObject>

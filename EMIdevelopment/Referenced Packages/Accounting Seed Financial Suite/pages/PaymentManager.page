@@ -1,0 +1,57 @@
+<apex:page standardController="Account" extensions="AcctSeed.PaymentManager">
+
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/stripe-common.js')}"/>
+
+    <apex:pageMessage severity="info" summary="You need to either create or connect to a Stripe account in order to create payments in Stripe. Please go to the Accounting Settings tab and under the Stripe Settings tab click the Connect to Stripe button." strength="3" rendered="{!noStripeConnectedId}"/>
+
+    <apex:form id="theForm" rendered="{!!noStripeConnectedId}">
+        <apex:sectionHeader title="{!$ObjectType.Account.Label}" subtitle="Create Payment"/>
+        <apex:pageBlock id="thePageBlock" title="New Payment" mode="edit">
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...');"/>
+                <apex:commandButton id="submitPayment"
+                                    action="{!submitPayment}"
+                                    status="saveStatus"
+                                    value="Create Payment"
+                                    reRender="theForm,pageMessages"
+                                    rendered="{!!isErrorMode && !isSuccess}"/>
+                <apex:commandButton id="cancelButton" action="{!cancel}" value="Back" status="saveStatus"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageMessages id="pageMessages" escape="false"/>
+            <apex:pageBlockSection id="firstBlockSection" collapsible="false" columns="1" rendered="{!!isErrorMode}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Payment Method" />
+                    <apex:outputPanel id="cardPanel" styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                        <apex:selectList value="{!selectedCardId}" size="1">
+                            <apex:selectOptions value="{!cardIdsSelectOptions}" />
+                        </apex:selectList>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isCardNotSelected}">
+                            <strong>Error:</strong> <apex:outputText value="You must enter a value"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Amount" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" />
+                        <apex:inputField value="{!amountObject.AcctSeed__Amount__c}" required="false"/>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isAmountError}">
+                            <strong>Error:</strong><apex:outputText value="{!amountError}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Description" />
+                    <apex:inputText value="{!description}" maxlength="255"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <!-- Merge field on Page to avoid using StandardController.addFields()-->
+            <apex:outputField value="{!account.AcctSeed__Stripe_Customer_Id__c}" rendered="false"/>
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

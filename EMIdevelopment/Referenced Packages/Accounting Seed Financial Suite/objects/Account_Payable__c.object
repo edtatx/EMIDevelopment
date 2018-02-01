@@ -1,0 +1,844 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>Payable_Record_Home</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>Payable_Compact_Layout</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>Payable_Compact_Layout</fullName>
+        <fields>Name</fields>
+        <fields>Date__c</fields>
+        <fields>Due_Date__c</fields>
+        <fields>Accounting_Period__c</fields>
+        <fields>Status__c</fields>
+        <fields>Total__c</fields>
+        <fields>Balance__c</fields>
+        <label>Payable Compact Layout</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to document liabilities to outside vendor, contact, or employee.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fieldSets>
+        <fullName>MassAddEditRows</fullName>
+        <availableFields>
+            <field>Age__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>Ledger_Amount__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <description>Used for the Mass Add Edit Rows functionality.</description>
+        <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Type__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Payee__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Status__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Date__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Payment_Status__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Due_Date__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Total__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Accounting_Period__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>MassAddEditRows</label>
+    </fieldSets>
+    <fields>
+        <fullName>AP_Disbursement_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Applied Cash Disbursement Count</label>
+        <summaryForeignKey>AP_Disbursement__c.Account_Payable__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Accounting_Period__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to specify accounting period for financial reporting. Accounting period status must be open.</inlineHelpText>
+        <label>Accounting  Period</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Accounting_Period__c.Status__c</field>
+                <operation>equals</operation>
+                <value>Open</value>
+            </filterItems>
+            <infoMessage>The accounting period status must be open</infoMessage>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Period__c</referenceTo>
+        <relationshipName>Project_Payable_Invoices</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Accounting_Year__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>LEFT( Accounting_Period__r.Name ,4)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Accounting Year</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Age__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(AND(TODAY() - Due_Date__c&lt;=0,(Text(Payment_Status__c)!=&quot;Paid&quot;)), &quot;0-Current&quot;, 
+IF(AND(30&gt;=TODAY() - Due_Date__c,TODAY() - Due_Date__c&gt;0,(Text(Payment_Status__c)!=&quot;Paid&quot;)),&quot;1-30 Days&quot;, 
+IF(AND(60&gt;=TODAY() - Due_Date__c,TODAY() - Due_Date__c&gt;0,(Text(Payment_Status__c)!=&quot;Paid&quot;)),&quot;31-60 Days&quot;, 
+IF(AND(90&gt;=TODAY() - Due_Date__c,TODAY() - Due_Date__c&gt;0,(Text(Payment_Status__c)!=&quot;Paid&quot;)),&quot;61-90 Days&quot;, 
+IF(AND(TODAY() - Due_Date__c&gt;90,(Text(Payment_Status__c)!=&quot;Paid&quot;)),&quot;Over 90 Days&quot;, 
+&quot;Paid&quot;)))))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Aging Category based on Due Date.</inlineHelpText>
+        <label>Age</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Balance__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Net_Amount__c - Paid_Amount__c - Credit_Memo_Applied_Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Remainder of amount to pay via cash disbursement(s). This is Net Amount minus Paid Amount and Credit Memo Applied Amount</inlineHelpText>
+        <label>Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Closed_Accounting_Period__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The accounting period in which the payable reached a zero balance. Used in generating AP aging history records. This field should never be manually updated.</inlineHelpText>
+        <label>Closed Accounting  Period</label>
+        <referenceTo>Accounting_Period__c</referenceTo>
+        <relationshipName>Accounts_Payable</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>An Payable can have either the Account (Vendor), Contact or User (Employee) as the Payee. One object must be chosen.</inlineHelpText>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipName>Accounts_Payable</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Credit_Memo_Applied_Amount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount applied to this payable from credit memos.</inlineHelpText>
+        <label>Credit Memo Applied Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Currency_Conversion_Rate__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The currency conversion rate for the currency.</inlineHelpText>
+        <label>Currency Conversion Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Date__c</fullName>
+        <defaultValue>Today()</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to record vendor invoice or credit memo date.</inlineHelpText>
+        <label>Issue Date</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Discount_Amount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount taken as a discount in the cash disbursements cycle if the invoice is paid within the number of days specified in the discount days field from the Invoice date.</inlineHelpText>
+        <label>Discount Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Due_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date payment is due to the vendor for this invoice.</inlineHelpText>
+        <label>Due Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Employee__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>An Payable can have either the Account (Vendor), Contact or User (Employee) as the Payee.  One object must be chosen.</inlineHelpText>
+        <label>Employee</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Accounts_Payable</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Fixed_Asset__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Populate Fixed Asset name to relate Payable.</inlineHelpText>
+        <label>Fixed Asset</label>
+        <referenceTo>Fixed_Asset__c</referenceTo>
+        <relationshipLabel>Payables</relationshipLabel>
+        <relationshipName>Payables</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Ledger_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Currency_Conversion_Rate__c) || Currency_Conversion_Rate__c = 0,Total__c,Total__c/Currency_Conversion_Rate__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The total normalized to the base currency. This is Total divided by the Currency Conversion Rate.</inlineHelpText>
+        <label>Ledger Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Line_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of payable lines associated with this record.</inlineHelpText>
+        <label>Line Count</label>
+        <summaryForeignKey>Account_Payable_Line__c.Account_Payable__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Net_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Total__c - Discount_Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Invoice Total - Discount Amount.</inlineHelpText>
+        <label>Net Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Paid_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Sum of amount paid on all associated cash disbursements</inlineHelpText>
+        <label>Paid Amount</label>
+        <summarizedField>AP_Disbursement__c.Paid_Amount__c</summarizedField>
+        <summaryForeignKey>AP_Disbursement__c.Account_Payable__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Payee_Reference__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used for Vendor Invoice Number or Expense processing date if payable is generated from expenses.</inlineHelpText>
+        <label>Payee Reference</label>
+        <length>255</length>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payee__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF( NOT(ISBLANK(Vendor__c)) , Vendor__r.Name, 
+IF( NOT(ISBLANK(Contact__c)) ,  Contact__r.FirstName &amp; &quot; &quot;  &amp; Contact__r.LastName,  
+IF( NOT(ISBLANK(Employee__c)) ,   Employee__r.FirstName &amp; &quot; &quot;  &amp; Employee__r.LastName,  
+&quot;&quot; )))</formula>
+        <inlineHelpText>Formula field that lists either the vendor, contact or the employee as the Payee. Used in reporting and as a convenient reference to the source record for the Payee.</inlineHelpText>
+        <label>Payee</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payment_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is read only for the user. Unpaid means the Payable has not been selected for payment. Paid means a related Cash Disbursement record has been created for this Payable.</inlineHelpText>
+        <label>Payment Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Unpaid</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Recurring_Account_Payable__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The associated recurring payable for this record.</inlineHelpText>
+        <label>Recurring Payable</label>
+        <referenceTo>Recurring_Account_Payable__c</referenceTo>
+        <relationshipName>Accounts_Payable</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used in approvals and invoices that are in process of being finalized. A posted status indicates the invoice is final and no further changes are to be made.</inlineHelpText>
+        <label>Posting Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>In Process</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Waiting for Approval</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Total__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The total of all Payable Lines before a discount has been applied.</inlineHelpText>
+        <label>Total</label>
+        <summarizedField>Account_Payable_Line__c.Amount__c</summarizedField>
+        <summaryForeignKey>Account_Payable_Line__c.Account_Payable__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(Total__c &lt; 0,&quot;Credit Memo&quot;, &quot;Invoice&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Automatically determined by the sum of the Accounts Payable Lines. If total Payable lines are negative the document is a Credit Memo. If Positive then it is an Invoice.</inlineHelpText>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vendor__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>An Payable can have either the Account (Vendor), Contact or User (Employee) as the Payee.  One object must be chosen.</inlineHelpText>
+        <label>Vendor</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Account.Accounting_Type__c</field>
+                <operation>contains</operation>
+                <value>Vendor, Customer and Vendor</value>
+            </filterItems>
+            <filterItems>
+                <field>Account.Accounting_Active__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <infoMessage>Accounts Filtered on Accounting Type=Vendor and Accounting Active=True</infoMessage>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Project_Payable_Invoices</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Payable</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Payee__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Date__c</columns>
+        <columns>Due_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Total__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Payee_Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>Credit_Memos</fullName>
+        <columns>NAME</columns>
+        <columns>Payee__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Date__c</columns>
+        <columns>Due_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Total__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Payee_Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>Credit Memo</value>
+        </filters>
+        <label>Credit Memos</label>
+    </listViews>
+    <listViews>
+        <fullName>In_Process</fullName>
+        <columns>NAME</columns>
+        <columns>Payee__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Date__c</columns>
+        <columns>Due_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Total__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Payee_Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Posted</value>
+        </filters>
+        <label>Unposted</label>
+    </listViews>
+    <listViews>
+        <fullName>Paid</fullName>
+        <columns>NAME</columns>
+        <columns>Payee__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Date__c</columns>
+        <columns>Due_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Total__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Payee_Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Payment_Status__c</field>
+            <operation>equals</operation>
+            <value>Paid</value>
+        </filters>
+        <label>Paid</label>
+    </listViews>
+    <listViews>
+        <fullName>Ready_for_Payment</fullName>
+        <columns>NAME</columns>
+        <columns>Payee__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Date__c</columns>
+        <columns>Due_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Total__c</columns>
+        <columns>Balance__c</columns>
+        <columns>Payee_Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Posted</value>
+        </filters>
+        <filters>
+            <field>Payment_Status__c</field>
+            <operation>notEqual</operation>
+            <value>Paid</value>
+        </filters>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>Invoice</value>
+        </filters>
+        <label>Ready for Payment</label>
+    </listViews>
+    <nameField>
+        <displayFormat>AP-{00000}</displayFormat>
+        <label>Payable Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Payables</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Accounting_Period__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Payee__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Due_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Payment_Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Balance__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Total__c</customTabListAdditionalFields>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <listViewButtons>Pay_Batch</listViewButtons>
+        <listViewButtons>Post_Account_Payables</listViewButtons>
+        <listViewButtons>Unpost_Account_Payables</listViewButtons>
+        <lookupDialogsAdditionalFields>Payee__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Accounting_Period__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Due_Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Payment_Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Total__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Balance__c</lookupDialogsAdditionalFields>
+        <lookupFilterFields>NAME</lookupFilterFields>
+        <lookupFilterFields>Accounting_Period__c</lookupFilterFields>
+        <lookupFilterFields>Payee__c</lookupFilterFields>
+        <lookupFilterFields>Status__c</lookupFilterFields>
+        <lookupFilterFields>Payment_Status__c</lookupFilterFields>
+        <lookupFilterFields>Type__c</lookupFilterFields>
+        <lookupPhoneDialogsAdditionalFields>Payee__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Accounting_Period__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Date__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Due_Date__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Payment_Status__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Total__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Balance__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Accounting_Period__c</searchFilterFields>
+        <searchFilterFields>Payee__c</searchFilterFields>
+        <searchFilterFields>Payment_Status__c</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>Type__c</searchFilterFields>
+        <searchResultsAdditionalFields>Payee__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Accounting_Period__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Due_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Payment_Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Total__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Balance__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <fullName>Accounting_Period_Open_New_Record</fullName>
+        <active>false</active>
+        <description>The accounting period must be open to create a new record</description>
+        <errorConditionFormula>ISNEW() &amp;&amp; !ISBLANK(Accounting_Period__c) &amp;&amp; TEXT( Accounting_Period__r.Status__c) != &quot;Open&quot;</errorConditionFormula>
+        <errorDisplayField>Accounting_Period__c</errorDisplayField>
+        <errorMessage>The accounting period must be open to create a record</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Due_Date_Before_Date</fullName>
+        <active>true</active>
+        <errorConditionFormula>Due_Date__c &lt; Date__c</errorConditionFormula>
+        <errorDisplayField>Due_Date__c</errorDisplayField>
+        <errorMessage>The due date can not be earlier then the issue date</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Apply_Credit_Memo</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Apply Credit Memo</masterLabel>
+        <openType>sidebar</openType>
+        <page>AccountPayableApplyCreditMemo</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Calc_Tax</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Calc Tax</masterLabel>
+        <openType>replace</openType>
+        <page>AccountPayablePurchaseTax</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Clone_With_Lines</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Clone w/Lines</masterLabel>
+        <openType>sidebar</openType>
+        <page>AccountPayableDeepClone</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Pay</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Pay</masterLabel>
+        <openType>sidebar</openType>
+        <page>AccountPayablePayPartial</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Pay_Batch</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Pay Batch</masterLabel>
+        <openType>sidebar</openType>
+        <page>AccountPayablePayBatch</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>Post</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Post</masterLabel>
+        <openType>sidebar</openType>
+        <page>AccountPayablePost</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Post_Account_Payables</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Post Payables</masterLabel>
+        <openType>sidebar</openType>
+        <page>AccountPayableBatchPost</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>RecognizeExpense</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Amortize Expense</masterLabel>
+        <openType>sidebar</openType>
+        <page>ScheduledRevenueExpensesFromAP</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Unpost</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Unpost</masterLabel>
+        <openType>sidebar</openType>
+        <page>AccountPayableUnpost</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Unpost_Account_Payables</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Unpost Payables</masterLabel>
+        <openType>sidebar</openType>
+        <page>AccountPayableBatchUnpost</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+</CustomObject>

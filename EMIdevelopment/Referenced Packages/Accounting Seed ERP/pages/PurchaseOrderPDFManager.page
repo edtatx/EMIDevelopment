@@ -1,0 +1,53 @@
+<apex:page standardController="AcctSeedERP__Purchase_Order__c" extensions="AcctSeedERP.PurchaseOrderPDFManager">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeedERP__accounting_erp_resources, '/javascript/purchase-order-manager.js')}"/>
+    <apex:form id="theForm">
+        <apex:sectionHeader title="Purchase Order" subtitle="{!AcctSeedERP__Purchase_Order__c.Name}" />
+        <apex:pageBlock mode="maindetail">
+            <apex:pageMessages id="thePageMessages" escape="false" />
+            <apex:pageMessage summary="You must associate a Purchase Order Format record with this Purchase Order." severity="error" strength="3" rendered="{!ISBLANK(currentFormat) && !ISBLANK(AcctSeedERP__Purchase_Order__c.Id)}" />            
+            <apex:pageMessage summary="You must define a Visualforce PDF page on the Purchase Order Format record associated with this Purchase Order." severity="error" strength="3" rendered="{!isFormatError && !ISBLANK(AcctSeedERP__Purchase_Order__c.AcctSeedERP__Purchase_Order_Format__c)}" />
+            <apex:pageMessage summary="You must define a Default Email Template on the Purchase Order Format record associated with this Purchase Order." severity="error" strength="3" rendered="{!isTemplateError}" />
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" />
+                <apex:commandButton id="saveAttachButton" action="{!saveAttach}" value="Save PDF" status="saveStatus" reRender="theForm" />
+                <apex:commandButton id="emailAttachButton" action="{!saveAndEmail}" value="Send Email" status="saveStatus" reRender="theForm" disabled="{!DisableEmail}"/>
+                <apex:commandButton id="cancelButton" action="{!cancel}" value="Back" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Billing Information" columns="2" collapsible="false" rendered="{!renderPage}">
+                <apex:outputField id="Name" value="{!AcctSeedERP__Purchase_Order__c.Name}" />
+                <apex:outputField id="type" value="{!AcctSeedERP__Purchase_Order__c.AcctSeedERP__Type__c}" />
+                <apex:outputField id="vendorName" value="{!AcctSeedERP__Purchase_Order__c.Vendor__r.Name}" />
+                <apex:outputField id="total" value="{!AcctSeedERP__Purchase_Order__c.AcctSeedERP__Total__c}" />
+                <apex:outputField id="postingStatus" value="{!AcctSeedERP__Purchase_Order__c.AcctSeedERP__Status__c}" />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Vendor Contact" for="billingcontactname" />
+                    <apex:outputText id="contactname" value="{!AcctSeedERP__Purchase_Order__c.Vendor_Contact__r.Name} ({!AcctSeedERP__Purchase_Order__c.Vendor_Contact__r.Email})" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Email Recipient Information" columns="2" collapsible="false" rendered="{!renderPage}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Send to Contact" />
+                    <apex:inputField value="{!po.AcctSeedERP__Vendor_Contact__c}">               
+                        <apex:actionSupport event="onchange" reRender="theForm" />
+                    </apex:inputField>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="CC Me" for="ccUser" />
+                    <apex:inputCheckbox id="ccUser" value="{!sendccUser}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="CC Addresses" for="ccAddresses" />
+                    <apex:inputText id="ccAddresses" value="{!ccAddresses}" title="seperate each email address with a semi-colon (;)" style="width:200px"/>
+                </apex:pageBlockSectionItem>                 
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:pageBlock title="Purchase Order PDF Preview" rendered="{!renderPage}">
+        <div id="loader1" style="font-weight:bold">
+            <img src="/img/loading.gif" style="text-align:center" width="16" height="16" alt="loading gif" />&nbsp;&nbsp;Creating Purchase Order PDF...
+        </div>
+        <apex:iframe id="iframe1" src="{!pdfName}?id={!AcctSeedERP__Purchase_Order__c.Id}{!SortField}{!CurrencyFormat}" />
+    </apex:pageBlock>
+</apex:page>

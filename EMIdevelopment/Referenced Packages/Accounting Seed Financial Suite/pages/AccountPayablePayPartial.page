@@ -1,0 +1,101 @@
+<apex:page id="thePage" standardController="AcctSeed__Account_Payable__c" extensions="AcctSeed.AccountPayablePayPartial,AcctSeed.EnvironmentUtils">
+
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/> 
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!JSENCODE(DefaultLocale)}";
+        AcctSeed.ASModule.defaultCurrency = "{!JSENCODE(DefaultCurrency)}";
+        AcctSeed.ASModule.getCheckNumberRemoteAction = "{!$RemoteAction.AccountPayablePayPartial.refreshCheckNumber}";
+        AcctSeed.ASModule.isMultiCurrencyEnabled = "{!JSENCODE(IF(isMultiCurrencyEnabled, "true", "false"))}";
+        AcctSeed.ASModule.currencyIsoCode = "{!JSENCODE(currencyIsoCode)}";
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/ap-pay-partial.js')}" loadOnReady="true"/>
+
+    <apex:form id="theForm">
+
+        <apex:actionFunction name="queryCurrencyRate" action="{!setCurrencyConversionRate}" reRender="conversionRate"/>
+
+        <apex:sectionHeader title="{!$ObjectType.AcctSeed__Account_Payable__c.label}" subtitle="{!AcctSeed__Account_Payable__c.Name}" />
+        <apex:pageBlock id="thePageBlock" title="Partial Pay">
+
+            <apex:pageMessages escape="false"/>
+
+            <apex:pageMessage rendered="{!isVendorDiscountWarning}"
+                              severity="warning"
+                              strength="3"
+                              summary="The discount amount has been calculated based on the discount days and discount percent fields on the related vendor. You can override this by settting the discount amount manually" />
+
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" onstop="AcctSeed.ASModule.pageLoad()"/>
+                <apex:commandButton id="saveButton"
+                                    action="{!payPartial}"
+                                    value="Pay"
+                                    status="saveStatus"
+                                    reRender="theForm"
+                                    oncomplete="AcctSeed.ASModule.calculateBalance()"
+                                    rendered="{!!isError}" />
+                <apex:commandButton id="cancelButton" action="{!cancel}" value="Back" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Payment Information" id="thePageBlockSection" collapsible="false" rendered="{!!isError}">
+                <apex:inputField value="{!uiCashDisbursementBatch.Name}" required="true" />
+                <apex:inputField value="{!uiCashDisbursement.AcctSeed__Disbursement_Date__c}" required="true" onchange="{!IF(isAdvancedCurrencyManagementEnabled, 'queryCurrencyRate();', '')}"/>
+                <apex:outputText id="totalAmount" value="{!proxyObjectTotal.AcctSeed__Discount_Amount__c}" label="Total"/>
+                <apex:inputField id="theperiod" value="{!uiCashDisbursement.AcctSeed__Accounting_Period__c}" required="true" />
+                <apex:outputText id="creditMemoAppliedAmount" value="{!acctPayable.AcctSeed__Credit_Memo_Applied_Amount__c}" />
+                <apex:inputField id="bankAccount" 
+                    value="{!uiCashDisbursement.AcctSeed__Bank_Account__c}"
+                    onchange="AcctSeed.ASModule.refreshCheckNumber();" 
+                    required="true"/>
+                <apex:pageBlockSectionItem id="theDiscountSection">
+                    <apex:outputLabel value="Discount Amount" />
+                    <apex:actionRegion id="theDiscountRegion">
+                        <apex:inputField id="discountEditAmount" onchange="AcctSeed.ASModule.updateAmount()" value="{!acctPayable.AcctSeed__Discount_Amount__c}" rendered="{!isDiscountAllowed}"/>
+                        <apex:outputText id="discountReadAmount" value="{!IF(ISNULL(acctPayable.AcctSeed__Discount_Amount__c),0,acctPayable.AcctSeed__Discount_Amount__c)}" rendered="{!!isDiscountAllowed}"/>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Type" />
+                    <apex:actionRegion >
+                        <apex:inputField value="{!uiCashDisbursement.AcctSeed__Type__c}" required="true">
+                            <apex:actionSupport event="onchange" oncomplete="AcctSeed.ASModule.refreshCheckNumber();" rerender="checkNumLabel, checkNumInput"/>
+                        </apex:inputField>
+                    </apex:actionRegion>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="amountSectionItem">
+                    <apex:outputLabel value="Amount" />    
+                        <apex:inputField id="payAmount" value="{!uiCashDisbursement.AcctSeed__Amount__c}" onkeyup="AcctSeed.ASModule.calculateBalance();" onchange="AcctSeed.ASModule.calculateBalance();" required="true"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel id="checkNumLabel">
+                        <apex:outputLabel value="Check Number" rendered="{!uiCashDisbursement.AcctSeed__Type__c='Check'}" />
+                    </apex:outputPanel>
+                    <apex:outputPanel id="checkNumInput">
+                        <apex:inputField id="checkNum" value="{!uiCashDisbursementBatch.AcctSeed__Starting_Check_Number__c}" required="{!uiCashDisbursement.AcctSeed__Type__c='Check'}" rendered="{!uiCashDisbursement.AcctSeed__Type__c='Check'}" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:outputText id="paidAmount" value="{!proxyObjectPaidAmount.AcctSeed__Discount_Amount__c}" label="Paid Amount"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Currency Conversion Rate" rendered="{!isAdvancedCurrencyManagementEnabled}"/>
+                    <apex:inputField id="conversionRate" value="{!uiCashDisbursement.AcctSeed__Currency_Conversion_Rate__c}" rendered="{!isAdvancedCurrencyManagementEnabled}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="balanceSectionItem">
+                    <apex:outputLabel value="Balance" />
+                    <apex:outputText id="balanceAmount" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Accounting Information" collapsible="false" rendered="{!!isError}">
+                <apex:inputField value="{!uiCashDisbursement.AcctSeed__GL_Account_Variable_1__c}" />
+                <apex:inputField value="{!uiCashDisbursement.AcctSeed__Project__c}"/>
+                <apex:inputField value="{!uiCashDisbursement.AcctSeed__GL_Account_Variable_2__c}"/>
+                <apex:inputField value="{!uiCashDisbursement.AcctSeed__Project_Task__c}"/>
+                <apex:inputField value="{!uiCashDisbursement.AcctSeed__GL_Account_Variable_3__c}"/>
+                <apex:outputText value=""/>
+                <apex:inputField value="{!uiCashDisbursement.AcctSeed__GL_Account_Variable_4__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

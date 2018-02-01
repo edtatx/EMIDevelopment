@@ -1,0 +1,1081 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>Cash_Disbursement_Record_Home</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>Cash_Disbursement_Compact_Layout</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>Cash_Disbursement_Compact_Layout</fullName>
+        <fields>Name</fields>
+        <fields>Payee__c</fields>
+        <fields>Amount__c</fields>
+        <fields>Disbursement_Date__c</fields>
+        <fields>Accounting_Period__c</fields>
+        <fields>Check_Number__c</fields>
+        <fields>Status__c</fields>
+        <label>Cash Disbursement Compact Layout</label>
+    </compactLayouts>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Used to document the payment made to an outside vendor, contact, or employee typically recorded as an payable. The aggregation of multiple cash disbursements constitute a cash disbursement batch.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AP_Voucher_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Counts the number of payable vouchers in the cash disbursement.</inlineHelpText>
+        <label>AP Voucher Count</label>
+        <summaryForeignKey>AP_Disbursement__c.Cash_Disbursement__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Accounting_Period__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to specify accounting period for financial reporting.</inlineHelpText>
+        <label>Accounting  Period</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Accounting_Period__c.Status__c</field>
+                <operation>equals</operation>
+                <value>Open</value>
+            </filterItems>
+            <infoMessage>The accounting period status must be open</infoMessage>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Period__c</referenceTo>
+        <relationshipLabel>Cash Disbursements</relationshipLabel>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Accounting_Year__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>LEFT( Accounting_Period__r.Name ,4)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Accounting Year</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alternate_Payee_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Alternate Payee Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The amount of money received in a check or electronic deposit.</inlineHelpText>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Amount_in_Words__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Amount In Words</label>
+        <length>32000</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Applied_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Applied Amount</label>
+        <summarizedField>AP_Disbursement__c.Paid_Amount__c</summarizedField>
+        <summaryForeignKey>AP_Disbursement__c.Cash_Disbursement__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Balance__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Amount__c -  Applied_Amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Balance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Account__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Upon posting a credit entry will be made to this GL account.</inlineHelpText>
+        <label>Bank Account</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>The GL Account selected is not a &quot;Bank Account&quot;.  Please choose a Bank Account.</errorMessage>
+            <filterItems>
+                <field>GL_Account__c.Bank__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>GL_Account__c</referenceTo>
+        <relationshipLabel>Cash Disbursements</relationshipLabel>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Bank_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>true</externalId>
+        <label>Bank Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bank_Reconciliation__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The associated bank reconciliation this cash disbursement was cleared.</inlineHelpText>
+        <label>Bank Reconciliation</label>
+        <referenceTo>Bank_Reconciliation2__c</referenceTo>
+        <relationshipLabel>Cash Disbursements</relationshipLabel>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Cash_Disbursement_Batch__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Cash Disbursement Batch</label>
+        <referenceTo>Cash_Disbursement_Batch__c</referenceTo>
+        <relationshipLabel>Cash Disbursements</relationshipLabel>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Check_Number__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Check Number</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Cleared_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date this cash disbursement was cleared in the associated bank reconciliation.</inlineHelpText>
+        <label>Cleared Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>A Cash Disbursement can have either the Account (Vendor), Contact or User (Employee) as the Payee. One object must be chosen.</inlineHelpText>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Cash Disbursements</relationshipLabel>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Currency_Conversion_Rate__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The currency conversion rate for the currency.</inlineHelpText>
+        <label>Currency Conversion Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Debit_GL_Account__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Overrides the Payable Control GL Account set on Accounting Settings if populated.</inlineHelpText>
+        <label>Debit GL Account</label>
+        <referenceTo>GL_Account__c</referenceTo>
+        <relationshipLabel>Cash Disbursements (Refund GL Account)</relationshipLabel>
+        <relationshipName>Cash_Disbursements1</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Default_1099_Box__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(AND(NOT(ISBLANK(Vendor__c)),Vendor__r.X1099_Vendor__c=True),Text(Vendor__r.Default_1099_Box__c), 
+IF(AND(NOT(ISBLANK(Contact__c)),Contact__r.X1099_Vendor__c=True),Text(Contact__r.Default_1099_Box__c), 
+IF(AND(NOT(ISBLANK(Employee__c)),Employee__r.X1099_Vendor__c=True),Text(Employee__r.Default_1099_Box__c), 
+&quot;&quot;)))</formula>
+        <inlineHelpText>Shows default 1099 box set on the account or contact if a payee is marked as a 1099 vendor.</inlineHelpText>
+        <label>Default 1099 Box</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Disbursement_Date__c</fullName>
+        <defaultValue>Today()</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>The date cash was received.</inlineHelpText>
+        <label>Disbursement Date</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Employee__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>A Cash Disbursement can have either the Account (Vendor), Contact or User (Employee) as the Payee. One object must be chosen.</inlineHelpText>
+        <label>Employee</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Full_Remittance__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(AP_Voucher_Count__c&gt;10, &quot;Yes&quot;, &quot; &quot;)</formula>
+        <inlineHelpText>Indicates if a Full Remittance should be printed.</inlineHelpText>
+        <label>Full Remittance</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_1__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 1</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Accounting_Variable__c.Type__c</field>
+                <operation>equals</operation>
+                <value>GL Account Variable 1</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipLabel>Cash Disbursements</relationshipLabel>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_2__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 2</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Accounting_Variable__c.Type__c</field>
+                <operation>equals</operation>
+                <value>GL Account Variable 2</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipLabel>Cash Disbursements (GL Account Variable 2)</relationshipLabel>
+        <relationshipName>Cash_Disbursements1</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_3__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 3</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Accounting_Variable__c.Type__c</field>
+                <operation>equals</operation>
+                <value>GL Account Variable 3</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipLabel>Cash Disbursements (GL Account Variable 3)</relationshipLabel>
+        <relationshipName>Cash_Disbursements2</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>GL_Account_Variable_4__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>General Ledger segment used for reporting of a business unit such as division or department.</inlineHelpText>
+        <label>GL Variable 4</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Accounting_Variable__c.Type__c</field>
+                <operation>equals</operation>
+                <value>GL Account Variable 4</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Accounting_Variable__c</referenceTo>
+        <relationshipLabel>Cash Disbursements (GL Account Variable 4)</relationshipLabel>
+        <relationshipName>Cash_Disbursements3</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Ledger_Amount__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Currency_Conversion_Rate__c) || Currency_Conversion_Rate__c = 0,Amount__c,Amount__c/Currency_Conversion_Rate__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The amount normalized to the base currency. This is Total divided by the Currency Conversion Rate.</inlineHelpText>
+        <label>Ledger Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Memo__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to provide memo on printed check.</inlineHelpText>
+        <label>Memo</label>
+        <length>60</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payee_City_State_Zip__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(NOT(ISBLANK(Payee_City__c)) &amp;&amp; NOT(ISBLANK(Payee_State__c)) &amp;&amp; NOT(ISBLANK(Payee_Postal_Code__c)), Payee_City__c &amp; &quot; &quot; &amp; Payee_State__c &amp; &quot; &quot; &amp; Payee_Postal_Code__c,
+IF(NOT(ISBLANK(Vendor__c)), Vendor__r.BillingCity &amp; &quot; &quot; &amp; Vendor__r.BillingState &amp; &quot; &quot; &amp; Vendor__r.BillingPostalCode,
+IF(NOT(ISBLANK(Contact__c)), Contact__r.MailingCity &amp; &quot; &quot; &amp; Contact__r.MailingState &amp; &quot; &quot; &amp; Contact__r.MailingPostalCode,
+IF(NOT(ISBLANK(Employee__c)), Employee__r.City &amp; &quot; &quot; &amp; Employee__r.State &amp; &quot; &quot; &amp; Employee__r.PostalCode, 
+&quot;&quot;))))</formula>
+        <inlineHelpText>City, State and postal code as it appears on the check.</inlineHelpText>
+        <label>Payee City State Zip</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payee_City__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Payee City</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payee_Country2__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Payee Country</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payee_Country__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(NOT(ISBLANK(Payee_Country2__c)), Payee_Country2__c,
+IF(NOT(ISBLANK(Vendor__c)), Vendor__r.BillingCountry,
+IF(NOT(ISBLANK(Contact__c)),Contact__r.MailingCountry,
+IF(NOT(ISBLANK(Employee__c)),Employee__r.Country,
+&quot;&quot;))))</formula>
+        <inlineHelpText>Country as it appears on the check.</inlineHelpText>
+        <label>Payee Country</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payee_Postal_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Payee Postal Code</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payee_State__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Payee State</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payee_Street2__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Payee Street</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Payee_Street__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(NOT(ISBLANK(Payee_Street2__c)), Payee_Street2__c,
+IF(NOT(ISBLANK(Vendor__c)), Vendor__r.BillingStreet,
+IF(NOT(ISBLANK(Contact__c)), Contact__r.MailingStreet,
+IF(NOT(ISBLANK(Employee__c)), Employee__r.Street,
+&quot;&quot;))))</formula>
+        <inlineHelpText>Street Address as it appears on the check.</inlineHelpText>
+        <label>Payee Street</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payee__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF( NOT(ISBLANK(Alternate_Payee_Name__c)), Alternate_Payee_Name__c,
+IF( NOT(ISBLANK(Vendor__c)) , Vendor__r.Name,
+IF( NOT(ISBLANK(Contact__c)) , Contact__r.FirstName &amp; &quot; &quot; &amp; Contact__r.LastName, 
+IF( NOT(ISBLANK(Employee__c)) , Employee__r.FirstName &amp; &quot; &quot; &amp; Employee__r.LastName, 
+&quot;&quot; ))))</formula>
+        <inlineHelpText>Lists either the vendor, contact or the employee as the Payee. Used in reporting and as a convenient reference to the source record for the Payee.</inlineHelpText>
+        <label>Payee</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payment_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Shows a status of paid or void.</inlineHelpText>
+        <label>Payment Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Paid</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Project_Task__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Used to track a detailed component of Project.</inlineHelpText>
+        <label>Project Task</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>$Source.Project__c</field>
+                <operation>equals</operation>
+                <valueField>Project_Task__c.Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Project_Task__c</referenceTo>
+        <relationshipLabel>Cash Disbursements</relationshipLabel>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Typically used to track customer engagements or events.</inlineHelpText>
+        <label>Project</label>
+        <referenceTo>Project__c</referenceTo>
+        <relationshipLabel>Cash Disbursements</relationshipLabel>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Reference__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Customer check number or electronic transaction reference.</inlineHelpText>
+        <label>Reference</label>
+        <length>200</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Source__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Denotes the source of the cash disbursement either &quot;Manual&quot; or &quot;Payable&quot;.</inlineHelpText>
+        <label>Source</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Manual</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>A value of &quot;Posted&quot; indicates the record is final.</inlineHelpText>
+        <label>Posting Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>In Process</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Check or Electronic.</inlineHelpText>
+        <label>Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Check</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Electronic</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Vendor__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>A Cash Disbursement can have either the Account (Vendor), Contact or User (Employee) as the Payee. One object must be chosen.</inlineHelpText>
+        <label>Vendor</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Account.Accounting_Type__c</field>
+                <operation>contains</operation>
+                <value>Vendor, Customer and Vendor</value>
+            </filterItems>
+            <filterItems>
+                <field>Account.Accounting_Active__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Cash Disbursements</relationshipLabel>
+        <relationshipName>Cash_Disbursements</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Void_Description__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Void Description</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>X1099_Vendor__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(AND(NOT(ISBLANK(Vendor__c)),Vendor__r.X1099_Vendor__c=True),&quot;Yes&quot;,
+IF(AND(NOT(ISBLANK(Contact__c)),Contact__r.X1099_Vendor__c=True),&quot;Yes&quot;,
+IF(AND(NOT(ISBLANK(Employee__c)),Employee__r.X1099_Vendor__c=True),&quot;Yes&quot;,
+&quot;No&quot;)))</formula>
+        <inlineHelpText>Indicates in Payee is marked as a 1099 vendor.</inlineHelpText>
+        <label>1099 Vendor</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>X1099_Year__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>TEXT(YEAR(Disbursement_Date__c ))</formula>
+        <inlineHelpText>Records the calendar year a cash disbursement was made based on the disbursement date.</inlineHelpText>
+        <label>1099 Year</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Cash Disbursement</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Payee__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Disbursement_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <columns>NAME</columns>
+        <columns>Payee__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Disbursement_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Payment_Status__c</field>
+            <operation>equals</operation>
+            <value>Paid</value>
+        </filters>
+        <label>Paid</label>
+    </listViews>
+    <listViews>
+        <fullName>Unposted</fullName>
+        <columns>NAME</columns>
+        <columns>Payee__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Disbursement_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Posted</value>
+        </filters>
+        <label>Unposted</label>
+    </listViews>
+    <listViews>
+        <fullName>Void</fullName>
+        <columns>NAME</columns>
+        <columns>Payee__c</columns>
+        <columns>Accounting_Period__c</columns>
+        <columns>Disbursement_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Payment_Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Amount__c</columns>
+        <columns>Reference__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Payment_Status__c</field>
+            <operation>notEqual</operation>
+            <value>Paid</value>
+        </filters>
+        <filters>
+            <field>Payment_Status__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>Void</label>
+    </listViews>
+    <nameField>
+        <displayFormat>CD-{00000}</displayFormat>
+        <label>Cash Disbursement Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Cash Disbursements</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Payee__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Accounting_Period__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Disbursement_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Payment_Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Amount__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Reference__c</customTabListAdditionalFields>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <listViewButtons>Create_1099_File</listViewButtons>
+        <lookupDialogsAdditionalFields>Payee__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Accounting_Period__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Disbursement_Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Payment_Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Amount__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Reference__c</lookupDialogsAdditionalFields>
+        <lookupFilterFields>Check_Number__c</lookupFilterFields>
+        <lookupFilterFields>Accounting_Period__c</lookupFilterFields>
+        <lookupFilterFields>Payee__c</lookupFilterFields>
+        <lookupFilterFields>Status__c</lookupFilterFields>
+        <lookupFilterFields>Payment_Status__c</lookupFilterFields>
+        <lookupFilterFields>Type__c</lookupFilterFields>
+        <lookupPhoneDialogsAdditionalFields>Payee__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Accounting_Period__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Disbursement_Date__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Payment_Status__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Amount__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Reference__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>Check_Number__c</searchFilterFields>
+        <searchFilterFields>Payee__c</searchFilterFields>
+        <searchFilterFields>Accounting_Period__c</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>Payment_Status__c</searchFilterFields>
+        <searchFilterFields>Type__c</searchFilterFields>
+        <searchResultsAdditionalFields>Payee__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Accounting_Period__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Disbursement_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Payment_Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Amount__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Reference__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Cash_Disbursement_must_be_positive</fullName>
+        <active>true</active>
+        <errorConditionFormula>Amount__c &lt;0</errorConditionFormula>
+        <errorDisplayField>Amount__c</errorDisplayField>
+        <errorMessage>A cash disbursement cannot be a negative amount.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>GL_Account_Variable_3_Correct_Type</fullName>
+        <active>true</active>
+        <description>Ensures the GL Variable 4 field is of type GL Variable 3</description>
+        <errorConditionFormula>NOT(ISBLANK( GL_Account_Variable_3__c )) &amp;&amp; TEXT(GL_Account_Variable_3__r.Type__c) != &quot;GL Account Variable 3&quot;</errorConditionFormula>
+        <errorDisplayField>GL_Account_Variable_3__c</errorDisplayField>
+        <errorMessage>The GL Variable must have a Type of &quot;GL Account Variable 3&quot;.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>GL_Account_Variable_4_Correct_Type</fullName>
+        <active>true</active>
+        <description>Ensures the GL Variable 4 field is of type GL Variable 4</description>
+        <errorConditionFormula>NOT(ISBLANK( GL_Account_Variable_4__c )) &amp;&amp; TEXT(GL_Account_Variable_4__r.Type__c) != &quot;GL Account Variable 4&quot;</errorConditionFormula>
+        <errorDisplayField>GL_Account_Variable_4__c</errorDisplayField>
+        <errorMessage>The GL Variable must have a Type of &quot;GL Account Variable 4&quot;.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Project_Task_Required_With_Project</fullName>
+        <active>true</active>
+        <description>Rule ensures a Project Task is Required if the Project field is used.</description>
+        <errorConditionFormula>NOT(ISBLANK(Project__c)) &amp;&amp; ISBLANK(Project_Task__c)</errorConditionFormula>
+        <errorDisplayField>Project_Task__c</errorDisplayField>
+        <errorMessage>A project task is required if a project is selected.</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Apply</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Apply</masterLabel>
+        <openType>sidebar</openType>
+        <page>CashDisbursementApplyAccountPayable</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Create_1099_File</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Create 1099 File</masterLabel>
+        <openType>sidebar</openType>
+        <page>X1099File</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>Post</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Post</masterLabel>
+        <openType>sidebar</openType>
+        <page>CashDisbursementPost</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Print_Check</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>page</linkType>
+        <masterLabel>Print Check</masterLabel>
+        <openType>newWindow</openType>
+        <page>Printcheck</page>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+    </webLinks>
+    <webLinks>
+        <fullName>Print_Full_Remittance</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>page</linkType>
+        <masterLabel>Print Full Remittance</masterLabel>
+        <openType>newWindow</openType>
+        <page>CashDisbursementRemittance</page>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+    </webLinks>
+    <webLinks>
+        <fullName>Unpost</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Unpost</masterLabel>
+        <openType>sidebar</openType>
+        <page>CashDisbursementUnpost</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Void</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Void</masterLabel>
+        <openType>sidebar</openType>
+        <page>CashDisbursementVoid</page>
+        <protected>false</protected>
+    </webLinks>
+</CustomObject>

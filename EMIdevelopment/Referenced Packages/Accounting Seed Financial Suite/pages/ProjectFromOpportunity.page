@@ -1,0 +1,71 @@
+<apex:page id="thePage" standardController="Opportunity" extensions="AcctSeed.ProjectFromOpportunity">
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/common.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/project-from-opp.js')}" loadOnReady="true" />
+    <apex:form id="theForm">
+        <apex:sectionHeader title="{!$ObjectType.Opportunity.label}" subtitle="{!Opportunity.Name}" />
+        <apex:actionRegion rendered="{!!isShowProductsTable}">
+            <apex:pageBlock id="thePageBlock" title="Create Project">
+                <apex:outputPanel id="blockMessages">
+                    <apex:pageMessages escape="false" />
+                </apex:outputPanel>
+                <apex:pageBlockButtons >
+                    <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Creating Project...')" />
+                    <apex:commandButton action="{!createOrAddProject}" value="Create Project" status="saveStatus" reRender="theForm" rendered="{!!isError}"/>
+                    <apex:commandButton action="{!cancel}" value="Back" immediate="true" />
+                </apex:pageBlockButtons>
+                <apex:pageBlockSection id="theCreateOrAddSection" rendered="{!!isError}">
+                    <apex:pageBlockSectionItem id="theCreateItem">
+                        <apex:outputLabel value="Project Template" />
+                        <apex:selectList id="createFromTemplateList" value="{!selectedTemplateProject}" size="1" onchange="AcctSeed.ASModule.clearInput('{!$Component.theAddItem.addToProjectLookup}')">
+                            <apex:selectOptions value="{!projOptions}" />
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="theAddItem" rendered="{!!isNoOppProducts}">
+                        <apex:outputLabel value="Project" />
+                        <apex:inputField id="addToProjectLookup" value="{!emptyProduct.AcctSeed__Project__c}" onchange="AcctSeed.ASModule.clearInput('{!$Component.theCreateItem.createFromTemplateList}')" required="false" />
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:actionRegion>
+        <apex:actionRegion rendered="{!isShowProductsTable}">
+            <apex:pageBlock id="theAddProjectTableBlock" title="Map Opportunity Products">
+                <apex:outputPanel id="blockMessagesMap">
+                    <apex:pageMessages escape="false" />
+                </apex:outputPanel>
+                <apex:pageBlockButtons >
+                    <apex:actionStatus id="addProjectStatus" onstart="AcctSeed.ASModule.disableButtons('Adding to Project...')" />
+                    <apex:actionStatus id="backToProjectStatus" onstart="AcctSeed.ASModule.disableButtons('Refresh Project...')" />
+                    <apex:commandButton action="{!saveMapping}" value="Create Project" status="addProjectStatus" reRender="theForm" />
+                    <apex:commandButton action="{!backToProjectSelect}" value="Back" reRender="theForm" status="backToProjectStatus" immediate="true" />
+                </apex:pageBlockButtons>
+                <apex:pageBlockSection >
+                    <apex:pageBlockTable value="{!productsWrapper.products}" var="item" width="100%">
+                        <apex:column headerValue="{!$ObjectType.OpportunityLineItem.fields.Name.label}">
+                            <apex:outputField value="{!item.product.Name}" />
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.OpportunityLineItem.fields.Quantity.Label}" headerClass="align-right" styleClass="align-right">
+                            <apex:outputField value="{!item.product.Quantity}" />
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.OpportunityLineItem.fields.TotalPrice.Label}" headerClass="align-right" styleClass="align-right">
+                            <apex:outputText value="{0, number, ##0.00}">
+                                <apex:param value="{!item.product.TotalPrice}" />
+                            </apex:outputText>
+                        </apex:column>
+                        <apex:column headerValue="{!$ObjectType.AcctSeed__Project_Task__c.Label}">
+                            <apex:selectList value="{!item.task}" size="1">
+                                <apex:selectOptions value="{!tasks}" />
+                            </apex:selectList>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:actionRegion>
+        <apex:outputField value="{!Opportunity.Name}" rendered="false" />
+        <apex:outputField value="{!Opportunity.Account.Name}" rendered="false" />
+        <apex:outputField value="{!Opportunity.AccountId}" rendered="false" />
+    </apex:form>
+</apex:page>

@@ -1,0 +1,348 @@
+<apex:page standardController="AcctSeed__Project__c" extensions="ProjectCreateScreenControllerEMI" docType="html-5.0" action="{!redirect}"> 
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"/>
+<apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.22.5/js/jquery.tablesorter.min.js"/>
+<apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.22.5/js/jquery.tablesorter.widgets.js"/>
+<apex:stylesheet value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css"/>
+<apex:stylesheet value="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.22.5/css/theme.blue.min.css"/>
+<!-- standardController="AcctSeed__Project__c" -->
+    
+    <style>
+        .height100 {
+            height: 100%;
+        }
+        
+        .overlay {
+            background: #e9e9e9 !important;
+            display: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 1;
+            min-height: 1000px;
+            height: 100%;
+        }
+        
+        
+        
+        ) center center no-repeat;
+        height: 50%;
+        z-index: 20;
+    }
+    </style>
+<head>
+  <apex:slds />
+  <title>Project Entry Screen</title>
+</head>
+
+<body class="slds-scope">    
+
+  <!-- REQUIRED SLDS WRAPPER -->
+  <div class="slds">    
+
+    <!-- MASTHEAD -->
+    <h1 class="slds-text-heading--label slds-m-bottom--small">
+      Project Entry
+    </h1>
+    <!-- / MASTHEAD -->    
+    <apex:form id="siForm"> 
+    <apex:outputPanel id="ScriptPanel">
+      <script type="text/javascript">
+        $j = jQuery.noConflict();    
+        $j(document).ready(function () {
+            $j("[id$=MilestonePBT]").tablesorter()   
+        });  
+        </script>  
+    </apex:outputPanel>
+             <apex:pageMessages />
+             <apex:actionFunction name="GetSetupMilestones" action="{!getMilestonesForAccount}" reRender="MilestoneOP,AccountPB, ScriptPanel" status="inputFieldActionStatus"  immediate="true"  />
+
+             <apex:actionFunction name="GetSetupMilestones1"   status="inputFieldActionStatus" reRender="AccountID,AccountPB, ScriptPanel" immediate="true"   />
+
+             <apex:actionFunction name="GetCloneProjects" status="inputFieldActionStatus" reRender="ClonePB" immediate="true" action="{!getTemplateProjects}" />
+
+             <apex:actionStatus startText="Wait." stopText="" id="inputFieldActionStatus"/>
+             <apex:actionRegion >
+                 <apex:outputLabel value="Clone Existing Project"/>
+                 <apex:selectList value="{!IsClone}" size="1" label="Clone Existing Project">
+                    <apex:actionSupport event="onchange"  oncomplete="GetSetupMilestones1()"  />
+                    <apex:selectOptions value="{!CloneSelList}"/>               
+                 </apex:selectList>
+            </apex:actionRegion>
+            <apex:pageBlock id="ClonePB" rendered="{!IsClone=='Yes'}">
+             <apex:pageBlockButtons location="both">
+                    <apex:commandButton value="Clone" action="{!CloneProject}" />
+                    <apex:commandButton action="{!cancel}" value="Cancel" immediate="true"
+                    html-formnovalidate="formnovalidate" />
+                </apex:pageBlockButtons>
+                <!--apex:pageBlockSection >
+                    <apex:outputLabel value="Start Date" style="font-weight: Bold;margin-left: -10px;"/>
+                    <apex:pageBlockSectionItem>
+                        
+                        
+                        <apex:input type="date" value="{!SelectedStartDate}" id="dateinput" style="margin-left: -580px" />
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection-->
+                <table>
+                    <tr>
+                        <td>
+                            <apex:outputLabel value="Start Date" style="padding-right: 10px; font-weight: Bold"/>
+                        </td>
+                        <td>
+                            <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                                <apex:input type="date" value="{!SelectedStartDate}" id="dateinput" style="width:153px"/>
+                            </div>
+                        </td>
+
+                        <td>
+                            <apex:outputLabel value="Opportunity" style="padding-right: 10px; font-weight: Bold"/>
+                        </td>
+                        <td>
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                            <apex:inputField value="{!mysobject.AcctSeed__Opportunity__c}" label="Opportunity" styleClass="leftTxt" />
+                        </div>
+                        </td>
+
+                        <!--td>
+                            <apex:outputLabel value="Project Prefix" style="padding-right: 10px; font-weight: Bold"/>
+                        </td>
+                        <td>
+                            <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                                <apex:input type="text" value="{!CloneProjectsPrefix}" id="ProjPrefix" style="width:153px"/>
+                            </div>
+                        </td-->
+
+
+                        <td>
+                            <apex:outputLabel value="Project Name" style="padding-right: 10px; font-weight: Bold"/>
+                        </td>
+                        <td>
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                            <apex:inputField value="{!mysobject.Name}" styleClass="leftTxt" />
+                        </div>
+                        </td>     
+
+                        <!--td>
+                            <apex:outputLabel value="Number of Sites To Clone" style="padding-right: 10px; font-weight: Bold"/>
+                        </td>
+                        <td>
+                            <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                                <apex:input type="number" value="{!NumOfRecsToClone}" id="NumClones" style="width:153px"/>
+                            </div>
+                        </td-->
+
+
+                    </tr>
+                    <tr>
+                    <apex:actionRegion >
+                    <td>
+                     
+                    <apex:outputLabel value="Account" style="padding-right: 10px; font-weight: Bold"/>
+                    </td>
+                    <td>
+                    <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+                        <apex:inputField value="{!mysobject.AcctSeed__Account__c}" styleClass="leftTxt">
+                            <apex:actionSupport oncomplete="GetCloneProjects()" reRender="none" event="onchange"  />
+                        </apex:inputField>
+                    </div>
+                    
+                    </td>
+                    </apex:actionRegion>
+
+                    <td>                     
+                    <apex:outputLabel value="Program" style="padding-right: 10px; font-weight: Bold"/>
+                    </td>
+                    <td>
+                    <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+                        <apex:inputField value="{!mysobject.Program__c}" styleClass="leftTxt" >
+                            <apex:actionSupport oncomplete="GetCloneProjects()" event="onchange" reRender="none"/>
+                        </apex:inputField>
+                    </div>
+                    </td>
+                    <td>            
+                    <apex:outputLabel value="Project To Clone" style="padding-right: 10px; font-weight: Bold"/>
+                    </td>
+                    <td>
+                    <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+                        <apex:selectList value="{!CloneProject}" size="1">
+                            <apex:selectOptions value="{!CloneSelList1}"/>
+                        </apex:selectList>
+                    </div>
+                    </td>
+                                
+                    </tr>
+                </table>
+
+            </apex:pageBlock>
+             <apex:pageBlock id="AccountPB" rendered="{!IsClone=='No'}">     
+             <apex:outputPanel >  
+                 
+             <!--apex:PageBlockSection-->
+                <table>
+                    <tr>
+                        <td>
+                            <apex:outputLabel value="Start Date" style="padding-right: 10px; font-weight: Bold"/>
+                        </td>
+                        <td>
+                            <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                                <apex:input type="date" value="{!SelectedStartDate}" id="dateinput" style="width:153px"/>
+                            </div>
+                        </td>
+                        <td>
+                            <apex:outputLabel value="Accounting Company" style="padding-right: 10px; font-weight: Bold"/>
+                        </td>
+                        <td>
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                            <apex:inputField value="{!TaskSelector.AcctSeed__GL_Account_Variable_1__c}" label="Accounting Company" styleClass="leftTxt" />
+                        </div>
+                        </td>
+
+                        <td>
+                            <apex:outputLabel value="Opportunity" style="padding-right: 10px; font-weight: Bold"/>
+                        </td>
+                        <td>
+                        <div class="requiredInput">
+                        <div class="requiredBlock"></div>
+                            <apex:inputField value="{!mysobject.AcctSeed__Opportunity__c}" label="Opportunity" styleClass="leftTxt" />
+                        </div>
+                     </td>
+                        <td>                     
+                            <apex:outputLabel value="Program" style="padding-right: 10px; font-weight: Bold"/>
+                         </td>
+                         <td>
+                            <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                                <apex:inputField value="{!mysobject.Program__c}" styleClass="leftTxt" />
+                            </div>
+                        </td>
+
+
+                    </tr>
+                    <tr>
+                    <apex:actionRegion >
+                    <td>
+                     
+                    <apex:outputLabel value="Account" style="padding-right: 10px; font-weight: Bold"/>
+                    </td>
+                    <td>
+                    <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+                        <apex:inputField value="{!mysobject.AcctSeed__Account__c}" styleClass="leftTxt" id="AccountID"  rendered="{!IsClone='No'}">
+                            <apex:actionSupport oncomplete="GetSetupMilestones()" reRender="none" event="onchange"  />
+                        </apex:inputField>
+                    </div>
+                    
+                    </td>
+                    </apex:actionRegion>
+                    <td>
+                     
+                    <apex:outputLabel value="Jurisdiction" style="padding-right: 10px; font-weight: Bold"/>
+                    </td>
+                    <td>
+                    <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+                        <apex:inputField value="{!MilestoneSelector.Jurisdiction__c}" styleClass="leftTxt" id="Jurisidiction"  rendered="{!IsClone='No'}">
+                            <apex:actionSupport oncomplete="GetSetupMilestones()" reRender="none" event="onchange"  />
+                        </apex:inputField>
+                    </div>
+                    
+                    </td>
+
+                    <td>                     
+                    <apex:outputLabel value="Type" style="padding-right: 10px; font-weight: Bold"/>
+                    </td>
+                    <td>
+                    <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+                        <apex:inputField value="{!MilestoneSelector.Project_Type__c}" styleClass="leftTxt" id="ProjectType"  rendered="{!IsClone='No'}">
+                            <apex:actionSupport oncomplete="GetSetupMilestones()" reRender="none" event="onchange"  />
+                        </apex:inputField>
+                    </div>
+                    
+                    </td>
+                    
+
+                    <td>
+                    <apex:outputLabel value="Project Name" style="padding-right: 10px; font-weight: Bold"/>
+                    </td>
+                    <td>
+                    <div class="requiredInput">
+                    <div class="requiredBlock"></div>
+                        <apex:inputField value="{!mysobject.Name}" styleClass="leftTxt" />
+                    </div>
+                    </td>
+                    
+                    
+                    </tr>
+                </table>
+
+                </apex:outputPanel>
+             <!--/apex:PageBlockSection-->
+                <apex:outputPanel id="MilestoneOP">
+                    <apex:actionRegion >
+                    <apex:pageBlockTable value="{!MSWrapList}" var="MSW" id="MilestonePBT" styleClass="tablesorter">
+                        <apex:column headerValue="Selected">
+                            <apex:inputCheckbox value="{!MSW.Selected}"/>
+                        </apex:column>
+                        <apex:column headerValue="Phase">
+                            <apex:outputField value="{!MSW.Milestone.Milestone_Project_Phase__r.Name}"/>
+                        </apex:column>
+                        <apex:column value="{!MSW.Milestone.Name}"/>
+                        <apex:column value="{!MSW.Milestone.Milestone_Description__c}"/>
+                </apex:pageBlockTable>
+                </apex:actionRegion>
+                </apex:outputPanel>
+                <apex:pageBlockButtons location="both">
+                    <apex:commandButton value="Save" action="{!Save}" />
+                    <apex:commandButton action="{!cancel}" value="Cancel" immediate="true"
+                    html-formnovalidate="formnovalidate" />
+                </apex:pageBlockButtons>
+             </apex:pageBlock>
+             <!--div class="slds-grid"> 
+
+             <table class="">               
+                    <thead>
+                      <tr>
+                         <th>Selected</th>
+                         <th>Milestone</th>
+                      </tr>
+                    </thead>
+
+                   <apex:repeat value="{!MSWrapList}" var="MSWrap">
+                    <tr id="{!MSWrap.Milestone.ID}">                        
+                        <td class="leftTxtBig">
+                            <apex:inputCheckbox value="{!MSWrap.Selected}"/>                            
+                        </td>
+                        <td>
+                            <apex:outputField value="{!MSWrap.Milestone.Name}" />
+                        </td>
+                        <td>
+                            <apex:outputField value="{!MSWrap.Milestone.Milestone_Description__c}"/>
+                        </td>
+                    </tr>
+                    </apex:repeat>
+                    
+                
+             </table-->
+        <!--/div-->
+        <!-- / PRIMARY CONTENT WRAPPER -->    
+    </apex:form>
+  </div>
+  <!-- / REQUIRED SLDS WRAPPER -->    
+
+</body>
+</html>
+</apex:page>

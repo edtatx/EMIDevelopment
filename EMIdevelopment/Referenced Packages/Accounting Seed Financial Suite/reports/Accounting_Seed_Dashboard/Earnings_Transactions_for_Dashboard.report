@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Transaction__c.Report_Amount__c</field>
+    </columns>
+    <description>Earnings related transaction report</description>
+    <filter>
+        <criteriaItems>
+            <column>Transaction__c.GL_Account_Type__c</column>
+            <operator>equals</operator>
+            <value>Revenue,Expense</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Transaction__c.Accounting_Period__c</column>
+            <operator>startsWith</operator>
+            <value>2011</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Earnings Transactions for Dashboard</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$Transaction__c@Transaction__c.GL_Account__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Transaction__c.Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

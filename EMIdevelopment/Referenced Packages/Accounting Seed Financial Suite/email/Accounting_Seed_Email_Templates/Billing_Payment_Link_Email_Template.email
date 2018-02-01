@@ -1,0 +1,7 @@
+{!Contact.Name},<br/><br/>
+
+Attached is your billing #{!Billing__c.Name} dated {!Billing__c.Date__c}. The current balance on this billing is {!Billing__c.Balance__c}<br/><br/>
+
+Please <a href="{!Billing__c.Payment_Link__c}">click here</a> to pay this billing.<br/><br/>
+
+Thank you for your business.

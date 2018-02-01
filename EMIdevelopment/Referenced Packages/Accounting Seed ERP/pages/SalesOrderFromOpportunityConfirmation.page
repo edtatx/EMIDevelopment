@@ -1,0 +1,16 @@
+<apex:page id="thePage" standardController="Opportunity" extensions="AcctSeedERP.SalesOrderFromOpportunity">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />    
+    <apex:form id="theForm">
+        <apex:sectionHeader title="Opportunity" subtitle="{!Opportunity.Name}" />
+        <apex:pageBlock id="thePageBlock" title="Create Sales Order Confirmation">
+        	<apex:pageMessages escape="false"/>
+        	<apex:pageMessage summary="{!EXISTING_SALESORDER_WARNING}" severity="warning" strength="3" rendered="{!!isError}"/>
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeedd.ASModule.disableButtons('Creating...')"/>
+                <apex:commandButton id="cancelButton" action="/{!Opportunity.Id}" value="Back" immediate="true"/>
+                <apex:commandButton id="saveButton" action="{!createSalesOrder}" value="Create Sales Order" status="saveStatus" reRender="theForm"/>
+            </apex:pageBlockButtons>        	
+        </apex:pageBlock>
+    </apex:form>    
+</apex:page>

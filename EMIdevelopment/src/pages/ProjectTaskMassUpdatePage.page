@@ -1,0 +1,133 @@
+<apex:page showHeader="true" sidebar="true" controller="ProjectTaskMassUpdateController" docType="html-5.0" >
+<style type="text/css">
+.dateFormat{
+   visibility:hidden;
+}
+
+</style>
+<apex:form >
+<apex:pageBlock title="Task Filter Criteria">
+	<table>
+		<tr>
+			<td>
+				<apex:outputLabel value="Account"/>
+			</td>
+			<td>
+				<apex:inputField value="{!ProjectSelector.AcctSeed__Account__c}" required="true"/>
+			</td>
+			<td>
+				<apex:outputLabel value="Program"/>
+			</td>
+			<td>
+				<apex:inputField value="{!ProjectSelector.Program__c}"/>
+			</td>
+			<td>
+				<apex:outputLabel value="Project"/>
+			</td>
+			<td>
+				<apex:inputField value="{!TaskObject.AcctSeed__Project__c}" required="false"/>
+			</td>
+			<td>
+				<apex:outputLabel value="Phase"/>
+			</td>
+			<td>
+				<apex:selectList value="{!SelectedPhase}" size="1">
+					<apex:selectOptions value="{!PhaseSelector}"/>
+				</apex:selectList>
+			</td>
+			<td>
+				<apex:outputLabel value="Status"/>
+			</td>
+			<td>
+				<apex:selectList value="{!SelectedStatus}" size="1">
+					<apex:selectOptions value="{!TaskStatusSelector}"/>
+				</apex:selectList>
+			</td>
+			<td>
+				<apex:commandButton action="{!Search}" value="Search"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<apex:outputLabel value="Push out dates by "/>
+			</td>
+			<td>
+				<apex:input type="number" value="{!DaysToAdd}"/>
+				<apex:outputLabel value="days "/>
+			</td>	
+			<td>
+				<apex:commandButton action="{!UpdateDates}" value="Update"/>
+			</td>	
+			<td>
+				<apex:commandButton action="{!Save}" value="Save"/>
+			</td>			
+		</tr>
+		
+</table>
+</apex:pageBlock>
+<apex:pageBlock id="SearchResultsBlock">
+	 <apex:outputPanel rendered="{!noOfTaskRecords > PageSize}" styleClass="searchResults" >
+             <center>
+                 <apex:selectList value="{!PageSize}" size="1">
+                     <apex:actionSupport event="onchange" action="{!Search}" />
+                     <apex:selectOptions value="{!PageSizeOptions}"/>
+                 </apex:selectList>
+                 <apex:outputLabel value="Records Per Page"/>
+                 <apex:commandLink styleClass="wide-input" type="image/png" action="{!firstPageList}" rendered="{!hasAccPrevious}" title="First Page" reRender="Selected_PBS,SearchResultsBlock" status="fetchStatus" >
+             		<apex:image id="FirstIcon" value="{!URLFOR($Resource.Pagination_Icons, 'pagination_1_first.png')}" width="16" height="16"/>
+         		 </apex:commandLink>
+                 <apex:commandLink styleClass="wide-input" type="image/png" action="{!previousPageList}" rendered="{!hasAccPrevious}" title="Previous Page" reRender="Selected_PBS, SearchResultsBlock" status="fetchStatus">
+             		<apex:image id="PreviousIcon" value="{!URLFOR($Resource.Pagination_Icons, 'pagination_1_previous.png')}" width="16" height="16"/>
+         		 </apex:commandLink>
+                 <apex:commandLink styleClass="wide-input" type="image/png" action="{!nextPageList}" rendered="{!hasAccNext}" title="Next Page" reRender="Selected_PBS, SearchResultsBlock"  status="fetchStatus">
+             		<apex:image id="NextIcon" value="{!URLFOR($Resource.Pagination_Icons, 'pagination_1_next.png')}" width="16" height="16"/>
+         		 </apex:commandLink>
+                  <apex:commandLink styleClass="wide-input" type="image/png" action="{!lastPageList}" rendered="{!hasAccNext}" title="Last Page" reRender="Selected_PBS, SearchResultsBlock"   status="fetchStatus">
+             		<apex:image id="LastIcon" value="{!URLFOR($Resource.Pagination_Icons, 'pagination_1_last.png')}" width="16" height="16"/>
+         		 </apex:commandLink>
+                 <!--apex:commandButton status="fetchStatus"  value="|<" action="{!firstPageList}" disabled="{!!hasAccPrevious}" title="First Page"     reRender="SearchResultsBlock"/> &nbsp;&nbsp;
+                 <apex:commandButton status="fetchStatus"  value="<" action="{!previousPageList}" disabled="{!!hasAccPrevious}" title="Previous Page" reRender="SearchResultsBlock" /> &nbsp;&nbsp;
+                 <apex:commandButton status="fetchStatus"  value=">" action="{!nextPageList}" disabled="{!!hasAccNext}" title="Next Page"             reRender="SearchResultsBlock" /> &nbsp;&nbsp;
+                 <apex:commandButton status="fetchStatus"  value=">|" action="{!lastPageList}" disabled="{!!hasAccNext}" title="Last Page"           reRender="SearchResultsBlock" /--> &nbsp;&nbsp;
+                 
+                 <apex:outputText >{!(AccPageNumber * PageSize)+1-PageSize}-{!IF((AccPageNumber * PageSize)>noOfTaskRecords, noOfTaskRecords,(AccPageNumber * PageSize))} of {!noOfTaskRecords}{!IF(noOfTaskRecords >= 500 , '+', '')}</apex:outputText>
+                 <apex:outputPanel style="color:#4AA02C;font-weight:bold;padding-left:10px;display:inline-block;width:150px;">
+                     <apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/>
+                 </apex:outputPanel>
+             </center>        
+        </apex:outputPanel>
+    <apex:outputPanel >
+		<apex:inputCheckbox value="{!SelectAll}" >
+			<apex:actionSupport event="onclick" action="{!SelectAll}"  rerender="Selected_PBS"/>
+		</apex:inputCheckbox>
+		<apex:outputLabel value="Select All"/>
+	</apex:outputPanel>
+
+	<apex:outputPanel style="float: right;">
+		<apex:outputLabel value="Select All"/>
+		<apex:inputCheckbox value="{!SelectAllUpdateForecastActual}" Style="text-align:right;" >
+			<apex:actionSupport event="onclick" action="{!SelectAllUpdateForecastActual}"  rerender="Selected_PBS"/>
+		</apex:inputCheckbox>		
+	</apex:outputPanel>
+	<apex:PageBlockTable value="{!WrapperList}" var="Task" id="Selected_PBS" >
+		<apex:column headerValue="Selected">
+			<apex:inputCheckbox value="{!Task.Selected}"/>
+		</apex:column>
+		<apex:column value="{!Task.Tsk.AcctSeed__Project__r.Name}"/>
+		<apex:column value="{!Task.Tsk.Project_Phase__r.Name}"/>
+		<apex:column value="{!Task.Tsk.Description__c}"/>
+		<apex:column headerValue="Forecasted Start Date">
+			<apex:inputField value="{!Task.Tsk.Forecasted_Start_Date__c}" styleClass="calYearPicker" style="{!if(Task.IsModified=true,'color:green;font-weight: bold', 'color:black')}"/>
+		</apex:column>
+		<apex:column headerValue="Forecasted End Date">
+			<apex:inputField value="{!Task.Tsk.Forecasted_End_Date__c}" styleClass="calYearPicker" style="{!if(Task.IsModified=true,'color:green;font-weight: bold', 'color:black')}"/>
+		</apex:column>
+		<apex:column headerValue="Adjust Forecast Dates Based Off of Actual">
+			<apex:inputField value="{!Task.Tsk.Adjust_Successor_Forecast_Off_of_Actuals__c}" style="{!if(Task.IsModified=true,'color:green;font-weight: bold', 'color:black')"/>
+		</apex:column>
+	</apex:PageBlockTable>
+</apex:pageBlock>
+
+
+</apex:form>
+</apex:page>

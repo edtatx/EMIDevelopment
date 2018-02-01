@@ -1,0 +1,255 @@
+<apex:page sidebar="false" showheader="false" standardcontroller="Site_Candidate__c" extensions="SiteRemoter"  docType="html"> 
+
+<head>
+<style type="text/css">
+  html { height: 100% }
+  body { height: 100%; margin: 0; padding: 0 }
+  #map-canvas { height: 100% }
+</style>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBx1xUiYqZ01BE52fpnUGSQfqmQ0VMIs-M&sensor=false&libraries=geometry,drawing"></script> 
+
+<script type="text/javascript">
+    if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+    } 
+    //Get the latitude and the longitude;
+     function successFunction(position) {
+    var lat = position.coords.latitude;
+    var lng = position.coords.longitude;
+    }
+
+    function errorFunction(){
+    //alert("Geocoder failed");
+    }
+</script>
+ 
+<!--Global variables!-->
+<script>
+//This variable gets all coordinates of polygone and save them. Finally you should use this array because it contains all latitude and longitude coordinates of polygon.
+var coordinates = [];
+
+//This variable saves polygon.
+var polygons = [];
+</script>
+
+<script>
+var map;
+
+function setHidden() {
+    /*var hiddenStreet_number = document.getElementById('page:form:pb:theHiddenStreet_number');
+    hiddenStreet_number.value = document.getElementById('street_number').value;
+    
+    var hiddenRoute = document.getElementById('page:form:pb:theHiddenRoute');
+    hiddenRoute.value = document.getElementById('route').value;
+    
+    var hiddenLocality = document.getElementById('page:form:pb:theHiddenLocality');
+    hiddenLocality.value = document.getElementById('locality').value;
+    
+    var hiddenState = document.getElementById('page:form:pb:theHiddenState');
+    hiddenState.value = document.getElementById('administrative_area_level_1').value;
+    
+    var hiddenZip = document.getElementById('page:form:pb:theHiddenZip');
+    hiddenZip.value = document.getElementById('postal_code').value;
+          
+    var hiddenState = document.getElementById('page:form:pb:theHiddenCounty');
+    hiddenState.value = document.getElementById('administrative_area_level_2').value.replace(" County", "");*/
+
+}
+
+function initialize() {
+    var zoomLevel = 20;
+    
+    geocoder = new google.maps.Geocoder();
+    var mapOptions = {
+        //center: new google.maps.LatLng(29.598817000000000, -81.191412000000000),
+        center: new google.maps.LatLng({!Site_Candidate__c.Lat_Long__latitude__s },{!Site_Candidate__c.Lat_Long__longitude__s }),
+        zoom: zoomLevel
+        
+ 
+    };
+    map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+    
+    loadLocation();
+}
+
+function loadLocation() {
+    addMarker('{!Site_Candidate__c.id}', '{!Site_Candidate__c.name}', {!Site_Candidate__c.Lat_Long__latitude__s }, {!Site_Candidate__c.Lat_Long__longitude__s });
+      
+    
+}
+
+function addMarker(id, name, lat, lng) {
+
+    var image = '{!URLFOR($Resource.star_marker)}';
+    var isDraggable = true;
+    //var displayDate = dDate.toDateString();
+    
+
+    var infoContent;
+    infoContent = "<b>" + name + "</b>";
+
+    var infowindow = new google.maps.InfoWindow({
+        content: infoContent
+    });
+
+    
+    if(isDraggable){
+        var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(lat, lng),
+                map: map,
+                title: name,
+                icon: image,
+                draggable: true
+        });
+    } 
+    google.maps.event.addListener(marker, 'click', function(evt) {
+ //console.dir(evt);
+ //document.getElementById('lat').value = evt.latLng.lat();
+ //document.getElementById('lng').value =evt.latLng.lng();
+        infowindow.open(map,marker);
+    });
+    google.maps.event.addListener(infowindow, 'closeclick', function() {
+        map.setCenter(marker.getPosition());
+    });
+    
+    google.maps.event.addListener(marker,'dragend',function(event) {
+        document.getElementById('j_id0:form:lat').value = event.latLng.lat();
+        document.getElementById('j_id0:form:lng').value = event.latLng.lng();
+        codeLatLng(event.latLng.lat(),event.latLng.lng());
+    });
+    
+    
+    /*google.maps.event.addListener(marker, 'click', function(event) {
+        //window.top.location = '/' + id;
+        window.open('/' + id);
+    });*/
+}
+
+
+function codeLatLng(lat, lng) {
+city = null; 
+street_number = null;
+state = null;
+route = null;
+var latlng = new google.maps.LatLng(lat, lng);
+console.log('lat' + lat + ' long ' + lng);
+/*
+geocoder.geocode({'location':latlng}, function(results, status) {
+  if (status == google.maps.GeocoderStatus.OK) {
+  console.log(results)
+    if (results[0]) {
+     //formatted address
+    //  alert(results[0].formatted_address);
+    //document.getElementById('results').innerHTML += "results[0].formatted_address=" + results[0].formatted_address+"<br>";
+    //document.getElementById('street').value = results[0].formatted_address;
+    
+    //find country name
+        for (var i=0; i<results[0].address_components.length; i++) {
+        for (var b=0;b<results[0].address_components[i].types.length;b++) {
+
+        //there are different types that might hold a city admin_area_lvl_1 usually does in come cases looking for sublocality type will be more appropriate
+            if (results[0].address_components[i].types[b] == "administrative_area_level_1") {
+                //this is the object you are looking for
+                state= results[0].address_components[i];
+                document.getElementById('j_id0:form:state').value = results[0].address_components[i].short_name;
+                document.getElementById('j_id0:form:stateDisplay').value = results[0].address_components[i].short_name;
+                break;
+            } if (results[0].address_components[i].types[b] == "street_number") {
+                //this is the object you are looking for
+                street_number= results[0].address_components[i].short_name;
+                break;
+            } if (results[0].address_components[i].types[b] == "route") {
+                //this is the object you are looking for
+                route= results[0].address_components[i].long_name;
+                break;  
+            } if (results[0].address_components[i].types[b] == "postal_code") {
+                //this is the object you are looking for
+                document.getElementById('j_id0:form:postal').value = results[0].address_components[i].short_name;
+                document.getElementById('j_id0:form:postalDisplay').value = results[0].address_components[i].short_name;
+                county= results[0].address_components[i];
+                
+                break;  
+            } if (results[0].address_components[i].types[b] == "locality") {
+                //this is the object you are looking for
+                city= results[0].address_components[i];
+                document.getElementById('j_id0:form:city').value = results[0].address_components[i].long_name;
+                document.getElementById('j_id0:form:cityDisplay').value = results[0].address_components[i].long_name;
+                break;
+            } if (results[0].address_components[i].types[b] == "administrative_area_level_2") {
+                //this is the object you are looking for
+               // city= results[0].address_components[i];
+                document.getElementById('j_id0:form:county').value = results[0].address_components[i].long_name;
+                document.getElementById('j_id0:form:countyDisplay').value = results[0].address_components[i].long_name;
+                
+                break;    
+            }
+
+        }
+        //var hiddenCounty = document.getElementById('j_id0:form:county');
+   
+        //hiddenCounty.value = document.getElementById('countyDisplay').value.replace(" County", "");
+    }
+ 
+    //document.getElementById('street').value = street_number + ' ' + route;
+    document.getElementById('j_id0:form:street').value = street_number + ' ' + route;
+    document.getElementById('j_id0:form:streetDisplay').value = street_number + ' ' + route;
+    
+    
+
+    } else {
+      alert("No results found");
+    }
+  } else {
+    alert("Geocoder failed due to: " + status);
+  }
+});
+  */ 
+document.getElementById('j_id0:form:latDisplay').value = lat;
+    document.getElementById('j_id0:form:lngDisplay').value = lng;
+}
+
+
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script>
+</head>
+<body id="body">
+
+    <div id="panel">
+      <!-- <input id="address" type="textbox" value="test"/> -->
+     
+       <br/>
+       <br/>
+ <apex:form id="form">      
+       Lat &nbsp; <apex:inputtext id="latDisplay" value="{!lat}"   /> 
+       Long &nbsp; <apex:inputtext id="lngDisplay"  value="{!lng}"    /> 
+       <!--
+       Street <apex:inputtext id="streetDisplay"     disabled="true" /> 
+       City <apex:inputtext id="cityDisplay"    disabled="true"  /> 
+       State <apex:inputtext id="stateDisplay"    disabled="true"  /> 
+       Postal <apex:inputtext id="postalDisplay"   disabled="true"  /> 
+       County <apex:inputtext id="countyDisplay"   disabled="true"  />-->
+       
+       <!--apex:inputHidden id="lat"  value="{!lat}"  /--> 
+       <!--apex:inputHidden id="lng"  value="{!lng}"  /--> 
+       <apex:inputHidden id="street"  value="{!street}"  /> 
+       <apex:inputHidden id="city"  value="{!city}"  /> 
+       <apex:inputHidden id="state"  value="{!state}"  /> 
+       <apex:inputHidden id="postal"  value="{!postal}"  /> 
+       <apex:inputHidden id="county"  value="{!county}"  /> 
+       
+       
+       <!-- <input type="button" value="Update Location" onclick="updateLocation()"/> -->
+       <apex:commandLink value="Update Location" action="{!saveLoc}" target="_parent"  styleClass="btn" onclick="setHidden();" style="text-decoration:none;padding:4px;"/>
+       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+       <!-- <apex:commandButton onclick="window.open(' https://csfgeo.cspire.com/ospmap/logon.aspx?ReturnUrl=%2fospmap%2f');" value="Fiber Map" />-->
+ 
+ </apex:form>      
+      
+    </div>
+  <div id="map-canvas"/> 
+</body>
+
+</apex:page>

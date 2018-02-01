@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CreatePdf</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>EmailQuote</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>NewQuote</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SyncQuote</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>Quote</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>Quote</fullName>
+        <fields>Name</fields>
+        <fields>QuoteNumber</fields>
+        <fields>ExpirationDate</fields>
+        <fields>OpportunityId</fields>
+        <fields>AccountId</fields>
+        <fields>GrandTotal</fields>
+        <fields>Margin_Percent__c</fields>
+        <label>Quote EMI</label>
+    </compactLayouts>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>AccountId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AdditionalName</fullName>
+    </fields>
+    <fields>
+        <fullName>BillingName</fullName>
+    </fields>
+    <fields>
+        <fullName>Clarifications__c</fullName>
+        <externalId>false</externalId>
+        <label>Clarifications</label>
+        <length>131072</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ContactId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ContractId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Delivery__c</fullName>
+        <externalId>false</externalId>
+        <label>Delivery</label>
+        <length>32768</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Description</fullName>
+    </fields>
+    <fields>
+        <fullName>Discount</fullName>
+    </fields>
+    <fields>
+        <fullName>Duration__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity.Expected_Duration__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Duration</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Email</fullName>
+    </fields>
+    <fields>
+        <fullName>Equipment_Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Equipment Description</label>
+        <length>131072</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Expected_Project_End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Expected Project End Date</label>
+        <summarizedField>QuoteLineItem.End_Date__c</summarizedField>
+        <summaryFilterItems>
+            <field>QuoteLineItem.End_Date__c</field>
+            <operation>notEqual</operation>
+            <value></value>
+        </summaryFilterItems>
+        <summaryForeignKey>QuoteLineItem.QuoteId</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Expected_Project_Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Expected Project Start Date</label>
+        <summarizedField>QuoteLineItem.Start_Date__c</summarizedField>
+        <summaryFilterItems>
+            <field>QuoteLineItem.Start_Date__c</field>
+            <operation>notEqual</operation>
+            <value></value>
+        </summaryFilterItems>
+        <summaryForeignKey>QuoteLineItem.QuoteId</summaryForeignKey>
+        <summaryOperation>min</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>ExpirationDate</fullName>
+    </fields>
+    <fields>
+        <fullName>Fax</fullName>
+    </fields>
+    <fields>
+        <fullName>Features__c</fullName>
+        <externalId>false</externalId>
+        <label>Features</label>
+        <length>131072</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Features_and_Benefits_of_Recommendation__c</fullName>
+        <externalId>false</externalId>
+        <label>Features and Benefits of Recommendation</label>
+        <length>131072</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>GrandTotal</fullName>
+    </fields>
+    <fields>
+        <fullName>ImageURL__c</fullName>
+        <externalId>false</externalId>
+        <label>ImageURL</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Images__c</fullName>
+        <externalId>false</externalId>
+        <label>Images</label>
+        <length>32768</length>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Installation__c</fullName>
+        <externalId>false</externalId>
+        <label>Installation</label>
+        <length>131072</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>IsSyncing</fullName>
+    </fields>
+    <fields>
+        <fullName>LineItemCount</fullName>
+    </fields>
+    <fields>
+        <fullName>Load_Operation_Specification__c</fullName>
+        <externalId>false</externalId>
+        <label>Load/Operation Specification</label>
+        <length>131072</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Margin_Percent__c</fullName>
+        <description>Total Margin % on Quote (after discounting)</description>
+        <externalId>false</externalId>
+        <formula>(TotalPrice -  Total_Cost__c) /  TotalPrice</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Total Margin % on Quote (after discounting)</inlineHelpText>
+        <label>Margin %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Name</fullName>
+    </fields>
+    <fields>
+        <fullName>Objectives__c</fullName>
+        <externalId>false</externalId>
+        <label>Objectives</label>
+        <length>131072</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>OpportunityId</fullName>
+        <type>MasterDetail</type>
+    </fields>
+    <fields>
+        <fullName>OwnerId</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Phone</fullName>
+    </fields>
+    <fields>
+        <fullName>QuoteToName</fullName>
+    </fields>
+    <fields>
+        <fullName>Recommendation__c</fullName>
+        <externalId>false</externalId>
+        <label>Recommendation</label>
+        <length>131072</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ShippingHandling</fullName>
+    </fields>
+    <fields>
+        <fullName>ShippingName</fullName>
+    </fields>
+    <fields>
+        <fullName>Status</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Draft</fullName>
+                <default>true</default>
+                <allowEmail>true</allowEmail>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In Review</fullName>
+                <default>false</default>
+                <allowEmail>true</allowEmail>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+                <allowEmail>true</allowEmail>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+                <allowEmail>true</allowEmail>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Presented</fullName>
+                <default>false</default>
+                <allowEmail>true</allowEmail>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+                <allowEmail>true</allowEmail>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Denied</fullName>
+                <default>false</default>
+                <allowEmail>true</allowEmail>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Subtotal</fullName>
+    </fields>
+    <fields>
+        <fullName>Tax</fullName>
+    </fields>
+    <fields>
+        <fullName>Terms_Conditions__c</fullName>
+        <externalId>false</externalId>
+        <label>Terms &amp; Conditions</label>
+        <length>32768</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>TotalPrice</fullName>
+    </fields>
+    <fields>
+        <fullName>Total_Cost__c</fullName>
+        <description>Total Cost from all products on the Quote (After Discounting)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Total Cost from all products on the Quote (After Discounting)</inlineHelpText>
+        <label>Total Cost</label>
+        <summarizedField>QuoteLineItem.Total_Product_Cost_for_rollup_hidden__c</summarizedField>
+        <summaryForeignKey>QuoteLineItem.QuoteId</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_Margin__c</fullName>
+        <externalId>false</externalId>
+        <formula>TotalPrice -  Total_Cost__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <listViews>
+        <fullName>mine</fullName>
+        <columns>QUOTE.NAME</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>QUOTE.ISSYNCING</columns>
+        <columns>QUOTE.EXPIRATIONDATE</columns>
+        <columns>QUOTE.SUBTOTAL</columns>
+        <columns>QUOTE.TOTALPRICE</columns>
+        <filterScope>Mine</filterScope>
+        <label>My Quotes</label>
+    </listViews>
+    <searchLayouts>
+        <customTabListAdditionalFields>QUOTE.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OPPORTUNITY.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>QUOTE.ISSYNCING</customTabListAdditionalFields>
+        <customTabListAdditionalFields>QUOTE.EXPIRATIONDATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>QUOTE.SUBTOTAL</customTabListAdditionalFields>
+        <customTabListAdditionalFields>QUOTE.TOTALPRICE</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>QUOTE.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>OPPORTUNITY.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>QUOTE.ISSYNCING</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>QUOTE.EXPIRATIONDATE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>QUOTE.SUBTOTAL</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>QUOTE.TOTALPRICE</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>QUOTE.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>OPPORTUNITY.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>QUOTE.ISSYNCING</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>QUOTE.EXPIRATIONDATE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>QUOTE.SUBTOTAL</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>QUOTE.TOTALPRICE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>QUOTE.PHONE</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>QUOTE.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OPPORTUNITY.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>QUOTE.ISSYNCING</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>QUOTE.EXPIRATIONDATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>QUOTE.SUBTOTAL</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>QUOTE.TOTALPRICE</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>Conga_Composer_EMI_Old</fullName>
+        <availability>online</availability>
+        <description>Originally created by Conga Solution Manager. Date of last use of Update Button from Conga Solution record: https://ergomechanicalindustrial555--emisandbox--apxtconga4.cs8.visual.force.com/a0BL0000006mn7hMAA
+28-Nov-2017 03:36:01 PM</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>false</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>660</height>
+        <isResizable>false</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>EMI Quote_Old</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/APXTConga4__Conga_Composer?SolMgr=1
+&amp;serverUrl={!API.Partner_Server_URL_370}
+&amp;Id={!Quote.Id}
+
+&amp;QueryId=[Header]a05L0000005pbpe,
+[EFH]a05L0000005pbpj,
+[EFOT]a05L0000005pbul,
+[EFDT]a05L0000005pbv5,
+[EGFH]a05L0000005pbvA,
+[EGFOT]a05L0000005pbvK,
+[EGFDT]a05L0000005pbvP,
+[MWGFH]a05L0000005pbvL,
+[MWGFOT]a05L0000005pbve,
+[MWGFDT]a05L0000005pbvj,
+[MWFH]a05L0000005pbvo,
+[MWFOT]a05L0000005pbvt,
+[MWFDT]a05L0000005pbvy,
+[IWJH]a05L0000005pbw3,
+[IWJOT]a05L0000005pbw8,
+[IWJDT]a05L0000005pbwD,
+[IWGFH]a05L0000005pbwI,
+[IWGFOT]a05L0000005pbwN,
+[IWGFDT]a05L0000005pbwX,
+[IWFH]a05L0000005pbwc,
+[IWFOT]a05L0000005pbwh,
+[IWFDT]a05L0000005pbwm,
+[MWJH]a05L0000005pbwr,
+[MWJOT]a05L0000005pbww,
+[MWJDT]a05L0000005pbx1,
+[ProjectMgtHourly]a05L0000005pbx6,
+[ProjectMgtOT]a05L0000005pbxB,
+[ProjectMgtDT]a05L0000005pbxG,
+[EJWH]a05L0000005pbxL,
+[EJWOT]a05L0000005pbxQ,
+[EJWDT]a05L0000005pbxV,
+[EngineeringH]a05L0000005pbxa,
+[EngineeringOT]a05L0000005pbxf,
+[EngineeringDT]a05L0000005pbxk,
+[Materials]a05L0000005pbzR,
+[Equipment]a05L0000005pc0K,
+[Miscellaneous]a05L0000005pc0Z
+
+&amp;TemplateId=a0DL0000004r2sa</url>
+        <width>900</width>
+    </webLinks>
+    <webLinks>
+        <fullName>Conga_Composer_EMI_Quote</fullName>
+        <availability>online</availability>
+        <description>Originally created by Conga Solution Manager. Date of last use of Update Button from Conga Solution record: https://ergomechanicalindustrial555--emisandbox--apxtconga4.cs96.visual.force.com/a0B1g0000000NcpEAE
+12-Jan-2018 12:22:55 PM</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>false</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>660</height>
+        <isResizable>false</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>EMI Quote</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/APXTConga4__Conga_Composer?SolMgr=1
+&amp;serverUrl={!API.Partner_Server_URL_370}
+&amp;Id={!Quote.Id}
+
+&amp;QueryId=[MWGFH]a051g000000RwYn,
+[MWGFOT]a051g000000RxMx,
+[MWGFDT]a051g000000RxMy,
+[ProjectMgtHourly]a051g000000RxMz,
+[ProjectMgtOT]a051g000000RxN0,
+[ProjectMgtDT]a051g000000RxN1,
+[MWJST]a051g000000RxN2,
+[MWJOT]a051g000000RxN3,
+[MWJDT]a051g000000RxN4,
+[MWFST]a051g000000RxN5,
+[MWFOT]a051g000000RxN6,
+[MWFDT]a051g000000RxN7,
+[IWJST]a051g000000RxN8,
+[IWJOT]a051g000000RxN9,
+[IWJDT]a051g000000RxNA,
+[IWGFST]a051g000000RxNB,
+[IWGFOT]a051g000000RxNC,
+[IWGFDT]a051g000000RxND,
+[IWFST]a051g000000RxNE,
+[IWFOT]a051g000000RxNF,
+[IWFDT]a051g000000RxNG,
+[ENGINEERINGH]a051g000000RxNH,
+[ENGINEERINGOT]a051g000000RxNI,
+[ENGINEERINGDT]a051g000000RxNJ,
+[EJWST]a051g000000RxNK,
+[EJWOT]a051g000000RxNL,
+[EJWDT]a051g000000RxNM,
+[EGFST]a051g000000RxNN,
+[EGFOT]a051g000000RxNO,
+[EGFDT]a051g000000RxNP,
+[EFST]a051g000000RxNQ,
+[EFOT]a051g000000RxNR,
+[EFDT]a051g000000RxNS,
+[Header]a051g000000RxNd,
+[Materials]a051g000000RxTl,
+[Equipment]a051g000000RxTv,
+[Miscellaneous]a051g000000RxU0,
+[ScrapValue]a051g000000RxU5
+
+&amp;TemplateId=a0D1g0000000Vwr</url>
+        <width>900</width>
+    </webLinks>
+    <webLinks>
+        <fullName>Conga_Composer_Summary_Quote</fullName>
+        <availability>online</availability>
+        <description>Originally created by Conga Solution Manager. Date of last use of Update Button from Conga Solution record: https://ergomechanicalindustrial555--emisandbox--apxtconga4.cs96.visual.force.com/a0B1g0000000Nk5EAE
+12-Jan-2018 12:23:06 PM</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>false</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>660</height>
+        <isResizable>false</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Summary Quote</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/APXTConga4__Conga_Composer?SolMgr=1
+&amp;serverUrl={!API.Partner_Server_URL_370}
+&amp;Id={!Quote.Id}
+
+&amp;QueryId=[SummaryHeader]a051g000000RxNd,
+[MaterialsEquip]a051g000000RxT7,
+[Installation]a051g000000RxTC,
+[Total]a051g000000RxTH
+
+&amp;TemplateId=a0D1g0000000W4F</url>
+        <width>900</width>
+    </webLinks>
+    <webLinks>
+        <fullName>Conga_Composer_Summary_Quote_Old</fullName>
+        <availability>online</availability>
+        <description>Created by Conga Solution Manager. Record link: https://ergomechanicalindustrial555--emisandbox--apxtconga4.cs8.visual.force.com/a0BL0000006mp7oMAA.</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>false</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>660</height>
+        <isResizable>false</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Summary Quote_Old</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/apex/APXTConga4__Conga_Composer?SolMgr=1
+&amp;serverUrl={!API.Partner_Server_URL_370}
+&amp;Id={!Quote.Id}
+
+&amp;QueryId=[HeaderInfo]a05L0000005pbpe,
+[MaterialsEquipment]a05L0000005pc68,
+[Labor]a05L0000005pc6D,
+[TotalSummary]a05L0000005pc6I</url>
+        <width>900</width>
+    </webLinks>
+</CustomObject>

@@ -1,0 +1,42 @@
+<apex:page standardController="AcctSeed__Recurring_Billing__c" extensions="AcctSeed.BillingFromRecurringBilling,AcctSeed.EnvironmentUtils">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/javascript/Intl.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__internationalization_resources, '/locale-data/jsonp/' & DefaultLocale & '.js')}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/> 
+    <script type="text/javascript">
+        AcctSeed.ASModule.defaultLocale = "{!JSENCODE(DefaultLocale)}";
+        AcctSeed.ASModule.defaultCurrency = "{!JSENCODE(DefaultCurrency)}";
+        AcctSeed.ASModule.isMultiCurrencyEnabled = "{!JSENCODE(IF(isMultiCurrencyEnabled, "true", "false"))}";
+        AcctSeed.ASModule.currencyIsoCode = "{!JSENCODE(currencyIsoCode)}";
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-currency.js')}" loadOnReady="true"/> 
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/currency-formatter.js')}" loadOnReady="true"/>
+    <apex:stylesheet value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/css/common.css')}" />      
+    <apex:form id="theForm">
+        <apex:sectionHeader title="{!$ObjectType.AcctSeed__Recurring_Billing__c.label}" subtitle="{!AcctSeed__Recurring_Billing__c.Name}" />    
+        <apex:pageBlock id="thePageBlock" title="Create {!$ObjectType.AcctSeed__Billing__c.label}">
+            <apex:pageMessages escape="false"/>
+            <apex:pageMessage rendered="{!isInActiveError}" severity="error" strength="3" summary="You cannot create a {!$ObjectType.AcctSeed__Billing__c.label} from an inactive {!$ObjectType.AcctSeed__Recurring_Billing__c.label} record"/>
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...')" onstop="AcctSeed.ASModule.pageLoad()"/>
+                <apex:commandButton id="saveButton" action="{!createBilling}" value="Create Billing" status="saveStatus" reRender="theForm" rendered="{!!isInActiveError}"/>
+                <apex:commandButton id="cancelButton" action="{!cancel}" value="Back" immediate="true"/>
+            </apex:pageBlockButtons>   
+            <apex:pageBlockSection rendered="{!!isInActiveError}" columns="1">
+                <apex:pageBlockTable value="{!billList}" var="bw" width="100%">
+                    <apex:column value="{!bw.rBill.Name}"/>
+                    <apex:column value="{!bw.bill.AcctSeed__Customer__c}"/>
+                    <apex:column headerValue="{!$ObjectType.AcctSeed__Billing__c.fields.AcctSeed__Accounting_Period__c.label}">
+                        <apex:inputField value="{!bw.bill.AcctSeed__Accounting_Period__c}" required="true"/>
+                    </apex:column>
+                    <apex:column headerValue="Total" headerClass="align-right" styleClass="align-right" footerClass="align-right">
+                        <apex:outputText id="billAmount" value="{!bw.total}"/>
+                        <apex:facet name="footer">
+	                        <apex:outputText id="totalAmount" value="{!BillingTotal}"/>                           
+                        </apex:facet>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>             
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

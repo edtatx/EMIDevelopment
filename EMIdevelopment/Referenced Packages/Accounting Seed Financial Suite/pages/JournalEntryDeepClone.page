@@ -1,0 +1,18 @@
+<apex:page id="thePage" standardController="AcctSeed__Journal_Entry__c" extensions="AcctSeed.JournalEntryDeepClone" >
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/>
+    <apex:form id="theForm">
+        <apex:sectionHeader title="Clone {!$ObjectType.AcctSeed__Journal_Entry__c.label}" subtitle="{!AcctSeed__Journal_Entry__c.Name}" />
+        <apex:pageBlock id="thePageBlock" title="Clone {!$ObjectType.AcctSeed__Journal_Entry__c.label}">
+            <apex:pageMessage summary="The clone function will clone the {!$ObjectType.AcctSeed__Journal_Entry__c.label} and all associated {!$ObjectType.AcctSeed__Journal_Entry__c.label} Lines." severity="info" strength="3" />
+            <apex:pageMessages escape="false"/>
+            <apex:pageBlockButtons >
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Processing...');"/>
+                <apex:commandButton action="{!cloneJournalEntry}" status="saveStatus" reRender="theForm" value="Clone {!$ObjectType.AcctSeed__Journal_Entry__c.label}" onComplete="AcctSeed.ASModule.redirectToSobject();"/>
+                <apex:commandButton action="{!cancel}" value="Back" immediate="true"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <apex:inputHidden id="acctSeedCommonRedirectTargetId" value="{!theNewJournalEntryId}"/>
+        <apex:inputHidden id="acctSeedCommonRedirectIsErrorFlag" value="{!isError}"/>
+    </apex:form>
+</apex:page>

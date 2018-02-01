@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CHILD_NAME</field>
+    </columns>
+    <columns>
+        <field>Cash_Disbursement__c.Reference__c</field>
+    </columns>
+    <columns>
+        <field>Cash_Disbursement__c.Type__c</field>
+    </columns>
+    <columns>
+        <field>Cash_Disbursement__c.Amount__c</field>
+    </columns>
+    <columns>
+        <field>Cash_Disbursement__c.Status__c</field>
+    </columns>
+    <description>All cash disbursements by payee</description>
+    <filter>
+        <criteriaItems>
+            <column>Cash_Disbursement__c.Payment_Status__c</column>
+            <operator>equals</operator>
+            <value>Paid</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Cash_Disbursement__c.Payee__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Cash Disbursements by Payee</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntityCustomEntity$Cash_Disbursement_Batch__c$Cash_Disbursement__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

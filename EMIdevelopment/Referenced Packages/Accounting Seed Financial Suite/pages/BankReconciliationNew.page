@@ -1,0 +1,83 @@
+<apex:page id="thePage" standardController="AcctSeed__Bank_Reconciliation2__c" extensions="AcctSeed.BankReconciliationNew">
+
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/bank-reconciliation-new.js')}"/>
+    <script type="text/javascript">
+        function setFocusOnLoad() {}
+        AcctSeed.ASModule.getBeginningBalanceRemoteAction = "{!$RemoteAction.BankReconciliationNew.getBeginningBalanceByBankAccount}";
+    </script>
+
+    <apex:form id="theForm">
+        <apex:sectionHeader title="Bank Reconciliation Edit" subtitle="New Bank Reconciliation" />
+        <apex:pageBlock title="Bank Reconciliation Edit">
+            <apex:pageMessages escape="false" rendered="{!showMessage}" />
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="disableButtons('Saving...')" />
+                <apex:commandButton action="{!saveBankReconciliation}" value="Save" status="saveStatus" reRender="theForm" />
+                <apex:commandButton action="{!cancel}" value="Cancel" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Information" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Start Date" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:inputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Start_Date__c}" required="false" />
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isStartDateError}">
+                            <strong>Error:</strong> You must enter a value
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>            
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="End Date" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:inputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__End_Date__c}" required="false" />
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isEndDateError}">
+                            <strong>Error:</strong> You must enter a value
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Beginning Balance" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:inputField id="beginningBalance" value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Beginning_Balance__c}" required="false" />
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isBeginBalError}">
+                            <strong>Error:</strong> You must enter a value
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Bank Account" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:selectList id="bankAccount" value="{!selectedGLAccount}" size="1" onchange="AcctSeed.ASModule.setBeginningBalance();">
+                            <apex:selectOptions value="{!GLAccounts}" />
+                        </apex:selectList>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isGLAccountError}">
+                            <strong>Error:</strong> You must enter a value
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Ending Balance" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:inputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__Ending_Balance__c}" required="false" />
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isEndBalError}">
+                            <strong>Error:</strong> You must enter a value
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem> 
+                <apex:inputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_1__c}" /> 
+                <apex:outputText />
+                <apex:inputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_2__c}" />
+                <apex:outputText />
+                <apex:inputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_3__c}" />
+                <apex:outputText />
+                <apex:inputField value="{!AcctSeed__Bank_Reconciliation2__c.AcctSeed__GL_Account_Variable_4__c}" />                    
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

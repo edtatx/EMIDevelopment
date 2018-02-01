@@ -1,0 +1,49 @@
+<apex:page id="thePage" standardController="AcctSeed__Bank_Deposit__c" extensions="AcctSeed.BankDepositNew">
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AcctSeed__accounting_resources, '/javascript/accounting-common.js')}"/>
+    <script type="text/javascript">
+        function setFocusOnLoad() {}
+    </script>
+    <apex:form id="theForm">
+        <apex:sectionHeader title="{!$ObjectType.AcctSeed__Bank_Deposit__c.Label} Edit" subtitle="New {!$ObjectType.AcctSeed__Bank_Deposit__c.Label}" />
+        <apex:pageBlock title="{!$ObjectType.AcctSeed__Bank_Deposit__c.Label} Edit">
+            <apex:pageMessages escape="false" rendered="{!showMessage}" />
+            <apex:pageBlockButtons id="buttons">
+                <apex:actionStatus id="saveStatus" onstart="AcctSeed.ASModule.disableButtons('Saving...')" />
+                <apex:commandButton action="{!saveBankDeposit}" value="Save" status="saveStatus" reRender="theForm" />
+                <apex:commandButton action="{!cancel}" value="Cancel" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Information" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Bank Account" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:selectList value="{!selectedGLAccount}" size="1">
+                            <apex:selectOptions value="{!GLAccounts}" />
+                        </apex:selectList>
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isGLAccountError}">
+                            <strong>Error:</strong> You must enter a value
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Deposit Date" />
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" layout="block" />
+                        <apex:inputField value="{!AcctSeed__Bank_Deposit__c.AcctSeed__Deposit_Date__c}" required="false" />
+                        <apex:outputPanel styleClass="errorMsg" layout="block" rendered="{!isDateError}">
+                            <strong>Error:</strong> You must enter a value
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!AcctSeed__Bank_Deposit__c.AcctSeed__GL_Account_Variable_1__c}" />
+                <apex:inputField value="{!AcctSeed__Bank_Deposit__c.AcctSeed__Deposit_Reference__c}" />
+                <apex:inputField value="{!AcctSeed__Bank_Deposit__c.AcctSeed__GL_Account_Variable_2__c}" />
+                <apex:outputText />                
+                <apex:inputField value="{!AcctSeed__Bank_Deposit__c.AcctSeed__GL_Account_Variable_3__c}" />
+                <apex:outputText />                
+                <apex:inputField value="{!AcctSeed__Bank_Deposit__c.AcctSeed__GL_Account_Variable_4__c}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
