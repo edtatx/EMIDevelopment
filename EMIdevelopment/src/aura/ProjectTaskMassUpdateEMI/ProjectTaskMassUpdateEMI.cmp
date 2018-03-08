@@ -12,7 +12,7 @@
     <aura:handler name="init" value="{! this }" action="{! c.init }"/>
     <!--aura:handler name="getProj" value="{! this }" action="{! c.getProj }"/-->
     
-    <lightning:card iconName="standard:contact" title="{! 'Tasks for Job ' + v.projname}">
+    <lightning:card iconName="standard:contact" title="{! 'Tasks for Project ' + v.projname}">
         <lightning:input Name="Number of Days for Adjustment" value="{!v.days}" label="Number of Days for Adjustment" placeholder="Please enter the number of days for adjustment" /> 
         <br/>
         <lightning:datatable data="{! v.mydata }" 

@@ -17,6 +17,7 @@
 				component.set("v.acctName",o1.accountinfo.Name);
                 component.set("v.projObj.AcctSeed__Account__c",o1.accountinfo.Id);
                 component.set("v.projObj.Expected_Project_Start__c",o1.oppinfo.Expected_Start_Date__c);
+                component.set("v.projObj.Expected_Duration__c",o1.oppinfo.Expected_Duration__c);
                 component.set("v.projObj.AcctSeed__Opportunity__c",o1.oppinfo.Id);
                 component.set("v.projObj.AcctSeed__Status__c",'Active');
                 component.set("v.projObj.Images__c",o1.quoteinfo.Images__c);
@@ -58,14 +59,14 @@
             action.setCallback(this,function(result){
                 var state1 = result.getState();
                 if (state1 === "SUCCESS"){
-                    console.log("SUCCESS: Job Created!");
+                    console.log("SUCCESS: Project Created!");
                 }
                 else {
-                    console.log("ERROR: Job NOT Created!")
+                    console.log("ERROR: Project NOT Created!")
                             var resultsToast = $A.get("e.force:showToast");
             					resultsToast.setParams({
                                     "title": "Error",
-                                    "message": "Something went wrong, Job was not created",
+                                    "message": "Something went wrong, Project was not created",
                                     "type":"error"});
             				resultsToast.fire();
  
@@ -84,7 +85,7 @@
                             var resultsToast = $A.get("e.force:showToast");
             					resultsToast.setParams({
                 				"title": "Success",
-                				"message": "Job was Created",
+                				"message": "Project was Created",
                                 "type":"success"});
             				resultsToast.fire();
  
@@ -98,7 +99,7 @@
                                                         var resultsToast = $A.get("e.force:showToast");
             					resultsToast.setParams({
                                     "title": "Error",
-                                    "message": "Something went wrong, Job Phases and Tasks were not created",
+                                    "message": "Something went wrong, Project Phases and Tasks were not created",
                                     "type":"error"});
             				resultsToast.fire();
  

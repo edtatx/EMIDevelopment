@@ -36,7 +36,7 @@
             </div>
                 <div area-labelledby="newprojectform">
                     <fieldset class="slds-box slds-theme--default slds-container--small slds-is-relative">
-                        <legend id="newprojectform" class="slds-text-heading--medium slds-p-vertical--medium slds-is-relative">Create a Job</legend>
+                        <legend id="newprojectform" class="slds-text-heading--medium slds-p-vertical--medium slds-is-relative">Create a Project</legend>
                 
                         <form class="slds-form--stacked slds-is-relative">      
                             <div class="slds-form-element slds-is-required slds-is-relative">
@@ -62,7 +62,7 @@
                             
                              <div class="slds-form-element slds-is-required slds-is-relative">
                                 <div class="slds-form-element__control slds-is-relative">
-                                    <ui:inputText aura:id="projectName" label="Job Name" class="slds-input" labelClass="slds-form-element__label"
+                                    <ui:inputText aura:id="projectName" label="Project Name" class="slds-input" labelClass="slds-form-element__label"
                                                   value="{!v.projObj.Name}" required="true"/>
                                     <br></br>
                                 </div>

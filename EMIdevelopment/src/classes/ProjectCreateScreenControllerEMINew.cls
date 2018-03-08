@@ -15,8 +15,8 @@ public with sharing class ProjectCreateScreenControllerEMINew {
     public static ProjectCreateScreenControllerEMINew getInfo(Id recordId)
     {
         ProjectCreateScreenControllerEMINew result=new ProjectCreateScreenControllerEMINew();
-        result.oppinfo=[select Id, Name, AccountId, Expected_Start_Date__c, SyncedQuoteId, OH_P__c from Opportunity WHERE Id=:recordId];
-        result.quoteinfo=[select Id, Name, QuoteNumber, Expected_Project_Start_Date__c, Expected_Project_End_Date__c, Images__c, Installation__c, Features__c, Clarifications__c, Delivery__c, Equipment_Description__c, Features_and_Benefits_of_Recommendation__c, Load_Operation_Specification__c, Objectives__c, Recommendation__c, Terms_Conditions__c from Quote WHERE Id=:result.oppinfo.SyncedQuoteId];
+        result.oppinfo=[select Id, Name, AccountId, Expected_Start_Date__c, Expected_Duration__c, SyncedQuoteId, OH_P__c, StageName from Opportunity WHERE Id=:recordId];
+        result.quoteinfo=[select Id, Name, QuoteNumber, Expected_Project_Start_Date__c, Expected_Project_End_Date__c, Images__c, Installation__c, Features__c, Clarifications__c, Delivery__c, Equipment_Description__c, Features_and_Benefits_of_Recommendation__c, Load_Operation_Specification__c, Objectives__c, Recommendation__c, Terms_Conditions__c, Status from Quote WHERE Id=:result.oppinfo.SyncedQuoteId];
         result.quotelineiteminfo=[select Id, QuoteId, Description, Product_Unit_Cost__c, Start_Date__c, Total_Cost__c, TotalPrice, Quantity, UnitPrice, Product_Detail_Category__c, End_Date__c from QuoteLineItem WHERE QuoteId=:result.oppinfo.SyncedQuoteId];
         result.accountinfo=[select Id, Name from Account WHERE Id=:result.oppinfo.AccountId];
         //system.debug('oppinfo: '+result.oppinfo);
