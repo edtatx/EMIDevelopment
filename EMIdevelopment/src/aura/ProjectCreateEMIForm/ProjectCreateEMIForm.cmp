@@ -9,6 +9,8 @@
     <aura:attribute name="projName" type="String" />
     <aura:attribute name="quoteId" type="Id" />
     <aura:attribute name="acctName" type="String" />
+    <aura:attribute name="quoteStatus" type="String" />
+    <aura:attribute name="oppStageName" type="String" />
     
     <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
     <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>

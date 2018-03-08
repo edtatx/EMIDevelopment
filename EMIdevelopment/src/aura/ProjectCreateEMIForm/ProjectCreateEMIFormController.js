@@ -15,6 +15,10 @@
                 component.set("v.quoteId",o1.quoteinfo.Id);
                 component.set("v.projObj.Name",o1.quoteinfo.QuoteNumber+' '+o1.quoteinfo.Name);
 				component.set("v.acctName",o1.accountinfo.Name);
+				component.set("v.oppStageName",o1.oppinfo.StageName);
+				component.set("v.quoteStatus",o1.quoteinfo.Status);
+				console.log("oppStageName: "+o1.oppinfo.StageName);
+				console.log("quoteStatus: "+o1.quoteinfo.Status);
                 component.set("v.projObj.AcctSeed__Account__c",o1.accountinfo.Id);
                 component.set("v.projObj.Expected_Project_Start__c",o1.oppinfo.Expected_Start_Date__c);
                 component.set("v.projObj.Expected_Duration__c",o1.oppinfo.Expected_Duration__c);
@@ -53,7 +57,24 @@
         $A.enqueueAction(action);
     },
 
- 	handleSaveRecord : function(component, event, helper) {     
+ 	handleSaveRecord : function(component, event, helper) {
+        console.log("Stage: "+component.get("v.oppStageName"));
+        console.log("Status: "+component.get("v.quoteStatus"));
+ 		if (component.get("v.oppStageName") != "Closed Won" || component.get("v.quoteStatus") != "Accepted") {
+ 		console.log("ERROR: Opportunity Stage not Closed/Won or Quote Status not Accepted");
+        var resultsToast = $A.get("e.force:showToast");
+			resultsToast.setParams({
+                "title": "Error",
+                "message": "Opportunity Stage must be Closed/Won and Quote Status must be Accepted in order to create a project",
+                "type":"error"});
+            				resultsToast.fire();
+ 
+            				// Navigate back to the record view
+		var navigateEvent = $A.get("e.force:navigateToSObject");
+		navigateEvent.setParams({ "recordId": component.get('v.recordId') });
+		navigateEvent.fire();
+ 	} 
+ 	else {    
         var action = component.get("c.createProjRecord");
             action.setParams({"projObj":component.get("v.projObj")});
             action.setCallback(this,function(result){
@@ -112,6 +133,7 @@
          		$A.enqueueAction(action);
         });
          $A.enqueueAction(action);
+  }
  },
         
     handleCancel: function(component, event, helper) {
